@@ -390,13 +390,13 @@
       <div class="pdf-frame-wrap">
         <iframe
           class="pdf-frame"
-          src="Poker_Preflop_Strategie_FINAL_v6.pdf"
+          src="Poker_Preflop_Strategie_FINAL_v7.pdf"
           title="Poker Strategie PDF"
         ></iframe>
       </div>
       <div class="pdf-actions">
-        <a href="Poker_Preflop_Strategie_FINAL_v6.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
-        <a href="Poker_Preflop_Strategie_FINAL_v6.pdf" download>PDF herunterladen</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v7.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v7.pdf" download>PDF herunterladen</a>
       </div>
     </div>
   </section>
@@ -406,7 +406,7 @@
     const SUITS = ["h", "d", "c", "s"];
 
     const OPEN = {
-      EP: ["22+", "A2s+", "AKo", "AQo", "KTs+", "QTs+", "JTs", "T9s", "98s", "87s", "76s", "J9s-53s"],
+      EP: ["22+", "A2s+", "AKo", "AQo", "KTs+", "QTs+", "JTs", "T9s", "98s", "87s", "76s"],
       CO: ["22+", "A2s+", "ATo+", "K7s+", "KJo+", "Q9s+", "JTs", "T9s-43s", "T8s-53s", "T7s-96s"],
       BTN: ["22+", "A2s+", "A7o+", "K2s+", "K9o+", "Q5s+", "QTo+", "J7s+", "JTo", "T9s-43s", "ALL_1G_S", "ALL_2G_S"]
     };
@@ -448,7 +448,7 @@
       { category: "Bube (Suited)", EP: "JTs", CO: "JTs", BTN: "J7s+", BLIND: "Alle Suited Jacks" },
       { category: "Bube (Offsuit)", EP: "-", CO: "-", BTN: "JTo", BLIND: "J-High / High Cards" },
       { category: "Connectors / Gappers (S)", EP: "0-Gap: T9s, 98s, 87s, 76s", CO: "0-Gap: T9s-43s", BTN: "0-Gap: T9s-43s", BLIND: "0-Gap: Alle SCs" },
-      { category: "Connectors / Gappers (S)", EP: "1-Gap: J9s-53s", CO: "1-Gap: T8s-53s", BTN: "1-Gap: Alle 1-Gapper", BLIND: "1-Gap: Alle 1-Gapper" },
+      { category: "Connectors / Gappers (S)", EP: "-", CO: "1-Gap: T8s-53s", BTN: "1-Gap: Alle 1-Gapper", BLIND: "1-Gap: Alle 1-Gapper" },
       { category: "Connectors / Gappers (S)", EP: "-", CO: "2-Gap: T7s-96s", BTN: "2-Gap: Alle 2-Gapper", BLIND: "2-Gap: Alle 2-Gapper" }
     ];
 
