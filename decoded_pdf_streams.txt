@@ -1,0 +1,248 @@
+### STREAM 1
+Poker Preflop Strategie - Ed Miller "The Course" (Skill #1)
+TABELLE 1 - OPEN RAISING (FIRST IN)
+Hand-Kategorie
+EP
+CO
+BTN
+SB
+Paare
+22+
+22+
+22+
+Alle Paare
+Ass (Suited)
+A2s+
+A2s+
+A2s+
+Alle Suited Aces
+Ass (Offsuit)
+AKo, AQo
+ATo+
+A7o+
+High Cards (Ax)
+Koenig (Suited)
+KTs+
+K7s+
+K2s+
+Alle Suited Kings
+Koenig (Offsuit)
+-
+KJo+
+K9o+
+High Cards (Kx)
+Dame (Suited)
+QTs+
+Q9s+
+Q5s+
+Alle Suited Queens
+Dame (Offsuit)
+-
+-
+QTo+
+High Cards (Qx)
+Bube (Suited)
+JTs
+JTs
+J7s+
+Alle Suited Jacks
+Bube (Offsuit)
+-
+-
+JTo
+J-High / High Cards
+Connectors (S)
+JTs-76s
+JTs-43s
+JTs-43s
+Alle Suited SCs
+Gappers (S)
+-
+J9s-53s
+T8s-53s (1G) / T7s-96s (2G)
+Alle Suited Gappers
+
+### STREAM 2
+TABELLE 2 - FACING RAISE (VERTEIDIGUNG)
+A) Gegen einen TIGHTEN/STARKEN Raise
+Kategorie
+EP
+CO
+BTN
+Blinds
+Call
+3-Bet
+Call
+3-Bet
+Call
+3-Bet
+Call
+3-Bet
+Paare
+QQ-22
+AA, KK
+QQ-22
+AA, KK
+QQ-22
+AA, KK
+QQ-22
+AA, KK
+Ass (Suited)
+ATs+
+A5s (Bluff)
+ATs+
+A5s (Bluff)
+ATs+
+A5s (Bluff)
+ATs+
+A5s (Bluff)
+Ass (Offsuit)
+AKo
+-
+AKo
+-
+AKo
+-
+AKo
+-
+Koenig (Suited)
+KTs+
+-
+KTs+
+-
+KTs+
+-
+KTs+
+-
+Dame (Suited)
+QTs+
+-
+QTs+
+-
+QTs+
+-
+QTs+
+-
+Connectors (S)
+JTs-76s
+-
+JTs-76s
+-
+JTs-76s
+-
+JTs-76s
+-
+B) Gegen einen LOOSEN Raise (positionsbasiert)
+Kategorie
+EP
+CO
+BTN
+Blinds
+Call
+3-Bet
+Call
+3-Bet
+Call
+3-Bet
+Call
+3-Bet
+Paare
+JJ-22
+AA-QQ
+TT-22
+JJ+
+88-22
+99+
+88-55
+99+, 44-22
+Ass (Suited)
+AQs-A6s
+A5s-A2s, AKs
+AQs-A8s, A6s
+A5s-A2s, AKs, A7s
+A9s-A6s
+A5s-A2s, AKs-ATs
+-
+A2s+
+Ass (Offsuit)
+AQo
+AKo
+AQo-AJo
+AKo
+AJo-ATo
+AKo-AQo
+ATo-A8o
+AJo+
+Koenig (Suited)
+KTs+
+-
+K9s+
+-
+KTs-K9s
+KQs-KJs
+KTs-K8s, K4s-K2s
+KJs+, K7s-K5s
+Koenig (Offsuit)
+-
+-
+KQo
+-
+KQo-KJo
+-
+KJo-K9o
+KQo
+Dame (Suited)
+QTs+
+-
+Q9s+
+-
+QTs-Q9s
+QJs
+QJs-QTs, Q8s-Q5s
+Q9s
+Dame (Offsuit)
+-
+-
+-
+-
+-
+-
+Q9o+
+-
+Bube (Suited)
+JTs
+-
+JTs
+-
+-
+JTs
+JTs-T9s, J8s-96s, J7s
+-
+Bube (Offsuit)
+-
+-
+-
+-
+-
+-
+JTo-98o, J9o
+-
+Connectors / Gappers (S)
+98s, 76s
+T9s, 87s
+98s, 76s-65s, J9s-86s
+T9s, 87s, 54s
+T9s-43s, J9s-T8s, 86s, 64s-53s, J8s-T7s
+97s, 75s
+43s, 75s-53s
+98s-54s, J9s-86s
+
+### STREAM 3
+Klarstellung zur Blinds-Spalte:
+- Wenn CO oder BTN stealt und ich sitze in den Blinds 
+->
+ Blinds-Spalte verwenden.
+- Wenn ein Spieler aus Early Position (EP) raist und ich sitze in den Blinds 
+->
+ EP-Spalte verwenden (nicht Blinds).
+

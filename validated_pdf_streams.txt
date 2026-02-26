@@ -1,0 +1,259 @@
+### STREAM 1
+1. PRE-FLOP INITIATIVE
+Kein Raise vor mir - ich eroeffne die Action
+Hand-Kategorie
+EP
+CO
+BTN
+SB
+Paare
+22+
+22+
+22+
+Alle Paare
+Ass (Suited)
+A2s+
+A2s+
+A2s+
+Alle Suited Aces
+Ass (Offsuit)
+AKo, AQo
+ATo+
+A7o+
+High Cards (Ax)
+Koenig (Suited)
+KTs+
+K7s+
+K2s+
+Alle Suited Kings
+Koenig (Offsuit)
+-
+KJo+
+K9o+
+High Cards (Kx)
+Dame (Suited)
+QTs+
+Q9s+
+Q5s+
+Alle Suited Queens
+Dame (Offsuit)
+-
+-
+QTo+
+High Cards (Qx)
+Bube (Suited)
+JTs
+JTs
+J7s+
+Alle Suited Jacks
+Bube (Offsuit)
+-
+-
+JTo
+J-High / High Cards
+Connectors / Gappers (S)
+0-Gap: T9s, 98s, 87s, 76s
+1-Gap: J9s-53s
+0-Gap: T9s-43s
+1-Gap: T8s-53s
+2-Gap: T7s-96s
+0-Gap: T9s-43s
+1-Gap: Alle 1-Gapper
+2-Gap: Alle 2-Gapper
+0-Gap: Alle SCs
+1-Gap: Alle 1-Gapper
+2-Gap: Alle 2-Gapper
+
+### STREAM 2
+2. PRE-FLOP VERTEIDIGUNG
+Ein Spieler hat geraist - ich reagiere
+2A - Gegen einen tighten Raiser
+Kategorie
+EP Call
+EP 3-Bet
+CO Call
+CO 3-Bet
+BTN Call
+BTN 3-Bet
+Blinds Call
+Blinds 3-Bet
+Paare
+QQ-22
+AA, KK
+QQ-22
+AA, KK
+QQ-22
+AA, KK
+QQ-22
+AA, KK
+Ass (Suited)
+ATs+
+A5s
+ATs+
+A5s
+ATs+
+A5s
+ATs+
+A5s
+Ass (Offsuit)
+AKo
+-
+AKo
+-
+AKo
+-
+AKo
+-
+Koenig (Suited)
+KTs+
+-
+KTs+
+-
+KTs+
+-
+KTs+
+-
+Dame (Suited)
+QTs+
+-
+QTs+
+-
+QTs+
+-
+QTs+
+-
+Bube (Suited)
+JTs
+-
+JTs
+-
+JTs
+-
+JTs
+-
+Connectors / Gappers (S)
+0-Gap: T9s, 98s,
+87s, 76s
+-
+0-Gap: T9s, 98s,
+87s, 76s
+-
+0-Gap: T9s, 98s,
+87s, 76s
+-
+0-Gap: T9s, 98s,
+87s, 76s
+-
+2B - Gegen einen loosen Raiser
+Kategorie
+EP Call
+EP 3-Bet
+CO Call
+CO 3-Bet
+BTN Call
+BTN 3-Bet
+Blinds Call
+Blinds 3-Bet
+Paare
+JJ-22
+AA-QQ
+TT-22
+JJ+
+88-22
+99+
+88-55
+99+, 44-22
+Ass (Suited)
+AQs-A6s
+A5s-A2s, AKs
+AQs-A8s, A6s
+A5s-A2s, AKs,
+A7s
+A9s-A6s
+A5s-A2s,
+AKs-ATs
+-
+A2s+
+Ass (Offsuit)
+AQo
+AKo
+AQo-AJo
+AKo
+AJo-ATo
+AKo-AQo
+ATo-A8o
+AJo+
+Koenig (Suited)
+KTs+
+-
+K9s+
+-
+KTs-K9s
+KQs-KJs
+KTs-K8s,
+K4s-K2s
+KJs+, K7s-K5s
+Koenig (Offsuit)
+-
+-
+KQo
+-
+KQo-KJo
+-
+KJo-K9o
+KQo
+Dame (Suited)
+QTs+
+-
+Q9s+
+-
+QTs-Q9s
+QJs
+QJs-QTs,
+Q8s-Q5s
+Q9s
+Dame (Offsuit)
+-
+-
+-
+-
+-
+-
+Q9o+
+-
+Bube (Suited)
+JTs
+-
+JTs
+-
+-
+JTs
+JTs
+-
+Bube (Offsuit)
+-
+-
+-
+-
+-
+-
+JTo-98o, J9o
+-
+Connectors / Gappers (S)
+0-Gap: 98s, 76s
+1-Gap: T9s, 87s
+T9s, 87s
+0-Gap: 98s,
+76s-65s
+1-Gap: J9s-86s
+2-Gap: 54s
+T9s, 87s, 54s
+0-Gap: T9s-43s
+1-Gap: J9s-T8s
+2-Gap: 86s,
+64s-53s, J8s-T7s
+97s, 75s
+0-Gap: 43s
+1-Gap: 75s-53s
+98s-54s, J9s-86s
+
