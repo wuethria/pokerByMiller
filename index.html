@@ -364,7 +364,7 @@
       min-width: min(560px, 90%);
     }
     .muted { color: #555; }
-    @media (max-width: 900px) {
+    @media (max-width: 1100px) {
       .layout {
         grid-template-columns: 1fr;
       }
@@ -375,11 +375,15 @@
         grid-template-columns: 1fr;
       }
       .learn-prompt-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
       }
       .learn-prompt-right {
         justify-self: start;
         margin-top: 8px;
+        width: 100%;
+      }
+      .learn-toggle-btn {
+        width: 100%;
       }
     }
     @media (max-width: 640px) {
