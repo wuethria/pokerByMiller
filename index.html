@@ -175,7 +175,6 @@
       color: #444;
     }
     .scenario {
-      font-weight: bold;
       margin: 0;
     }
     .actions {
@@ -198,6 +197,82 @@
       border-radius: 14px;
       background: #fcfcfc;
       padding: 16px;
+    }
+    .learn-stage {
+      border: 1px solid #d5d5d5;
+      border-radius: 14px;
+      background: #fcfcfc;
+      padding: 16px;
+    }
+    .learn-header {
+      border: 1px solid #e3e3e3;
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+    }
+    .learn-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #6a6a6a;
+      margin-bottom: 2px;
+    }
+    .learn-prompt-main {
+      border: 1px solid #dbdbdb;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8f9fb 100%);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .learn-prompt-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+    .learn-prompt-left {
+      align-self: start;
+    }
+    .learn-prompt-right {
+      align-self: center;
+    }
+    .learn-toggle-btn {
+      border: 1px solid #cfcfcf;
+      border-radius: 8px;
+      background: #fff;
+      min-height: 42px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.92rem;
+      white-space: nowrap;
+    }
+    .learn-answer-wrap {
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .learn-line.hidden {
+      display: none;
+    }
+    .learn-value {
+      display: inline-block;
+      margin-top: 2px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 600;
+    }
+    .learn-value.fixed {
+      background: #f1ece2;
+      border-color: #d5c6a6;
+      color: #4f3f1e;
+    }
+    .learn-value.random {
+      background: #e8f0fb;
+      border-color: #bad0ee;
+      color: #27486b;
     }
     .learn-prompt {
       border: 1px solid #e2e2e2;
@@ -229,11 +304,6 @@
       min-height: 42px;
       padding: 8px 12px;
       cursor: pointer;
-    }
-    .learn-stats {
-      margin-top: 14px;
-      font-size: 0.92rem;
-      color: #444;
     }
     .pdf-card {
       border: 1px solid #d5d5d5;
@@ -285,6 +355,14 @@
     }
     .ok { background: #d7f5dd; }
     .bad { background: #ffd9d9; }
+    .neutral { background: #eef1f4; }
+    #learnResult {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      border: 1px solid #d3d9e0;
+      min-width: min(560px, 90%);
+    }
     .muted { color: #555; }
     @media (max-width: 900px) {
       .layout {
@@ -326,12 +404,12 @@
           <div class="stage-meta-inner">
             <div>
               <div class="meta-item">
-                <div class="meta-label">Position / Raise-Info</div>
-                <div id="context" class="muted"></div>
+                <div class="meta-label">Initiative/Verteidigung</div>
+                <div id="scenario" class="scenario learn-value"></div>
               </div>
               <div class="meta-item">
-                <div class="meta-label">Bedingung</div>
-                <div id="scenario" class="scenario"></div>
+                <div class="meta-label">Position</div>
+                <div id="context" class="muted learn-value"></div>
               </div>
             </div>
             <button id="dealBtn" class="subtle-btn">Neues Paar</button>
@@ -347,12 +425,21 @@
         <h2>Konfiguration</h2>
         <div class="config-controls">
           <div>
-            <label for="position">Trainings-Position</label>
+            <label for="condition">Initiative/Verteidigung</label>
+            <select id="condition">
+              <option value="ALL">alle</option>
+              <option value="NO_RAISE">kein Raise vor mir</option>
+              <option value="TIGHT_RAISE">Raise von tightem Spieler</option>
+              <option value="LOOSE_RAISE">Raise von loosem Spieler</option>
+            </select>
+          </div>
+          <div>
+            <label for="position">Position</label>
             <select id="position">
               <option value="ALL">alle</option>
               <option value="EP">early</option>
               <option value="CO">CO</option>
-              <option value="BTN">BTN</option>
+              <option value="BTN">Dealer</option>
               <option value="BLIND">Blind</option>
             </select>
           </div>
@@ -363,25 +450,71 @@
   </section>
 
   <section id="panelLearn" class="panel">
-    <div class="learn-card">
-      <div class="learn-prompt">
-        <div class="learn-line"><strong>Bereich:</strong> <span id="learnArea"></span></div>
-        <div class="learn-line"><strong>Kategorie:</strong> <span id="learnCategory"></span></div>
-        <div class="learn-line"><strong>Position:</strong> <span id="learnPosition"></span></div>
-        <div class="learn-line"><strong>Aktion:</strong> <span id="learnAction"></span></div>
-      </div>
+    <div class="layout">
+      <main class="learn-stage">
+        <div class="learn-prompt-main">
+          <div class="learn-prompt-grid">
+            <div class="learn-prompt-left">
+              <div class="meta-item learn-line" id="learnLineArea">
+                <div class="meta-label">Initiative/Verteidigung</div>
+                <span id="learnArea" class="learn-value"></span>
+              </div>
+              <div class="meta-item learn-line" id="learnLinePosition">
+                <div class="meta-label">Position</div>
+                <span id="learnPosition" class="learn-value"></span>
+              </div>
+              <div class="meta-item learn-line" id="learnLineAction">
+                <div class="meta-label">Aktion</div>
+                <span id="learnAction" class="learn-value"></span>
+              </div>
+              <div class="meta-item learn-line" id="learnLineCategory">
+                <div class="meta-label">Kategorie</div>
+                <span id="learnCategory" class="learn-value"></span>
+              </div>
+            </div>
+            <div class="learn-prompt-right">
+              <button id="learnToggleBtn" class="learn-toggle-btn">Antwort anzeigen</button>
+            </div>
+          </div>
+        </div>
+        <div class="learn-answer-wrap">
+          <div id="learnResult" class="result neutral" style="display:none;"></div>
+        </div>
+      </main>
 
-      <label for="learnInput">Tabelleninhalt</label>
-      <input id="learnInput" class="learn-input" list="learnOptions" placeholder="z.B. K7s+ oder AA, KK" />
-      <datalist id="learnOptions"></datalist>
-
-      <div class="learn-actions">
-        <button id="learnCheckBtn">Pruefen</button>
-        <button id="learnNextBtn">Neue Frage</button>
-        <button id="learnShowBtn">Antwort zeigen</button>
-      </div>
-      <div id="learnResult" class="result" style="display:none;"></div>
-      <div id="learnStats" class="learn-stats"></div>
+      <aside class="config">
+        <h2>Konfiguration</h2>
+        <div class="config-controls">
+          <div>
+            <label for="learnCfgArea">Initiative/Verteidigung</label>
+            <select id="learnCfgArea">
+              <option value="ALL">alle</option>
+              <option value="INIT">Pre-Flop Initiative</option>
+              <option value="TIGHT">Pre-Flop Verteidigung (Tight)</option>
+              <option value="LOOSE">Pre-Flop Verteidigung (Loose)</option>
+            </select>
+          </div>
+          <div>
+            <label for="learnCfgPosition">Position</label>
+            <select id="learnCfgPosition">
+              <option value="ALL">alle</option>
+              <option value="EP">EP</option>
+              <option value="BLIND">Small Blind bzw. Blinds</option>
+              <option value="BTN">Dealer</option>
+              <option value="CO">CO</option>
+            </select>
+          </div>
+          <div id="learnCfgActionWrap">
+            <label for="learnCfgAction">Aktion</label>
+            <select id="learnCfgAction">
+              <option value="ALL">alle</option>
+              <option value="OPEN">open-raise/auffuellen</option>
+              <option value="CALL">call</option>
+              <option value="3BET">3-bet</option>
+            </select>
+          </div>
+        </div>
+      </aside>
     </div>
   </section>
 
@@ -390,13 +523,13 @@
       <div class="pdf-frame-wrap">
         <iframe
           class="pdf-frame"
-          src="Poker_Preflop_Strategie_FINAL_v7.pdf"
+          src="Poker_Preflop_Strategie_FINAL_v9.pdf"
           title="Poker Strategie PDF"
         ></iframe>
       </div>
       <div class="pdf-actions">
-        <a href="Poker_Preflop_Strategie_FINAL_v7.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
-        <a href="Poker_Preflop_Strategie_FINAL_v7.pdf" download>PDF herunterladen</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v9.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v9.pdf" download>PDF herunterladen</a>
       </div>
     </div>
   </section>
@@ -406,16 +539,17 @@
     const SUITS = ["h", "d", "c", "s"];
 
     const OPEN = {
-      EP: ["22+", "A2s+", "AKo", "AQo", "KTs+", "QTs+", "JTs", "T9s", "98s", "87s", "76s"],
-      CO: ["22+", "A2s+", "ATo+", "K7s+", "KJo+", "Q9s+", "JTs", "T9s-43s", "T8s-53s", "T7s-96s"],
-      BTN: ["22+", "A2s+", "A7o+", "K2s+", "K9o+", "Q5s+", "QTo+", "J7s+", "JTo", "T9s-43s", "ALL_1G_S", "ALL_2G_S"]
+      EP: ["22+", "A2s+", "AKo", "AQo", "KTs+", "QTs+", "JTs", "JTs-76s"],
+      CO: ["22+", "A2s+", "ATo+", "K7s+", "KJo+", "Q9s+", "JTs", "JTs-43s", "J9s-53s"],
+      BTN: ["22+", "A2s+", "A7o+", "K2s+", "K9o+", "Q5s+", "QTo+", "J7s+", "JTo", "JTs-43s", "T8s-53s", "T7s-96s"],
+      BLIND: ["22+", "A2s+", "A2o+", "K2s+", "K2o+", "Q2s+", "Q2o+", "J2s+", "ALL_0G_S", "ALL_1G_S", "ALL_2G_S"]
     };
 
     const FACING_TIGHT = {
-      EP: { call: ["QQ-22", "ATs+", "AKo", "KTs+", "QTs+", "JTs", "T9s", "98s", "87s", "76s"], threeBet: ["AA", "KK", "A5s"] },
-      CO: { call: ["QQ-22", "ATs+", "AKo", "KTs+", "QTs+", "JTs", "T9s", "98s", "87s", "76s"], threeBet: ["AA", "KK", "A5s"] },
-      BTN: { call: ["QQ-22", "ATs+", "AKo", "KTs+", "QTs+", "JTs", "T9s", "98s", "87s", "76s"], threeBet: ["AA", "KK", "A5s"] },
-      BLINDS: { call: ["QQ-22", "ATs+", "AKo", "KTs+", "QTs+", "JTs", "T9s", "98s", "87s", "76s"], threeBet: ["AA", "KK", "A5s"] }
+      EP: { call: ["QQ-22", "ATs+", "AKo", "KTs+", "QTs+", "JTs-76s"], threeBet: ["AA", "KK", "A5s"] },
+      CO: { call: ["QQ-22", "ATs+", "AKo", "KTs+", "QTs+", "JTs-76s"], threeBet: ["AA", "KK", "A5s"] },
+      BTN: { call: ["QQ-22", "ATs+", "AKo", "KTs+", "QTs+", "JTs-76s"], threeBet: ["AA", "KK", "A5s"] },
+      BLINDS: { call: ["QQ-22", "ATs+", "AKo", "KTs+", "QTs+", "JTs-76s"], threeBet: ["AA", "KK", "A5s"] }
     };
 
     const FACING_LOOSE = {
@@ -432,34 +566,32 @@
         threeBet: ["99+", "A5s-A2s", "AKs-ATs", "AKo-AQo", "KQs-KJs", "QJs", "JTs", "97s", "75s"]
       },
       BLINDS: {
-        call: ["88-55", "ATo-A8o", "KTs-K8s", "K4s-K2s", "KJo-K9o", "QJs-QTs", "Q8s-Q5s", "Q9o+", "JTs", "JTo-98o", "J9o", "43s", "75s-53s"],
+        call: ["88-55", "ATo-A8o", "KTs-K8s", "K4s-K2s", "KJo-K9o", "QJs-QTs", "Q8s-Q5s", "Q9o+", "JTs-T9s", "J8s-96s", "J7s", "JTo-98o", "J9o", "43s", "75s-53s"],
         threeBet: ["99+", "44-22", "A2s+", "AJo+", "KJs+", "K7s-K5s", "KQo", "Q9s", "98s-54s", "J9s-86s"]
       }
     };
 
     const LEARN_OPEN = [
-      { category: "Paare", EP: "22+", CO: "22+", BTN: "22+", BLIND: "Alle Paare" },
-      { category: "Ass (Suited)", EP: "A2s+", CO: "A2s+", BTN: "A2s+", BLIND: "Alle Suited Aces" },
-      { category: "Ass (Offsuit)", EP: "AKo, AQo", CO: "ATo+", BTN: "A7o+", BLIND: "High Cards (Ax)" },
-      { category: "Koenig (Suited)", EP: "KTs+", CO: "K7s+", BTN: "K2s+", BLIND: "Alle Suited Kings" },
-      { category: "Koenig (Offsuit)", EP: "-", CO: "KJo+", BTN: "K9o+", BLIND: "High Cards (Kx)" },
-      { category: "Dame (Suited)", EP: "QTs+", CO: "Q9s+", BTN: "Q5s+", BLIND: "Alle Suited Queens" },
-      { category: "Dame (Offsuit)", EP: "-", CO: "-", BTN: "QTo+", BLIND: "High Cards (Qx)" },
-      { category: "Bube (Suited)", EP: "JTs", CO: "JTs", BTN: "J7s+", BLIND: "Alle Suited Jacks" },
-      { category: "Bube (Offsuit)", EP: "-", CO: "-", BTN: "JTo", BLIND: "J-High / High Cards" },
-      { category: "Connectors / Gappers (S)", EP: "0-Gap: T9s, 98s, 87s, 76s", CO: "0-Gap: T9s-43s", BTN: "0-Gap: T9s-43s", BLIND: "0-Gap: Alle SCs" },
-      { category: "Connectors / Gappers (S)", EP: "-", CO: "1-Gap: T8s-53s", BTN: "1-Gap: Alle 1-Gapper", BLIND: "1-Gap: Alle 1-Gapper" },
-      { category: "Connectors / Gappers (S)", EP: "-", CO: "2-Gap: T7s-96s", BTN: "2-Gap: Alle 2-Gapper", BLIND: "2-Gap: Alle 2-Gapper" }
+      { category: "Paare", EP: "Alle", CO: "Alle", BTN: "Alle", BLIND: "Alle" },
+      { category: "Ass (Suited)", EP: "Alle", CO: "Alle", BTN: "Alle", BLIND: "Alle" },
+      { category: "Ass (Offsuit)", EP: "AKo, AQo", CO: "ATo+", BTN: "A7o+", BLIND: "Alle" },
+      { category: "Koenig (Suited)", EP: "KTs+", CO: "K7s+", BTN: "K2s+", BLIND: "Alle" },
+      { category: "Koenig (Offsuit)", EP: "-", CO: "KJo+", BTN: "K9o+", BLIND: "Alle" },
+      { category: "Dame (Suited)", EP: "QTs+", CO: "Q9s+", BTN: "Q5s+", BLIND: "Alle" },
+      { category: "Dame (Offsuit)", EP: "-", CO: "-", BTN: "QTo+", BLIND: "Alle" },
+      { category: "Bube (Suited)", EP: "JTs", CO: "JTs", BTN: "J7s+", BLIND: "Alle" },
+      { category: "Connectors", EP: "JTs-76s", CO: "JTs-43s", BTN: "JTs-43s", BLIND: "Alle" },
+      { category: "1-Gappers", EP: "-", CO: "J9s-53s", BTN: "T8s-53s", BLIND: "Alle" },
+      { category: "2-Gappers", EP: "-", CO: "-", BTN: "T7s-96s", BLIND: "Alle" }
     ];
 
     const LEARN_TIGHT = [
-      { category: "Paare", EP: { call: "QQ-22", threeBet: "AA, KK" }, CO: { call: "QQ-22", threeBet: "AA, KK" }, BTN: { call: "QQ-22", threeBet: "AA, KK" }, BLIND: { call: "QQ-22", threeBet: "AA, KK" } },
+      { category: "Paare", EP: { call: "QQ-22", threeBet: "AA,KK" }, CO: { call: "QQ-22", threeBet: "AA,KK" }, BTN: { call: "QQ-22", threeBet: "AA,KK" }, BLIND: { call: "QQ-22", threeBet: "AA,KK" } },
       { category: "Ass (Suited)", EP: { call: "ATs+", threeBet: "A5s" }, CO: { call: "ATs+", threeBet: "A5s" }, BTN: { call: "ATs+", threeBet: "A5s" }, BLIND: { call: "ATs+", threeBet: "A5s" } },
       { category: "Ass (Offsuit)", EP: { call: "AKo", threeBet: "-" }, CO: { call: "AKo", threeBet: "-" }, BTN: { call: "AKo", threeBet: "-" }, BLIND: { call: "AKo", threeBet: "-" } },
       { category: "Koenig (Suited)", EP: { call: "KTs+", threeBet: "-" }, CO: { call: "KTs+", threeBet: "-" }, BTN: { call: "KTs+", threeBet: "-" }, BLIND: { call: "KTs+", threeBet: "-" } },
       { category: "Dame (Suited)", EP: { call: "QTs+", threeBet: "-" }, CO: { call: "QTs+", threeBet: "-" }, BTN: { call: "QTs+", threeBet: "-" }, BLIND: { call: "QTs+", threeBet: "-" } },
-      { category: "Bube (Suited)", EP: { call: "JTs", threeBet: "-" }, CO: { call: "JTs", threeBet: "-" }, BTN: { call: "JTs", threeBet: "-" }, BLIND: { call: "JTs", threeBet: "-" } },
-      { category: "Connectors / Gappers (S)", EP: { call: "0-Gap: T9s, 98s, 87s, 76s", threeBet: "-" }, CO: { call: "0-Gap: T9s, 98s, 87s, 76s", threeBet: "-" }, BTN: { call: "0-Gap: T9s, 98s, 87s, 76s", threeBet: "-" }, BLIND: { call: "0-Gap: T9s, 98s, 87s, 76s", threeBet: "-" } }
+      { category: "Connectors", EP: { call: "JTs-76s", threeBet: "-" }, CO: { call: "JTs-76s", threeBet: "-" }, BTN: { call: "JTs-76s", threeBet: "-" }, BLIND: { call: "JTs-76s", threeBet: "-" } }
     ];
 
     const LEARN_LOOSE = [
@@ -470,7 +602,7 @@
       { category: "Koenig (Offsuit)", EP: { call: "-", threeBet: "-" }, CO: { call: "KQo", threeBet: "-" }, BTN: { call: "KQo-KJo", threeBet: "-" }, BLIND: { call: "KJo-K9o", threeBet: "KQo" } },
       { category: "Dame (Suited)", EP: { call: "QTs+", threeBet: "-" }, CO: { call: "Q9s+", threeBet: "-" }, BTN: { call: "QTs-Q9s", threeBet: "QJs" }, BLIND: { call: "QJs-QTs, Q8s-Q5s", threeBet: "Q9s" } },
       { category: "Dame (Offsuit)", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "-", threeBet: "-" }, BLIND: { call: "Q9o+", threeBet: "-" } },
-      { category: "Bube (Suited)", EP: { call: "JTs", threeBet: "-" }, CO: { call: "JTs", threeBet: "-" }, BTN: { call: "-", threeBet: "JTs" }, BLIND: { call: "JTs", threeBet: "-" } },
+      { category: "Bube (Suited)", EP: { call: "JTs", threeBet: "-" }, CO: { call: "JTs", threeBet: "-" }, BTN: { call: "-", threeBet: "JTs" }, BLIND: { call: "JTs-T9s, J8s-96s, J7s", threeBet: "-" } },
       { category: "Bube (Offsuit)", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "-", threeBet: "-" }, BLIND: { call: "JTo-98o, J9o", threeBet: "-" } },
       { category: "Connectors / Gappers (S)", EP: { call: "0-Gap: 98s, 76s", threeBet: "1-Gap: T9s, 87s" }, CO: { call: "0-Gap: 98s, 76s-65s | 1-Gap: J9s-86s | 2-Gap: 54s", threeBet: "T9s, 87s, 54s" }, BTN: { call: "0-Gap: T9s-43s | 1-Gap: J9s-T8s | 2-Gap: 86s, 64s-53s, J8s-T7s", threeBet: "97s, 75s" }, BLIND: { call: "0-Gap: 43s | 1-Gap: 75s-53s", threeBet: "98s-54s, J9s-86s" } }
     ];
@@ -478,8 +610,8 @@
     let current = null;
     let resolveTimer = null;
     let learnCurrent = null;
+    let learnAnswerVisible = false;
     const learnQuestions = [];
-    const learnStats = { total: 0, correct: 0 };
     const stats = {
       total: 0,
       correct: 0,
@@ -519,6 +651,10 @@
     function matchToken(token, hand) {
       token = token.replace(/\([^)]*\)/g, "").trim();
       if (!token || token === "-") return false;
+      if (token === "ALL_0G_S") {
+        if (hand.length !== 3 || hand[2] !== "s") return false;
+        return (idx(hand[1]) - idx(hand[0]) - 1) === 0;
+      }
       if (token === "ALL_1G_S") {
         if (hand.length !== 3 || hand[2] !== "s") return false;
         return (idx(hand[1]) - idx(hand[0]) - 1) === 1;
@@ -598,7 +734,8 @@
       return all[Math.floor(Math.random() * all.length)];
     }
 
-    function getScenario() {
+    function getScenario(selected) {
+      if (selected !== "ALL") return selected;
       const s = ["NO_RAISE", "TIGHT_RAISE", "LOOSE_RAISE"];
       return s[Math.floor(Math.random() * s.length)];
     }
@@ -613,17 +750,13 @@
 
     function resolveCorrectAction(hand, heroPos, scenario, raiserPos) {
       if (scenario === "NO_RAISE") {
-        const open = heroPos === "BLIND" ? isSBOpen(hand) : inRange(OPEN[heroPos], hand);
+        const open = inRange(OPEN[heroPos], hand);
         return {
           correct: open ? "OPEN" : "FOLD",
           tableLabel: "Tabelle 1: Open Raising (First In)",
           reason: open
-            ? (heroPos === "BLIND"
-              ? hand + " passt in die SB-Open-Regel (alle Paare, Ax/Kx/Qx/Jx, suited Connector/Gapper)."
-              : hand + " ist in der Open-Range (" + joinRanges(OPEN[heroPos]) + ").")
-            : (heroPos === "BLIND"
-              ? hand + " passt nicht in die SB-Open-Regel aus der Tabelle."
-              : hand + " ist nicht in der Open-Range (" + joinRanges(OPEN[heroPos]) + ").")
+            ? hand + " ist in der Open-Range (" + joinRanges(OPEN[heroPos]) + ")."
+            : hand + " ist nicht in der Open-Range (" + joinRanges(OPEN[heroPos]) + ")."
         };
       }
 
@@ -662,7 +795,7 @@
     }
 
     function labelPos(p) {
-      return p === "EP" ? "early" : p === "BLIND" ? "Blind" : p;
+      return p === "EP" ? "EP" : p === "BLIND" ? "Small Blind bzw. Blinds" : p === "BTN" ? "Dealer" : p;
     }
 
     function scenarioText(s) {
@@ -730,7 +863,7 @@
         "Gesamt: " + stats.correct + "/" + stats.total + " (" + hitRate + "%) | " +
         line("EP", "early:") + " | " +
         line("CO", "CO:") + " | " +
-        line("BTN", "BTN:") + " | " +
+        line("BTN", "Dealer:") + " | " +
         line("BLIND", "Blind:");
     }
 
@@ -744,16 +877,19 @@
     }
 
     function buildLearnQuestions() {
-      const posOrder = ["EP", "CO", "BTN", "BLIND"];
-      const posName = { EP: "Early", CO: "CO", BTN: "BTN", BLIND: "Blind" };
+      const posOrder = ["EP", "BLIND", "BTN", "CO"];
+      const posName = { EP: "EP", BLIND: "Small Blind bzw. Blinds", BTN: "Dealer", CO: "CO" };
 
       for (const row of LEARN_OPEN) {
         for (const pos of posOrder) {
           learnQuestions.push({
-            area: "Preflop-Initiative",
+            areaKey: "INIT",
+            area: "Pre-Flop Initiative",
             category: row.category,
+            positionKey: pos,
             position: posName[pos],
-            action: "Open Raise",
+            actionKey: "OPEN",
+            action: "open-raise/auffuellen",
             answer: row[pos]
           });
         }
@@ -762,17 +898,23 @@
       for (const row of LEARN_TIGHT) {
         for (const pos of posOrder) {
           learnQuestions.push({
-            area: "Preflop-Verteidigung (Tight Raise)",
+            areaKey: "TIGHT",
+            area: "Pre-Flop Verteidigung (Tight)",
             category: row.category,
+            positionKey: pos,
             position: posName[pos],
-            action: "Call",
+            actionKey: "CALL",
+            action: "call",
             answer: row[pos].call
           });
           learnQuestions.push({
-            area: "Preflop-Verteidigung (Tight Raise)",
+            areaKey: "TIGHT",
+            area: "Pre-Flop Verteidigung (Tight)",
             category: row.category,
+            positionKey: pos,
             position: posName[pos],
-            action: "3-Bet",
+            actionKey: "3BET",
+            action: "3-bet",
             answer: row[pos].threeBet
           });
         }
@@ -781,81 +923,123 @@
       for (const row of LEARN_LOOSE) {
         for (const pos of posOrder) {
           learnQuestions.push({
-            area: "Preflop-Verteidigung (Loose Raise)",
+            areaKey: "LOOSE",
+            area: "Pre-Flop Verteidigung (Loose)",
             category: row.category,
+            positionKey: pos,
             position: posName[pos],
-            action: "Call",
+            actionKey: "CALL",
+            action: "call",
             answer: row[pos].call
           });
           learnQuestions.push({
-            area: "Preflop-Verteidigung (Loose Raise)",
+            areaKey: "LOOSE",
+            area: "Pre-Flop Verteidigung (Loose)",
             category: row.category,
+            positionKey: pos,
             position: posName[pos],
-            action: "3-Bet",
+            actionKey: "3BET",
+            action: "3-bet",
             answer: row[pos].threeBet
           });
         }
       }
     }
 
-    function normalizeAnswer(v) {
-      return v
-        .toLowerCase()
-        .replace(/\|/g, ",")
-        .replace(/0-gap:|1-gap:|2-gap:/g, "")
-        .replace(/\s+/g, "")
-        .replace(/,+/g, ",")
-        .replace(/^,|,$/g, "");
+    function setLearnValueState(id, fixed) {
+      const el = document.getElementById(id);
+      el.classList.remove("fixed", "random");
+      el.classList.add(fixed ? "fixed" : "random");
     }
 
-    function renderLearnStats() {
-      const rate = learnStats.total ? Math.round((learnStats.correct / learnStats.total) * 100) : 0;
-      document.getElementById("learnStats").textContent =
-        "Lern-Modus: " + learnStats.correct + "/" + learnStats.total + " (" + rate + "%)";
-    }
+    function applyLearnAreaModeUI() {
+      const area = document.getElementById("learnCfgArea").value;
+      const actionWrap = document.getElementById("learnCfgActionWrap");
+      const actionLine = document.getElementById("learnLineAction");
+      const actionSelect = document.getElementById("learnCfgAction");
 
-    function nextLearnQuestion() {
-      const q = learnQuestions[Math.floor(Math.random() * learnQuestions.length)];
-      learnCurrent = q;
-      document.getElementById("learnArea").textContent = q.area;
-      document.getElementById("learnCategory").textContent = q.category;
-      document.getElementById("learnPosition").textContent = q.position;
-      document.getElementById("learnAction").textContent = q.action;
-      document.getElementById("learnInput").value = "";
-      document.getElementById("learnResult").style.display = "none";
-      document.getElementById("learnInput").focus();
-    }
-
-    function checkLearnAnswer() {
-      if (!learnCurrent) return;
-      const input = document.getElementById("learnInput").value.trim();
-      if (!input) return;
-
-      const ok = normalizeAnswer(input) === normalizeAnswer(learnCurrent.answer);
-      learnStats.total += 1;
-      if (ok) learnStats.correct += 1;
-      renderLearnStats();
-
-      const res = document.getElementById("learnResult");
-      res.style.display = "block";
-      res.className = "result " + (ok ? "ok" : "bad");
-      res.textContent = ok
-        ? "✔ Richtig."
-        : "✘ Falsch. Korrekt ist: " + learnCurrent.answer;
-
-      if (ok) {
-        setTimeout(() => {
-          if (learnCurrent) nextLearnQuestion();
-        }, 1200);
+      if (area === "INIT") {
+        actionWrap.style.display = "none";
+        actionLine.classList.add("hidden");
+        actionSelect.value = "OPEN";
+      } else {
+        actionWrap.style.display = "block";
+        actionLine.classList.remove("hidden");
+        if (actionSelect.value === "OPEN") actionSelect.value = "ALL";
       }
     }
 
-    function showLearnAnswer() {
+    function filteredLearnQuestions() {
+      const area = document.getElementById("learnCfgArea").value;
+      const pos = document.getElementById("learnCfgPosition").value;
+      const action = document.getElementById("learnCfgAction").value;
+      const useAction = area !== "INIT";
+
+      return learnQuestions.filter((q) =>
+        (area === "ALL" || q.areaKey === area) &&
+        (pos === "ALL" || q.positionKey === pos) &&
+        (!useAction || action === "ALL" || q.actionKey === action)
+      );
+    }
+
+
+    function nextLearnQuestion() {
+      applyLearnAreaModeUI();
+      const pool = filteredLearnQuestions();
+      const res = document.getElementById("learnResult");
+
+      if (!pool.length) {
+        learnCurrent = null;
+                document.getElementById("learnArea").textContent = "-";
+        document.getElementById("learnPosition").textContent = "-";
+        document.getElementById("learnAction").textContent = "-";
+        document.getElementById("learnCategory").textContent = "-";
+        setLearnValueState("learnArea", false);
+        setLearnValueState("learnPosition", false);
+        setLearnValueState("learnAction", false);
+        setLearnValueState("learnCategory", false);
+                res.style.display = "block";
+        res.className = "result neutral";
+        res.textContent = "Keine Frage fuer diese Filter-Kombination vorhanden.";
+        document.getElementById("learnToggleBtn").textContent = "Antwort anzeigen";
+        return;
+      }
+
+      const q = pool[Math.floor(Math.random() * pool.length)];
+      learnCurrent = q;
+      learnAnswerVisible = false;
+      
+      document.getElementById("learnArea").textContent = q.area;
+      document.getElementById("learnPosition").textContent = q.position;
+      document.getElementById("learnAction").textContent = q.action;
+      document.getElementById("learnCategory").textContent = q.category;
+
+      const areaCfg = document.getElementById("learnCfgArea").value;
+      const posCfg = document.getElementById("learnCfgPosition").value;
+      const actionCfg = document.getElementById("learnCfgAction").value;
+      const actionVisible = areaCfg !== "INIT";
+
+      setLearnValueState("learnArea", areaCfg !== "ALL");
+      setLearnValueState("learnPosition", posCfg !== "ALL");
+      if (actionVisible) setLearnValueState("learnAction", actionCfg !== "ALL");
+      setLearnValueState("learnCategory", false);
+
+            document.getElementById("learnToggleBtn").textContent = "Antwort anzeigen";
+      res.style.display = "none";
+    }
+
+    function toggleLearnAnswer() {
       if (!learnCurrent) return;
       const res = document.getElementById("learnResult");
-      res.style.display = "block";
-      res.className = "result bad";
-      res.textContent = "Korrekte Antwort: " + learnCurrent.answer;
+      if (!learnAnswerVisible) {
+        res.style.display = "block";
+        res.className = "result neutral";
+        res.textContent = learnCurrent.answer;
+        document.getElementById("learnToggleBtn").textContent = "Neue Kombination";
+        learnAnswerVisible = true;
+        return;
+      }
+      nextLearnQuestion();
     }
 
     function renderActions(scenario) {
@@ -909,6 +1093,13 @@
       }, 3000);
     }
 
+    function updatePlayValueStates() {
+      const posSel = document.getElementById("position").value;
+      const condSel = document.getElementById("condition").value;
+      setLearnValueState("scenario", condSel !== "ALL");
+      setLearnValueState("context", posSel !== "ALL");
+    }
+
     function nextHand(highlightNew = false) {
       if (resolveTimer) {
         clearTimeout(resolveTimer);
@@ -916,8 +1107,9 @@
       }
       updateDealButton("ready");
       const selected = document.getElementById("position").value;
+      const selectedCondition = document.getElementById("condition").value;
       const heroPos = getPosition(selected);
-      const scenario = getScenario();
+      const scenario = getScenario(selectedCondition);
       const [c1, c2] = dealTwoCards();
       const hand = canonicalHand(c1, c2);
 
@@ -944,6 +1136,7 @@
         (raiserPos ? " | Raiser-Position: " + labelPos(raiserPos) : "");
       renderCards(c1, c2, hand, highlightNew);
       document.getElementById("scenario").textContent = scenarioText(scenario);
+      updatePlayValueStates();
       document.getElementById("result").style.display = "none";
       renderActions(scenario);
       setActionButtonsDisabled(false);
@@ -953,24 +1146,16 @@
     document.getElementById("tabPlay").addEventListener("click", () => setTab("play"));
     document.getElementById("tabLearn").addEventListener("click", () => setTab("learn"));
     document.getElementById("tabPdf").addEventListener("click", () => setTab("pdf"));
-    document.getElementById("learnCheckBtn").addEventListener("click", checkLearnAnswer);
-    document.getElementById("learnNextBtn").addEventListener("click", nextLearnQuestion);
-    document.getElementById("learnShowBtn").addEventListener("click", showLearnAnswer);
-    document.getElementById("learnInput").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") checkLearnAnswer();
-    });
+    document.getElementById("learnToggleBtn").addEventListener("click", toggleLearnAnswer);
+    document.getElementById("learnCfgArea").addEventListener("change", nextLearnQuestion);
+    document.getElementById("learnCfgPosition").addEventListener("change", nextLearnQuestion);
+    document.getElementById("learnCfgAction").addEventListener("change", nextLearnQuestion);
+    document.getElementById("condition").addEventListener("change", () => nextHand(true));
+    document.getElementById("position").addEventListener("change", () => nextHand(true));
 
     buildLearnQuestions();
-    const options = Array.from(new Set(learnQuestions.map(q => q.answer))).sort();
-    const dl = document.getElementById("learnOptions");
-    for (const v of options) {
-      const opt = document.createElement("option");
-      opt.value = v;
-      dl.appendChild(opt);
-    }
 
     renderStats();
-    renderLearnStats();
     nextHand();
     nextLearnQuestion();
 
