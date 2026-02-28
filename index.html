@@ -224,8 +224,15 @@
     }
     .action-row {
       display: flex;
-      justify-content: flex-end;
+      justify-content: center;
       margin-top: 12px;
+    }
+    .learn-review-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .learn-review-actions button {
+      min-width: 110px;
     }
     .primary-btn {
       border: 1px solid var(--primary-bg);
@@ -525,7 +532,7 @@
         position: static;
       }
       .action-row {
-        justify-content: stretch;
+        justify-content: center;
       }
       .primary-btn {
         width: 100%;
@@ -647,6 +654,10 @@
           </div>
           <div class="action-row">
             <button id="learnToggleBtn" class="primary-btn">Antwort anzeigen</button>
+            <div id="learnReviewActions" class="learn-review-actions" style="display:none;">
+              <button id="learnOkBtn" class="primary-btn">OK</button>
+              <button id="learnNokBtn" class="subtle-btn">NOK</button>
+            </div>
           </div>
         </section>
       </main>
@@ -783,6 +794,7 @@
     let resolveTimer = null;
     let learnCurrent = null;
     let learnAnswerVisible = false;
+    let learnReviewQueue = [];
     const learnQuestions = [];
     const stats = {
       total: 0,
@@ -1133,7 +1145,7 @@
             positionKey: pos,
             position: posName[pos],
             actionKey: "CALL",
-            action: "call",
+            action: "Call",
             answer: row[pos].call
           });
           learnQuestions.push({
@@ -1158,7 +1170,7 @@
             positionKey: pos,
             position: posName[pos],
             actionKey: "CALL",
-            action: "call",
+            action: "Call",
             answer: row[pos].call
           });
           learnQuestions.push({
@@ -1291,6 +1303,40 @@
       if (h > 0) root.style.setProperty("--task-card-fixed-height", h + "px");
     }
 
+    function learnComboSignature(q) {
+      return [q.areaKey, q.positionKey, q.actionKey, q.category].join("|");
+    }
+
+    function setLearnActionState(mode) {
+      const showBtn = document.getElementById("learnToggleBtn");
+      const review = document.getElementById("learnReviewActions");
+      if (mode === "review") {
+        showBtn.style.display = "none";
+        review.style.display = "flex";
+      } else {
+        showBtn.style.display = "inline-block";
+        review.style.display = "none";
+      }
+    }
+
+    function resetLearnReviewQueue() {
+      learnReviewQueue = [];
+    }
+
+    function pickLearnQuestion(pool) {
+      const bySig = new Map(pool.map((q) => [learnComboSignature(q), q]));
+      learnReviewQueue = learnReviewQueue.filter((sig) => bySig.has(sig));
+
+      if (learnReviewQueue.length > 0 && Math.random() < 0.25) {
+        const sig = learnReviewQueue[0];
+        const q = bySig.get(sig);
+        if (q) return { question: q, isReview: true };
+      }
+
+      const q = pool[Math.floor(Math.random() * pool.length)];
+      return { question: q, isReview: false };
+    }
+
 
     function nextLearnQuestion() {
       applyLearnAreaModeUI();
@@ -1308,12 +1354,16 @@
         res.style.display = "block";
         res.className = "result neutral";
         res.textContent = "Keine Frage fuer diese Filter-Kombination vorhanden.";
-        document.getElementById("learnToggleBtn").textContent = "Antwort anzeigen";
+        const btn = document.getElementById("learnToggleBtn");
+        btn.textContent = "Antwort anzeigen";
+        btn.disabled = true;
+        setLearnActionState("show");
         return;
       }
 
-      const q = pool[Math.floor(Math.random() * pool.length)];
-      learnCurrent = q;
+      const picked = pickLearnQuestion(pool);
+      const q = picked.question;
+      learnCurrent = { ...q, isReview: picked.isReview };
       learnAnswerVisible = false;
 
       const lineArea = document.getElementById("learnLineArea");
@@ -1333,7 +1383,10 @@
       document.getElementById("learnTaskCategory").textContent = q.category;
       animateTaskCard("learnTaskCard");
 
-      document.getElementById("learnToggleBtn").textContent = "Antwort anzeigen";
+      const btn = document.getElementById("learnToggleBtn");
+      btn.textContent = "Antwort anzeigen";
+      btn.disabled = false;
+      setLearnActionState("show");
       res.style.display = "none";
     }
     function normalizeLearnAnswer(answer) {
@@ -1345,16 +1398,30 @@
     }
 
     function toggleLearnAnswer() {
-      if (!learnCurrent) return;
+      if (!learnCurrent || learnAnswerVisible) return;
       const res = document.getElementById("learnResult");
-      if (!learnAnswerVisible) {
-        res.style.display = "block";
-        res.className = "result neutral";
-        res.textContent = normalizeLearnAnswer(learnCurrent.answer);
-        document.getElementById("learnToggleBtn").textContent = "Neue Kombination";
-        learnAnswerVisible = true;
-        return;
+      res.style.display = "block";
+      res.className = "result neutral";
+      res.textContent = normalizeLearnAnswer(learnCurrent.answer);
+      learnAnswerVisible = true;
+      setLearnActionState("review");
+    }
+
+    function learnReviewAnswer(ok) {
+      if (!learnCurrent || !learnAnswerVisible) return;
+      const sig = learnComboSignature(learnCurrent);
+      const inQueue = learnReviewQueue.includes(sig);
+
+      if (ok) {
+        if (learnCurrent.isReview) {
+          learnReviewQueue = learnReviewQueue.filter((x) => x !== sig);
+        }
+      } else {
+        if (!inQueue) {
+          learnReviewQueue.push(sig);
+        }
       }
+
       nextLearnQuestion();
     }
 
@@ -1469,9 +1536,15 @@
     document.getElementById("tabLearn").addEventListener("click", () => setTab("learn"));
     document.getElementById("tabPdf").addEventListener("click", () => setTab("pdf"));
     document.getElementById("learnToggleBtn").addEventListener("click", toggleLearnAnswer);
-    document.getElementById("learnCfgArea").addEventListener("change", nextLearnQuestion);
-    document.getElementById("learnCfgPosition").addEventListener("change", nextLearnQuestion);
-    document.getElementById("learnCfgAction").addEventListener("change", nextLearnQuestion);
+    document.getElementById("learnOkBtn").addEventListener("click", () => learnReviewAnswer(true));
+    document.getElementById("learnNokBtn").addEventListener("click", () => learnReviewAnswer(false));
+    const onLearnConfigChange = () => {
+      resetLearnReviewQueue();
+      nextLearnQuestion();
+    };
+    document.getElementById("learnCfgArea").addEventListener("change", onLearnConfigChange);
+    document.getElementById("learnCfgPosition").addEventListener("change", onLearnConfigChange);
+    document.getElementById("learnCfgAction").addEventListener("change", onLearnConfigChange);
     document.getElementById("condition").addEventListener("change", () => { applyPlaySpecialModeUI(); nextHand(true); });
     document.getElementById("position").addEventListener("change", () => { applyPlaySpecialModeUI(); nextHand(true); });
     document.getElementById("specialCondition").addEventListener("change", () => nextHand(true));
