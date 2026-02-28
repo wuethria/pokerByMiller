@@ -151,7 +151,8 @@
     }
     #playTaskCard,
     #learnTaskCard {
-      height: var(--task-card-fixed-height, auto);
+      min-height: var(--task-card-fixed-height, auto);
+      height: auto;
       box-sizing: border-box;
     }
     .task-card.task-refresh {
@@ -185,6 +186,14 @@
       position: relative;
       display: flex;
       flex-direction: column;
+      justify-content: flex-start;
+    }
+    #learnTaskCard .action-row {
+      order: 2;
+      margin-top: auto;
+    }
+    #learnTaskCard .learn-answer-wrap {
+      order: 3;
     }
     #learnTaskLines {
       min-height: 86px;
@@ -204,6 +213,14 @@
       color: #3f4e61;
       font-size: 0.95rem;
       line-height: 1.35;
+    }
+    .task-question {
+      text-align: center;
+      margin-top: 2px;
+      margin-bottom: 8px;
+      color: #2b3542;
+      font-weight: 700;
+      font-size: 0.96rem;
     }
     .action-row {
       display: flex;
@@ -384,13 +401,12 @@
       margin-bottom: 2px;
     }
     .learn-answer-wrap {
+      margin-top: 10px;
       min-height: 120px;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-    }
-    .learn-answer-wrap {
-      margin-top: 10px;
+      width: 100%;
     }
     .learn-value {
       display: inline-block;
@@ -494,9 +510,11 @@
       font-size: 1.4rem;
       font-weight: 700;
       border: 1px solid #d3d9e0;
-      min-width: min(560px, 90%);
+      width: min(560px, 90%);
+      max-width: 100%;
       white-space: pre-wrap;
       line-height: 1.35;
+      box-sizing: border-box;
     }
     .muted { color: #555; }
     @media (max-width: 1100px) {
@@ -510,6 +528,22 @@
         justify-content: stretch;
       }
       .primary-btn {
+        width: 100%;
+      }
+      #learnTaskCategory {
+        position: static;
+        top: auto;
+        left: auto;
+        transform: none;
+        width: 100%;
+        margin: 26px 0 18px;
+        pointer-events: auto;
+      }
+      .learn-answer-wrap {
+        margin-top: 10px;
+        min-height: 120px;
+      }
+      #learnResult {
         width: 100%;
       }
     }
@@ -545,13 +579,9 @@
         </section>
 
         <section id="playTaskCard" class="task-card" aria-label="Aufgabe">
-          <div id="playTaskLines" class="task-lines task-lines-centered">
-            <div id="playLinePosition" class="task-line">-</div>
-            <div id="playLineArea" class="task-line" aria-live="polite">-</div>
-            <div id="playLineSpecial" class="task-line" style="display:none;"></div>
-            <div id="playLineRaiser" class="task-line" style="display:none;"></div>
-          </div>
+          <div id="playScenarioLines" class="task-lines task-lines-centered" aria-live="polite"></div>
           <div id="cards" class="cards"></div>
+          <div id="playDecisionPrompt" class="task-question">Was machst du?</div>
           <div id="actions" class="actions row"></div>
           <div id="result" class="result" style="display:none;"></div>
           <div class="action-row">
@@ -582,7 +612,7 @@
               <option value="LOOSE_RAISE">Pre-Flop Verteidigung (Loose)</option>
             </select>
           </div>
-          <div>
+          <div id="specialConditionWrap">
             <label for="specialCondition">Spezialbedingungen</label>
             <select id="specialCondition">
               <option value="ALL">alle</option>
@@ -607,8 +637,8 @@
 
         <section id="learnTaskCard" class="task-card" aria-label="Aufgabe">
           <div id="learnTaskLines" class="task-lines task-lines-centered">
-            <div id="learnLinePosition" class="task-line">-</div>
             <div id="learnLineArea" class="task-line">-</div>
+            <div id="learnLinePosition" class="task-line">-</div>
             <div id="learnLineAction" class="task-line">-</div>
           </div>
           <div id="learnTaskCategory" class="task-value task-focus" aria-live="polite">-</div>
@@ -949,6 +979,48 @@
       return "Pre-Flop Verteidigung (Loose)";
     }
 
+    function isPlaceholderValue(v) {
+      if (v == null) return true;
+      const t = String(v).trim().toLowerCase();
+      return t === "" || t === "all" || t === "alle" || t === "x";
+    }
+
+    function generateScenarioLines(state) {
+      const lines = [];
+      if (state.heroPos === "EP") lines.push("Du sitzt in Early Position.");
+      else if (state.heroPos === "CO") lines.push("Du sitzt im Cutoff.");
+      else if (state.heroPos === "BTN") lines.push("Du sitzt am Button.");
+      else if (state.heroPos === "BLIND") lines.push("Du sitzt in den Blinds.");
+
+      if (state.scenario === "NO_RAISE") {
+        lines.push("Vor dir wurde nur der Big Blind gecallt oder gefoldet.");
+      } else if (state.scenario === "TIGHT_RAISE") {
+        lines.push("Vor dir hat ein tighter Spieler geraised.");
+      } else if (state.scenario === "LOOSE_RAISE") {
+        lines.push("Vor dir hat ein looser Spieler geraised.");
+      }
+
+      if (!isPlaceholderValue(state.specialCondition) && state.scenario === "LOOSE_RAISE" && state.heroPos === "BLIND") {
+        if (state.specialCondition === "EP_STEAL") lines.push("Der Steal kommt aus Early Position.");
+        if (state.specialCondition === "RAISE_GT_3BB") lines.push("Die Erhoehung ist groesser als 3 Big Blinds.");
+        if (state.specialCondition === "DEALER_CO_STEAL") lines.push("Der Steal kommt vom Dealer oder Cutoff.");
+      }
+
+      return lines.filter((x) => !isPlaceholderValue(x)).slice(0, 4);
+    }
+
+    function renderPlayScenarioLines(state) {
+      const host = document.getElementById("playScenarioLines");
+      const lines = generateScenarioLines(state);
+      host.innerHTML = "";
+      for (const line of lines) {
+        const el = document.createElement("div");
+        el.className = "task-line";
+        el.textContent = line;
+        host.appendChild(el);
+      }
+    }
+
     function specialConditionText(v) {
       if (v === "EP_STEAL") return "Early Position stealed";
       if (v === "RAISE_GT_3BB") return "Erhoehung ist groesser als 3 Big Blinds";
@@ -1137,6 +1209,7 @@
       const empty = document.getElementById(emptyId);
       host.innerHTML = "";
       for (const chip of chips) {
+        if (isPlaceholderValue(chip.value)) continue;
         const el = document.createElement("span");
         el.className = "chip chip--fixed";
         el.innerHTML = "<span class='chip-label'>" + chip.label + "</span>" +
@@ -1150,17 +1223,28 @@
       const chips = [];
       const cond = document.getElementById("condition").value;
       const pos = document.getElementById("position").value;
-      if (cond !== "ALL") {
-        chips.push({ label: "Initiative/Verteidigung", value: getSelectText("condition", cond) });
-      }
       if (pos !== "ALL") {
         chips.push({ label: "Position", value: getSelectText("position", pos) });
       }
+      if (cond !== "ALL") {
+        chips.push({ label: "Initiative/Verteidigung", value: getSelectText("condition", cond) });
+      }
       const sp = document.getElementById("specialCondition").value;
-      if (sp !== "ALL") {
+      if (cond === "LOOSE_RAISE" && (pos === "ALL" || pos === "BLIND") && sp !== "ALL") {
         chips.push({ label: "Spezialbedingungen", value: getSelectText("specialCondition", sp) });
       }
       renderFixedChips("playFixedChips", "playNoFixed", chips);
+    }
+
+    function applyPlaySpecialModeUI() {
+      const cond = document.getElementById("condition").value;
+      const pos = document.getElementById("position").value;
+      const wrap = document.getElementById("specialConditionWrap");
+      const select = document.getElementById("specialCondition");
+      const enabled = cond === "LOOSE_RAISE" && (pos === "ALL" || pos === "BLIND");
+      wrap.style.display = enabled ? "block" : "none";
+      select.disabled = !enabled;
+      if (!enabled) select.value = "ALL";
     }
 
     function getSelectText(selectId, value) {
@@ -1214,8 +1298,8 @@
       if (!pool.length) {
         learnCurrent = null;
         document.getElementById("learnTaskCategory").textContent = "-";
-        document.getElementById("learnLinePosition").textContent = "-";
         document.getElementById("learnLineArea").textContent = "-";
+        document.getElementById("learnLinePosition").textContent = "-";
         document.getElementById("learnLineAction").textContent = "-";
         document.getElementById("learnLineAction").style.visibility = "hidden";
         res.style.display = "block";
@@ -1233,8 +1317,8 @@
       const linePos = document.getElementById("learnLinePosition");
       const lineAction = document.getElementById("learnLineAction");
 
-      linePos.textContent = q.position;
       lineArea.textContent = q.area;
+      linePos.textContent = q.position;
       if (q.areaKey === "INIT") {
         lineAction.textContent = "-";
         lineAction.style.visibility = "hidden";
@@ -1327,9 +1411,12 @@
       const selected = document.getElementById("position").value;
       const selectedCondition = document.getElementById("condition").value;
       const selectedSpecial = document.getElementById("specialCondition").value;
-      const heroPos = getPosition(selected);
+      let heroPos = getPosition(selected);
       const scenario = getScenario(selectedCondition);
-      const specialCondition = selectedSpecial;
+      if (selected === "ALL" && selectedCondition === "LOOSE_RAISE" && selectedSpecial !== "ALL") {
+        heroPos = "BLIND";
+      }
+      const specialCondition = (scenario === "LOOSE_RAISE" && heroPos === "BLIND") ? selectedSpecial : "ALL";
       const [c1, c2] = dealTwoCards();
       const hand = canonicalHand(c1, c2);
 
@@ -1358,27 +1445,12 @@
         locked: false
       };
 
-      const linePos = document.getElementById("playLinePosition");
-      const lineArea = document.getElementById("playLineArea");
-      const lineSpecial = document.getElementById("playLineSpecial");
-      const lineRaiser = document.getElementById("playLineRaiser");
-
-      linePos.textContent = labelPos(heroPos);
-      lineArea.textContent = scenarioText(scenario);
-      if (specialCondition !== "ALL") {
-        lineSpecial.style.display = "block";
-        lineSpecial.textContent = specialConditionText(specialCondition);
-      } else {
-        lineSpecial.style.display = "none";
-        lineSpecial.textContent = "";
-      }
-      if (raiserPos) {
-        lineRaiser.style.display = "block";
-        lineRaiser.textContent = labelPos(raiserPos);
-      } else {
-        lineRaiser.style.display = "none";
-        lineRaiser.textContent = "";
-      }
+      renderPlayScenarioLines({
+        heroPos,
+        scenario,
+        specialCondition,
+        raiserPos
+      });
 
       renderCards(c1, c2, hand, false);
       renderPlayFixedChips();
@@ -1397,12 +1469,13 @@
     document.getElementById("learnCfgArea").addEventListener("change", nextLearnQuestion);
     document.getElementById("learnCfgPosition").addEventListener("change", nextLearnQuestion);
     document.getElementById("learnCfgAction").addEventListener("change", nextLearnQuestion);
-    document.getElementById("condition").addEventListener("change", () => nextHand(true));
-    document.getElementById("position").addEventListener("change", () => nextHand(true));
+    document.getElementById("condition").addEventListener("change", () => { applyPlaySpecialModeUI(); nextHand(true); });
+    document.getElementById("position").addEventListener("change", () => { applyPlaySpecialModeUI(); nextHand(true); });
     document.getElementById("specialCondition").addEventListener("change", () => nextHand(true));
 
     buildLearnQuestions();
 
+    applyPlaySpecialModeUI();
     renderStats();
     nextHand();
     nextLearnQuestion();
