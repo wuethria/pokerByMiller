@@ -609,7 +609,7 @@
           <div id="learnTaskLines" class="task-lines task-lines-centered">
             <div id="learnLinePosition" class="task-line">-</div>
             <div id="learnLineArea" class="task-line">-</div>
-            <div id="learnLineAction" class="task-line" style="display:none;">-</div>
+            <div id="learnLineAction" class="task-line">-</div>
           </div>
           <div id="learnTaskCategory" class="task-value task-focus" aria-live="polite">-</div>
           <div class="learn-answer-wrap">
@@ -1108,10 +1108,12 @@
 
       if (area === "INIT") {
         actionWrap.style.display = "none";
+        actionLine.style.display = "block";
         actionLine.style.visibility = "hidden";
         actionSelect.value = "OPEN";
       } else {
         actionWrap.style.display = "block";
+        actionLine.style.display = "block";
         actionLine.style.visibility = "visible";
         if (actionSelect.value === "OPEN") actionSelect.value = "ALL";
       }
