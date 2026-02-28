@@ -691,13 +691,13 @@
       <div class="pdf-frame-wrap">
         <iframe
           class="pdf-frame"
-          src="Poker_Preflop_Strategie_FINAL_v11.pdf"
+          src="Poker_Preflop_Strategie_FINAL_v13.pdf"
           title="Poker Strategie PDF"
         ></iframe>
       </div>
       <div class="pdf-actions">
-        <a href="Poker_Preflop_Strategie_FINAL_v11.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
-        <a href="Poker_Preflop_Strategie_FINAL_v11.pdf" download>PDF herunterladen</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v13.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v13.pdf" download>PDF herunterladen</a>
       </div>
     </div>
   </section>
@@ -710,7 +710,7 @@
       EP: ["22+", "A2s+", "AKo", "AQo", "KTs+", "QTs+", "JTs-76s"],
       CO: ["22+", "A2s+", "ATo+", "K7s+", "KJo+", "Q9s+", "JTs", "JTs-43s", "J9s-53s"],
       BTN: ["22+", "A2s+", "A7o+", "K2s+", "K9o+", "Q5s+", "QTo+", "J7s+", "JTo", "JTs-43s", "T8s-53s", "T7s-96s"],
-      BLIND: ["22+", "A2s+", "A2o+", "K2s+", "K2o+", "Q2s+", "Q2o+", "J2s+", "ALL_0G_S", "ALL_1G_S", "ALL_2G_S"]
+      BLIND: ["22+", "A2s+", "A2o+", "K2s+", "K2o+", "Q2s+", "Q2o+", "J2s+", "J2o+", "ALL_0G_S", "ALL_1G_S", "ALL_2G_S"]
     };
 
     const FACING_TIGHT = {
@@ -747,10 +747,11 @@
       { category: "Koenig (Offsuit)", EP: "-", CO: "KJo+", BTN: "K9o+", BLIND: "Alle" },
       { category: "Dame (Suited)", EP: "QTs+", CO: "Q9s+", BTN: "Q5s+", BLIND: "Alle" },
       { category: "Dame (Offsuit)", EP: "-", CO: "-", BTN: "QTo+", BLIND: "Alle" },
+      { category: "Bube (Suited)", EP: "JTs", CO: "JTs", BTN: "J7s+", BLIND: "Alle" },
+      { category: "Bube (Offsuit)", EP: "-", CO: "-", BTN: "JTo", BLIND: "Alle" },
       { category: "Connectors", EP: "JTs-76s", CO: "JTs-43s", BTN: "JTs-43s | JTo", BLIND: "Alle" },
       { category: "1-Gappers", EP: "-", CO: "J9s-53s", BTN: "T8s-53s", BLIND: "Alle" },
-      { category: "2-Gappers", EP: "-", CO: "-", BTN: "T7s | 96s", BLIND: "Alle" },
-      { category: "3-Gappers", EP: "-", CO: "-", BTN: "J7s+", BLIND: "-" }
+      { category: "2-Gappers", EP: "-", CO: "-", BTN: "T7s | 96s", BLIND: "Alle" }
     ];
 
     const LEARN_TIGHT = [
@@ -759,21 +760,23 @@
       { category: "Ass (Offsuit)", EP: { call: "AKo", threeBet: "-" }, CO: { call: "AKo", threeBet: "-" }, BTN: { call: "AKo", threeBet: "-" }, BLIND: { call: "AKo", threeBet: "-" } },
       { category: "Koenig (Suited)", EP: { call: "KTs+", threeBet: "-" }, CO: { call: "KTs+", threeBet: "-" }, BTN: { call: "KTs+", threeBet: "-" }, BLIND: { call: "KTs+", threeBet: "-" } },
       { category: "Dame (Suited)", EP: { call: "QTs+", threeBet: "-" }, CO: { call: "QTs+", threeBet: "-" }, BTN: { call: "QTs+", threeBet: "-" }, BLIND: { call: "QTs+", threeBet: "-" } },
+      { category: "Bube (Suited)", EP: { call: "JTs", threeBet: "-" }, CO: { call: "JTs", threeBet: "-" }, BTN: { call: "JTs", threeBet: "-" }, BLIND: { call: "JTs", threeBet: "-" } },
       { category: "Connectors", EP: { call: "JTs-76s", threeBet: "-" }, CO: { call: "JTs-76s", threeBet: "-" }, BTN: { call: "JTs-76s", threeBet: "-" }, BLIND: { call: "JTs-76s", threeBet: "-" } }
     ];
 
     const LEARN_LOOSE = [
       { category: "Paare", EP: { call: "JJ-22", threeBet: "AA-QQ" }, CO: { call: "TT-22", threeBet: "AA-JJ" }, BTN: { call: "88-22", threeBet: "AA-99" }, BLIND: { call: "88-55", threeBet: "AA-99 | 44-22" } },
-      { category: "Ass (Suited)", EP: { call: "AQs-A6s", threeBet: "AKs | A5s-A2s" }, CO: { call: "AQs-A8s, A6s", threeBet: "A5s-A2s | AKs,A7s" }, BTN: { call: "A9s-A6s", threeBet: "A5s-A2s | AKs-ATs" }, BLIND: { call: "-", threeBet: "A2s+" } },
+      { category: "Ass (Suited)", EP: { call: "AQs-A6s", threeBet: "AKs | A5s-A2s" }, CO: { call: "AQs-A8s | A6s", threeBet: "A5s-A2s | AKs, A7s" }, BTN: { call: "A9s-A6s", threeBet: "A5s-A2s | AKs-ATs" }, BLIND: { call: "-", threeBet: "A2s+" } },
       { category: "Ass (Offsuit)", EP: { call: "AQo", threeBet: "AKo" }, CO: { call: "AQo-AJo", threeBet: "AKo" }, BTN: { call: "AJo-ATo", threeBet: "AKo-AQo" }, BLIND: { call: "ATo-A8o", threeBet: "AJo+" } },
       { category: "Koenig (Suited)", EP: { call: "KTs+", threeBet: "-" }, CO: { call: "K9s+", threeBet: "-" }, BTN: { call: "KTs-K9s", threeBet: "KQs-KJs" }, BLIND: { call: "KTs-K8s | K4s-K2s", threeBet: "KJs+ | K7s-K5s" } },
       { category: "Koenig (Offsuit)", EP: { call: "-", threeBet: "-" }, CO: { call: "KQo", threeBet: "-" }, BTN: { call: "KQo-KJo", threeBet: "-" }, BLIND: { call: "KJo-K9o", threeBet: "KQo" } },
       { category: "Dame (Suited)", EP: { call: "QTs+", threeBet: "-" }, CO: { call: "Q9s+", threeBet: "-" }, BTN: { call: "QTs-Q9s", threeBet: "QJs" }, BLIND: { call: "QJs-QTs | Q8s-Q5s", threeBet: "Q9s" } },
       { category: "Dame (Offsuit)", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "-", threeBet: "-" }, BLIND: { call: "Q9o+", threeBet: "-" } },
-      { category: "Connectors", EP: { call: "JTs, 98s, 76s", threeBet: "T9s, 87s" }, CO: { call: "JTs, 98s, 76s-65s", threeBet: "T9s, 87s, 54s" }, BTN: { call: "T9s-43s", threeBet: "JTs" }, BLIND: { call: "JTs-T9s | 43s | | JTo-98o", threeBet: "98s-54s" } },
-      { category: "1-Gappers", EP: { call: "-", threeBet: "-" }, CO: { call: "J9s, 86s", threeBet: "-" }, BTN: { call: "J9s, T8s | 86s, 64s,53s", threeBet: "97s, 75s" }, BLIND: { call: "75s-53s | | J9o", threeBet: "J9s, 86s" } },
-      { category: "2-Gappers", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "J8s-T7s", threeBet: "-" }, BLIND: { call: "J8s-96s", threeBet: "-" } },
-      { category: "3-Gappers", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "-", threeBet: "-" }, BLIND: { call: "J7s", threeBet: "-" } }
+      { category: "Bube (Suited)", EP: { call: "JTs", threeBet: "-" }, CO: { call: "JTs, J9s", threeBet: "-" }, BTN: { call: "J9s, J8s", threeBet: "JTs" }, BLIND: { call: "JTs, J8s-J7s", threeBet: "-" } },
+      { category: "Bube (Offsuit)", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "-", threeBet: "-" }, BLIND: { call: "JTo, J9o", threeBet: "-" } },
+      { category: "Connectors", EP: { call: "JTs, 98s, 76s", threeBet: "T9s, 87s" }, CO: { call: "JTs, 98s, 76s-65s", threeBet: "T9s, 87s, 54s" }, BTN: { call: "T9s-43s", threeBet: "JTs" }, BLIND: { call: "JTs-T9s | 43s | JTo-98o", threeBet: "98s-54s" } },
+      { category: "1-Gappers", EP: { call: "-", threeBet: "-" }, CO: { call: "J9s, 86s", threeBet: "-" }, BTN: { call: "J9s, T8s | 86s, 64s,53s", threeBet: "97s, 75s" }, BLIND: { call: "75s-53s | J9o", threeBet: "J9s, 86s" } },
+      { category: "2-Gappers", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "J8s-T7s", threeBet: "-" }, BLIND: { call: "J8s-96s", threeBet: "-" } }
     ];
 
     let current = null;
