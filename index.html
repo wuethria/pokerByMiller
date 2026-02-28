@@ -93,11 +93,7 @@
       margin-bottom: 6px;
     }
     .given-section {
-      border: 1px solid var(--border-muted);
-      border-radius: 10px;
-      background: var(--surface-muted);
-      padding: 10px 12px;
-      margin-bottom: 18px;
+      display: none;
     }
     .given-chips {
       display: flex;
@@ -213,6 +209,17 @@
       color: #3f4e61;
       font-size: 0.95rem;
       line-height: 1.35;
+    }
+    .task-line--fixed {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 5px 11px;
+      border-radius: 12px;
+      border: 1px solid var(--chip-border);
+      background: var(--chip-bg);
+      color: var(--chip-text);
+      filter: saturate(0.75);
+      font-weight: 600;
     }
     .task-question {
       text-align: center;
@@ -537,18 +544,24 @@
       .primary-btn {
         width: 100%;
       }
+      #learnTaskCard {
+        min-height: auto;
+      }
+      #learnTaskCard .action-row {
+        margin-top: 12px;
+      }
       #learnTaskCategory {
         position: static;
         top: auto;
         left: auto;
         transform: none;
         width: 100%;
-        margin: 26px 0 18px;
+        margin: 16px 0 12px;
         pointer-events: auto;
       }
       .learn-answer-wrap {
-        margin-top: 10px;
-        min-height: 120px;
+        margin-top: 8px;
+        min-height: 72px;
       }
       #learnResult {
         width: 100%;
@@ -644,8 +657,8 @@
 
         <section id="learnTaskCard" class="task-card" aria-label="Aufgabe">
           <div id="learnTaskLines" class="task-lines task-lines-centered">
-            <div id="learnLineArea" class="task-line">-</div>
             <div id="learnLinePosition" class="task-line">-</div>
+            <div id="learnLineArea" class="task-line">-</div>
             <div id="learnLineAction" class="task-line">-</div>
           </div>
           <div id="learnTaskCategory" class="task-value task-focus" aria-live="polite">-</div>
@@ -1002,36 +1015,36 @@
 
     function generateScenarioLines(state) {
       const lines = [];
-      if (state.heroPos === "EP") lines.push("Du sitzt in Early Position.");
-      else if (state.heroPos === "CO") lines.push("Du sitzt im Cutoff.");
-      else if (state.heroPos === "BTN") lines.push("Du sitzt am Button.");
-      else if (state.heroPos === "BLIND") lines.push("Du sitzt in den Blinds.");
+      if (state.heroPos === "EP") lines.push({ key: "position", text: "Du sitzt in Early Position." });
+      else if (state.heroPos === "CO") lines.push({ key: "position", text: "Du sitzt im Cutoff." });
+      else if (state.heroPos === "BTN") lines.push({ key: "position", text: "Du sitzt am Button." });
+      else if (state.heroPos === "BLIND") lines.push({ key: "position", text: "Du sitzt in den Blinds." });
 
       if (state.scenario === "NO_RAISE") {
-        lines.push("Vor dir wurde nur der Big Blind gecallt oder gefoldet.");
+        lines.push({ key: "scenario", text: "Vor dir wurde nur der Big Blind gecallt oder gefoldet." });
       } else if (state.scenario === "TIGHT_RAISE") {
-        lines.push("Vor dir hat ein tighter Spieler geraised.");
+        lines.push({ key: "scenario", text: "Vor dir hat ein tighter Spieler geraised." });
       } else if (state.scenario === "LOOSE_RAISE") {
-        lines.push("Vor dir hat ein looser Spieler geraised.");
+        lines.push({ key: "scenario", text: "Vor dir hat ein looser Spieler geraised." });
       }
 
       if (!isPlaceholderValue(state.specialCondition) && state.scenario === "LOOSE_RAISE" && state.heroPos === "BLIND") {
-        if (state.specialCondition === "EP_STEAL") lines.push("Der Steal kommt aus Early Position.");
-        if (state.specialCondition === "RAISE_GT_3BB") lines.push("Die Erhoehung ist groesser als 3 Big Blinds.");
-        if (state.specialCondition === "DEALER_CO_STEAL") lines.push("Der Steal kommt vom Dealer oder Cutoff.");
+        if (state.specialCondition === "EP_STEAL") lines.push({ key: "special", text: "Der Steal kommt aus Early Position." });
+        if (state.specialCondition === "RAISE_GT_3BB") lines.push({ key: "special", text: "Die Erhoehung ist groesser als 3 Big Blinds." });
+        if (state.specialCondition === "DEALER_CO_STEAL") lines.push({ key: "special", text: "Der Steal kommt vom Dealer oder Cutoff." });
       }
 
-      return lines.filter((x) => !isPlaceholderValue(x)).slice(0, 4);
+      return lines.filter((x) => !isPlaceholderValue(x.text)).slice(0, 4);
     }
 
-    function renderPlayScenarioLines(state) {
+    function renderPlayScenarioLines(state, fixed) {
       const host = document.getElementById("playScenarioLines");
       const lines = generateScenarioLines(state);
       host.innerHTML = "";
       for (const line of lines) {
         const el = document.createElement("div");
-        el.className = "task-line";
-        el.textContent = line;
+        el.className = "task-line" + (fixed && fixed[line.key] ? " task-line--fixed" : "");
+        el.textContent = line.text;
         host.appendChild(el);
       }
     }
@@ -1193,23 +1206,31 @@
       const actionSelect = document.getElementById("learnCfgAction");
       const actionLine = document.getElementById("learnLineAction");
 
+      const validActionValues = new Set(["ALL", "CALL", "3BET"]);
+      if (!validActionValues.has(actionSelect.value)) {
+        actionSelect.value = "ALL";
+      }
+
       if (area === "INIT") {
         actionWrap.style.display = "none";
         actionLine.style.display = "block";
         actionLine.style.visibility = "hidden";
-        actionSelect.value = "OPEN";
+        actionSelect.value = "ALL";
       } else {
         actionWrap.style.display = "block";
         actionLine.style.display = "block";
         actionLine.style.visibility = "visible";
-        if (actionSelect.value === "OPEN") actionSelect.value = "ALL";
+        if (!validActionValues.has(actionSelect.value) || actionSelect.value === "") {
+          actionSelect.value = "ALL";
+        }
       }
     }
 
     function filteredLearnQuestions() {
       const area = document.getElementById("learnCfgArea").value;
       const pos = document.getElementById("learnCfgPosition").value;
-      const action = document.getElementById("learnCfgAction").value;
+      const rawAction = document.getElementById("learnCfgAction").value;
+      const action = rawAction === "" ? "ALL" : rawAction;
       const useAction = area !== "INIT";
 
       return learnQuestions.filter((q) =>
@@ -1266,6 +1287,11 @@
       const sel = document.getElementById(selectId);
       const opt = Array.from(sel.options).find((o) => o.value === value);
       return opt ? opt.textContent : value;
+    }
+
+    function setTaskLineValue(el, text, fixed) {
+      el.textContent = text;
+      el.classList.toggle("task-line--fixed", !!fixed);
     }
 
     function renderLearnFixedChips() {
@@ -1347,10 +1373,13 @@
       if (!pool.length) {
         learnCurrent = null;
         document.getElementById("learnTaskCategory").textContent = "-";
-        document.getElementById("learnLineArea").textContent = "-";
-        document.getElementById("learnLinePosition").textContent = "-";
-        document.getElementById("learnLineAction").textContent = "-";
-        document.getElementById("learnLineAction").style.visibility = "hidden";
+        const lineArea = document.getElementById("learnLineArea");
+        const linePos = document.getElementById("learnLinePosition");
+        const lineAction = document.getElementById("learnLineAction");
+        setTaskLineValue(lineArea, "-", false);
+        setTaskLineValue(linePos, "-", false);
+        setTaskLineValue(lineAction, "-", false);
+        lineAction.style.visibility = "hidden";
         res.style.display = "block";
         res.className = "result neutral";
         res.textContent = "Keine Frage fuer diese Filter-Kombination vorhanden.";
@@ -1369,14 +1398,17 @@
       const lineArea = document.getElementById("learnLineArea");
       const linePos = document.getElementById("learnLinePosition");
       const lineAction = document.getElementById("learnLineAction");
+      const areaCfg = document.getElementById("learnCfgArea").value;
+      const posCfg = document.getElementById("learnCfgPosition").value;
+      const actionCfg = document.getElementById("learnCfgAction").value;
 
-      lineArea.textContent = q.area;
-      linePos.textContent = q.position;
+      setTaskLineValue(linePos, q.position, posCfg !== "ALL");
+      setTaskLineValue(lineArea, q.area, areaCfg !== "ALL");
       if (q.areaKey === "INIT") {
-        lineAction.textContent = "-";
+        setTaskLineValue(lineAction, "-", false);
         lineAction.style.visibility = "hidden";
       } else {
-        lineAction.textContent = q.action;
+        setTaskLineValue(lineAction, q.action, areaCfg !== "INIT" && actionCfg !== "ALL");
         lineAction.style.visibility = "visible";
       }
 
@@ -1515,12 +1547,19 @@
         locked: false
       };
 
-      renderPlayScenarioLines({
-        heroPos,
-        scenario,
-        specialCondition,
-        raiserPos
-      });
+      renderPlayScenarioLines(
+        {
+          heroPos,
+          scenario,
+          specialCondition,
+          raiserPos
+        },
+        {
+          position: selected !== "ALL",
+          scenario: selectedCondition !== "ALL",
+          special: specialCondition !== "ALL"
+        }
+      );
 
       renderCards(c1, c2, hand, false);
       renderPlayFixedChips();
