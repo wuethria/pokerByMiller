@@ -73,6 +73,166 @@
       color: #6a6a6a;
       margin-bottom: 2px;
     }
+    :root {
+      --surface-muted: #f7f8fa;
+      --border-muted: #dfe3e8;
+      --chip-bg: #eceff3;
+      --chip-border: #cfd5db;
+      --chip-text: #3e4650;
+      --task-border: #cfd9e7;
+      --task-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      --primary-bg: #1f1f1f;
+      --primary-bg-hover: #111111;
+      --primary-text: #ffffff;
+    }
+    .given-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #6a6a6a;
+      margin-bottom: 6px;
+    }
+    .given-section {
+      border: 1px solid var(--border-muted);
+      border-radius: 10px;
+      background: var(--surface-muted);
+      padding: 10px 12px;
+      margin-bottom: 18px;
+    }
+    .given-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .chip {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      border-radius: 12px;
+      padding: 5px 9px;
+      font-size: 0.84rem;
+      font-weight: 500;
+      user-select: none;
+      line-height: 1.1;
+    }
+    .chip--fixed {
+      border: 1px solid var(--chip-border);
+      background: var(--chip-bg);
+      color: var(--chip-text);
+      cursor: default;
+      filter: saturate(0.75);
+    }
+    .chip-label {
+      color: #65707b;
+      font-size: 0.67rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .chip-value {
+      color: #2f3741;
+      font-size: 0.86rem;
+      font-weight: 600;
+    }
+    .given-empty {
+      margin-top: 4px;
+      color: #8a94a1;
+      font-size: 1rem;
+      line-height: 1;
+    }
+    .task-card {
+      border: 1px solid var(--task-border);
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: var(--task-shadow);
+      padding: 16px;
+    }
+    #playTaskCard,
+    #learnTaskCard {
+      height: var(--task-card-fixed-height, auto);
+      box-sizing: border-box;
+    }
+    .task-card.task-refresh {
+      animation: taskRefresh 190ms ease;
+    }
+    .task-value {
+      margin-top: 6px;
+      color: #0f2747;
+      font-size: 1.45rem;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+    .task-context {
+      margin-top: 8px;
+      color: #3f4e61;
+      font-size: 0.9rem;
+      line-height: 1.35;
+    }
+    .task-focus {
+      text-align: center;
+      margin-top: 30px;
+      margin-bottom: 8px;
+    }
+    .task-lines {
+      margin-top: 6px;
+    }
+    .task-lines-centered {
+      text-align: center;
+    }
+    #learnTaskCard {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    #learnTaskLines {
+      min-height: 86px;
+    }
+    #learnTaskCategory {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: calc(100% - 32px);
+      margin: 0;
+      text-align: center;
+      pointer-events: none;
+    }
+    .task-line {
+      margin-top: 4px;
+      color: #3f4e61;
+      font-size: 0.95rem;
+      line-height: 1.35;
+    }
+    .action-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 12px;
+    }
+    .primary-btn {
+      border: 1px solid var(--primary-bg);
+      border-radius: 8px;
+      background: var(--primary-bg);
+      color: var(--primary-text);
+      min-height: 42px;
+      min-width: 150px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .primary-btn:hover { background: var(--primary-bg-hover); }
+    .primary-btn:active { transform: translateY(1px); }
+    .primary-btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+    @keyframes taskRefresh {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     .row { margin: 14px 0; }
     select, button {
       font-size: 0.95rem;
@@ -109,10 +269,11 @@
     }
     .cards {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      margin: 18px 0;
+      margin: 28px 0 22px;
     }
     .cards.played .card {
       opacity: 0.55;
@@ -169,10 +330,14 @@
       }
     }
     .hand-tag {
-      margin-left: 8px;
+      flex: 0 0 100%;
+      order: 99;
+      text-align: center;
+      margin-top: 6px;
       font-weight: bold;
       font-size: 1rem;
       color: #444;
+      margin-left: 0;
     }
     .scenario {
       margin: 0;
@@ -218,43 +383,14 @@
       color: #6a6a6a;
       margin-bottom: 2px;
     }
-    .learn-prompt-main {
-      border: 1px solid #dbdbdb;
-      border-radius: 12px;
-      background: linear-gradient(180deg, #ffffff 0%, #f8f9fb 100%);
-      padding: 14px;
-      margin-bottom: 14px;
-    }
-    .learn-prompt-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 12px;
-      align-items: center;
-    }
-    .learn-prompt-left {
-      align-self: start;
-    }
-    .learn-prompt-right {
-      align-self: center;
-    }
-    .learn-toggle-btn {
-      border: 1px solid #cfcfcf;
-      border-radius: 8px;
-      background: #fff;
-      min-height: 42px;
-      padding: 8px 12px;
-      cursor: pointer;
-      font-size: 0.92rem;
-      white-space: nowrap;
-    }
     .learn-answer-wrap {
       min-height: 120px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .learn-line.hidden {
-      display: none;
+    .learn-answer-wrap {
+      margin-top: 10px;
     }
     .learn-value {
       display: inline-block;
@@ -274,14 +410,11 @@
       border-color: #bad0ee;
       color: #27486b;
     }
-    .learn-prompt {
-      border: 1px solid #e2e2e2;
-      border-radius: 10px;
-      background: #fff;
-      padding: 12px;
-      margin-bottom: 14px;
+    @media (prefers-reduced-motion: reduce) {
+      .task-card.task-refresh {
+        animation: none;
+      }
     }
-    .learn-line + .learn-line { margin-top: 6px; }
     .learn-input {
       width: 100%;
       border: 1px solid #cfcfcf;
@@ -373,18 +506,10 @@
       .config {
         position: static;
       }
-      .stage-meta-inner {
-        grid-template-columns: 1fr;
+      .action-row {
+        justify-content: stretch;
       }
-      .learn-prompt-grid {
-        grid-template-columns: 1fr !important;
-      }
-      .learn-prompt-right {
-        justify-self: start;
-        margin-top: 8px;
-        width: 100%;
-      }
-      .learn-toggle-btn {
+      .primary-btn {
         width: 100%;
       }
     }
@@ -413,39 +538,31 @@
   <section id="panelPlay" class="panel active">
     <div class="layout">
       <main class="stage">
-        <div class="stage-meta">
-          <div class="stage-meta-inner">
-            <div>
-              <div class="meta-item">
-                <div class="meta-label">Initiative/Verteidigung</div>
-                <div id="scenario" class="scenario learn-value"></div>
-              </div>
-              <div class="meta-item">
-                <div class="meta-label">Position</div>
-                <div id="context" class="muted learn-value"></div>
-              </div>
-            </div>
-            <button id="dealBtn" class="subtle-btn">Neues Paar</button>
-          </div>
-        </div>
+        <section class="given-section" aria-label="Gegeben">
+          <div class="given-title">Gegeben</div>
+          <div id="playFixedChips" class="given-chips"></div>
+          <div id="playNoFixed" class="given-empty">—</div>
+        </section>
 
-        <div id="cards" class="cards"></div>
-        <div id="actions" class="actions row"></div>
-        <div id="result" class="result" style="display:none;"></div>
+        <section id="playTaskCard" class="task-card" aria-label="Aufgabe">
+          <div id="playTaskLines" class="task-lines task-lines-centered">
+            <div id="playLinePosition" class="task-line">-</div>
+            <div id="playLineArea" class="task-line" aria-live="polite">-</div>
+            <div id="playLineSpecial" class="task-line" style="display:none;"></div>
+            <div id="playLineRaiser" class="task-line" style="display:none;"></div>
+          </div>
+          <div id="cards" class="cards"></div>
+          <div id="actions" class="actions row"></div>
+          <div id="result" class="result" style="display:none;"></div>
+          <div class="action-row">
+            <button id="dealBtn" class="primary-btn">Neues Paar</button>
+          </div>
+        </section>
       </main>
 
       <aside class="config">
         <h2>Konfiguration</h2>
         <div class="config-controls">
-          <div>
-            <label for="condition">Initiative/Verteidigung</label>
-            <select id="condition">
-              <option value="ALL">alle</option>
-              <option value="NO_RAISE">Pre-Flop Initiative</option>
-              <option value="TIGHT_RAISE">Pre-Flop Verteidigung (Tight)</option>
-              <option value="LOOSE_RAISE">Pre-Flop Verteidigung (Loose)</option>
-            </select>
-          </div>
           <div>
             <label for="position">Position</label>
             <select id="position">
@@ -456,43 +573,52 @@
               <option value="CO">CO</option>
             </select>
           </div>
+          <div>
+            <label for="condition">Initiative/Verteidigung</label>
+            <select id="condition">
+              <option value="ALL">alle</option>
+              <option value="NO_RAISE">Pre-Flop Initiative</option>
+              <option value="TIGHT_RAISE">Pre-Flop Verteidigung (Tight)</option>
+              <option value="LOOSE_RAISE">Pre-Flop Verteidigung (Loose)</option>
+            </select>
+          </div>
+          <div>
+            <label for="specialCondition">Spezialbedingungen</label>
+            <select id="specialCondition">
+              <option value="ALL">alle</option>
+              <option value="EP_STEAL">Early Position stealed</option>
+              <option value="RAISE_GT_3BB">Erhoehung ist groesser als 3 Big Blinds</option>
+              <option value="DEALER_CO_STEAL">Dealer/CO stealed</option>
+            </select>
+          </div>
         </div>
       </aside>
     </div>
-    <div id="stats" class="stats row"></div>
   </section>
 
   <section id="panelLearn" class="panel">
     <div class="layout">
       <main class="learn-stage">
-        <div class="learn-prompt-main">
-          <div class="learn-prompt-grid">
-            <div class="learn-prompt-left">
-              <div class="meta-item learn-line" id="learnLineArea">
-                <div class="meta-label">Initiative/Verteidigung</div>
-                <span id="learnArea" class="learn-value"></span>
-              </div>
-              <div class="meta-item learn-line" id="learnLinePosition">
-                <div class="meta-label">Position</div>
-                <span id="learnPosition" class="learn-value"></span>
-              </div>
-              <div class="meta-item learn-line" id="learnLineAction">
-                <div class="meta-label">Aktion</div>
-                <span id="learnAction" class="learn-value"></span>
-              </div>
-              <div class="meta-item learn-line" id="learnLineCategory">
-                <div class="meta-label">Kategorie</div>
-                <span id="learnCategory" class="learn-value"></span>
-              </div>
-            </div>
-            <div class="learn-prompt-right">
-              <button id="learnToggleBtn" class="learn-toggle-btn">Antwort anzeigen</button>
-            </div>
+        <section class="given-section" aria-label="Gegeben">
+          <div class="given-title">Gegeben</div>
+          <div id="learnFixedChips" class="given-chips"></div>
+          <div id="learnNoFixed" class="given-empty">—</div>
+        </section>
+
+        <section id="learnTaskCard" class="task-card" aria-label="Aufgabe">
+          <div id="learnTaskLines" class="task-lines task-lines-centered">
+            <div id="learnLinePosition" class="task-line">-</div>
+            <div id="learnLineArea" class="task-line">-</div>
+            <div id="learnLineAction" class="task-line" style="display:none;">-</div>
           </div>
-        </div>
-        <div class="learn-answer-wrap">
-          <div id="learnResult" class="result neutral" style="display:none;"></div>
-        </div>
+          <div id="learnTaskCategory" class="task-value task-focus" aria-live="polite">-</div>
+          <div class="learn-answer-wrap">
+            <div id="learnResult" class="result neutral" style="display:none;"></div>
+          </div>
+          <div class="action-row">
+            <button id="learnToggleBtn" class="primary-btn">Antwort anzeigen</button>
+          </div>
+        </section>
       </main>
 
       <aside class="config">
@@ -521,8 +647,7 @@
             <label for="learnCfgAction">Aktion</label>
             <select id="learnCfgAction">
               <option value="ALL">alle</option>
-              <option value="OPEN">open-raise/auffuellen</option>
-              <option value="CALL">call</option>
+                            <option value="CALL">Call</option>
               <option value="3BET">3-bet</option>
             </select>
           </div>
@@ -536,13 +661,13 @@
       <div class="pdf-frame-wrap">
         <iframe
           class="pdf-frame"
-          src="Poker_Preflop_Strategie_FINAL_v10.pdf"
+          src="Poker_Preflop_Strategie_FINAL_v11.pdf"
           title="Poker Strategie PDF"
         ></iframe>
       </div>
       <div class="pdf-actions">
-        <a href="Poker_Preflop_Strategie_FINAL_v10.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
-        <a href="Poker_Preflop_Strategie_FINAL_v10.pdf" download>PDF herunterladen</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v11.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v11.pdf" download>PDF herunterladen</a>
       </div>
     </div>
   </section>
@@ -592,9 +717,10 @@
       { category: "Koenig (Offsuit)", EP: "-", CO: "KJo+", BTN: "K9o+", BLIND: "Alle" },
       { category: "Dame (Suited)", EP: "QTs+", CO: "Q9s+", BTN: "Q5s+", BLIND: "Alle" },
       { category: "Dame (Offsuit)", EP: "-", CO: "-", BTN: "QTo+", BLIND: "Alle" },
-      { category: "Connectors", EP: "JTs-76s", CO: "JTs-43s", BTN: "JTs-43s | J7s+ | | JTo", BLIND: "Alle" },
+      { category: "Connectors", EP: "JTs-76s", CO: "JTs-43s", BTN: "JTs-43s | JTo", BLIND: "Alle" },
       { category: "1-Gappers", EP: "-", CO: "J9s-53s", BTN: "T8s-53s", BLIND: "Alle" },
-      { category: "2-Gappers", EP: "-", CO: "-", BTN: "T7s | 96s", BLIND: "Alle" }
+      { category: "2-Gappers", EP: "-", CO: "-", BTN: "T7s | 96s", BLIND: "Alle" },
+      { category: "3-Gappers", EP: "-", CO: "-", BTN: "J7s+", BLIND: "-" }
     ];
 
     const LEARN_TIGHT = [
@@ -761,7 +887,7 @@
       return tokens.join(", ");
     }
 
-    function resolveCorrectAction(hand, heroPos, scenario, raiserPos) {
+    function resolveCorrectAction(hand, heroPos, scenario, raiserPos, specialCondition) {
       if (scenario === "NO_RAISE") {
         const open = inRange(OPEN[heroPos], hand);
         return {
@@ -775,7 +901,13 @@
 
       let col;
       if (heroPos === "BLIND") {
-        col = raiserPos === "EP" ? "EP" : "BLINDS";
+        if (specialCondition === "EP_STEAL" || specialCondition === "RAISE_GT_3BB") {
+          col = "EP";
+        } else if (specialCondition === "DEALER_CO_STEAL") {
+          col = "BLINDS";
+        } else {
+          col = raiserPos === "EP" ? "EP" : "BLINDS";
+        }
       } else {
         col = heroPos;
       }
@@ -815,6 +947,13 @@
       if (s === "NO_RAISE") return "Pre-Flop Initiative";
       if (s === "TIGHT_RAISE") return "Pre-Flop Verteidigung (Tight)";
       return "Pre-Flop Verteidigung (Loose)";
+    }
+
+    function specialConditionText(v) {
+      if (v === "EP_STEAL") return "Early Position stealed";
+      if (v === "RAISE_GT_3BB") return "Erhoehung ist groesser als 3 Big Blinds";
+      if (v === "DEALER_CO_STEAL") return "Dealer/CO stealed";
+      return "";
     }
 
     function suitInfo(s) {
@@ -864,6 +1003,8 @@
     }
 
     function renderStats() {
+      const el = document.getElementById("stats");
+      if (!el) return;
       const hitRate = stats.total ? Math.round((stats.correct / stats.total) * 100) : 0;
       const pos = stats.byPos;
       const line = (k, label) => {
@@ -872,7 +1013,7 @@
         const p = t ? Math.round((c / t) * 100) : 0;
         return label + " " + c + "/" + t + " (" + p + "%)";
       };
-      document.getElementById("stats").textContent =
+      el.textContent =
         "Gesamt: " + stats.correct + "/" + stats.total + " (" + hitRate + "%) | " +
         line("EP", "early:") + " | " +
         line("CO", "CO:") + " | " +
@@ -959,25 +1100,19 @@
       }
     }
 
-    function setLearnValueState(id, fixed) {
-      const el = document.getElementById(id);
-      el.classList.remove("fixed", "random");
-      el.classList.add(fixed ? "fixed" : "random");
-    }
-
     function applyLearnAreaModeUI() {
       const area = document.getElementById("learnCfgArea").value;
       const actionWrap = document.getElementById("learnCfgActionWrap");
-      const actionLine = document.getElementById("learnLineAction");
       const actionSelect = document.getElementById("learnCfgAction");
+      const actionLine = document.getElementById("learnLineAction");
 
       if (area === "INIT") {
         actionWrap.style.display = "none";
-        actionLine.classList.add("hidden");
+        actionLine.style.visibility = "hidden";
         actionSelect.value = "OPEN";
       } else {
         actionWrap.style.display = "block";
-        actionLine.classList.remove("hidden");
+        actionLine.style.visibility = "visible";
         if (actionSelect.value === "OPEN") actionSelect.value = "ALL";
       }
     }
@@ -995,23 +1130,93 @@
       );
     }
 
+    function renderFixedChips(containerId, emptyId, chips) {
+      const host = document.getElementById(containerId);
+      const empty = document.getElementById(emptyId);
+      host.innerHTML = "";
+      for (const chip of chips) {
+        const el = document.createElement("span");
+        el.className = "chip chip--fixed";
+        el.innerHTML = "<span class='chip-label'>" + chip.label + "</span>" +
+          "<span class='chip-value'>" + chip.value + "</span>";
+        host.appendChild(el);
+      }
+      empty.style.display = chips.length ? "none" : "block";
+    }
+
+    function renderPlayFixedChips() {
+      const chips = [];
+      const cond = document.getElementById("condition").value;
+      const pos = document.getElementById("position").value;
+      if (cond !== "ALL") {
+        chips.push({ label: "Initiative/Verteidigung", value: getSelectText("condition", cond) });
+      }
+      if (pos !== "ALL") {
+        chips.push({ label: "Position", value: getSelectText("position", pos) });
+      }
+      const sp = document.getElementById("specialCondition").value;
+      if (sp !== "ALL") {
+        chips.push({ label: "Spezialbedingungen", value: getSelectText("specialCondition", sp) });
+      }
+      renderFixedChips("playFixedChips", "playNoFixed", chips);
+    }
+
+    function getSelectText(selectId, value) {
+      const sel = document.getElementById(selectId);
+      const opt = Array.from(sel.options).find((o) => o.value === value);
+      return opt ? opt.textContent : value;
+    }
+
+    function renderLearnFixedChips() {
+      const areaCfg = document.getElementById("learnCfgArea").value;
+      const posCfg = document.getElementById("learnCfgPosition").value;
+      const actionCfg = document.getElementById("learnCfgAction").value;
+      const chips = [];
+
+      if (areaCfg !== "ALL") {
+        chips.push({ label: "Initiative/Verteidigung", value: getSelectText("learnCfgArea", areaCfg) });
+      }
+      if (posCfg !== "ALL") {
+        chips.push({ label: "Position", value: getSelectText("learnCfgPosition", posCfg) });
+      }
+      if (areaCfg !== "INIT" && actionCfg !== "ALL") {
+        chips.push({ label: "Aktion", value: getSelectText("learnCfgAction", actionCfg) });
+      }
+
+      renderFixedChips("learnFixedChips", "learnNoFixed", chips);
+    }
+
+    function animateTaskCard(cardId) {
+      const card = document.getElementById(cardId);
+      card.classList.remove("task-refresh");
+      void card.offsetWidth;
+      card.classList.add("task-refresh");
+    }
+
+    function syncTaskCardHeights() {
+      const root = document.documentElement;
+      const play = document.getElementById("playTaskCard");
+      if (!play) return;
+      root.style.removeProperty("--task-card-fixed-height");
+      const h = Math.round(play.getBoundingClientRect().height);
+      if (h > 0) root.style.setProperty("--task-card-fixed-height", h + "px");
+    }
+
 
     function nextLearnQuestion() {
       applyLearnAreaModeUI();
+      renderLearnFixedChips();
       const pool = filteredLearnQuestions();
       const res = document.getElementById("learnResult");
 
       if (!pool.length) {
         learnCurrent = null;
-                document.getElementById("learnArea").textContent = "-";
-        document.getElementById("learnPosition").textContent = "-";
-        document.getElementById("learnAction").textContent = "-";
-        document.getElementById("learnCategory").textContent = "-";
-        setLearnValueState("learnArea", false);
-        setLearnValueState("learnPosition", false);
-        setLearnValueState("learnAction", false);
-        setLearnValueState("learnCategory", false);
-                res.style.display = "block";
+        document.getElementById("learnTaskCategory").textContent = "-";
+        document.getElementById("learnLinePosition").textContent = "-";
+        document.getElementById("learnLineArea").textContent = "-";
+        document.getElementById("learnLineAction").textContent = "-";
+        document.getElementById("learnLineAction").style.visibility = "hidden";
+        res.style.display = "block";
         res.className = "result neutral";
         res.textContent = "Keine Frage fuer diese Filter-Kombination vorhanden.";
         document.getElementById("learnToggleBtn").textContent = "Antwort anzeigen";
@@ -1021,23 +1226,25 @@
       const q = pool[Math.floor(Math.random() * pool.length)];
       learnCurrent = q;
       learnAnswerVisible = false;
-      
-      document.getElementById("learnArea").textContent = q.area;
-      document.getElementById("learnPosition").textContent = q.position;
-      document.getElementById("learnAction").textContent = q.action;
-      document.getElementById("learnCategory").textContent = q.category;
 
-      const areaCfg = document.getElementById("learnCfgArea").value;
-      const posCfg = document.getElementById("learnCfgPosition").value;
-      const actionCfg = document.getElementById("learnCfgAction").value;
-      const actionVisible = areaCfg !== "INIT";
+      const lineArea = document.getElementById("learnLineArea");
+      const linePos = document.getElementById("learnLinePosition");
+      const lineAction = document.getElementById("learnLineAction");
 
-      setLearnValueState("learnArea", areaCfg !== "ALL");
-      setLearnValueState("learnPosition", posCfg !== "ALL");
-      if (actionVisible) setLearnValueState("learnAction", actionCfg !== "ALL");
-      setLearnValueState("learnCategory", false);
+      linePos.textContent = q.position;
+      lineArea.textContent = q.area;
+      if (q.areaKey === "INIT") {
+        lineAction.textContent = "-";
+        lineAction.style.visibility = "hidden";
+      } else {
+        lineAction.textContent = q.action;
+        lineAction.style.visibility = "visible";
+      }
 
-            document.getElementById("learnToggleBtn").textContent = "Antwort anzeigen";
+      document.getElementById("learnTaskCategory").textContent = q.category;
+      animateTaskCard("learnTaskCard");
+
+      document.getElementById("learnToggleBtn").textContent = "Antwort anzeigen";
       res.style.display = "none";
     }
     function normalizeLearnAnswer(answer) {
@@ -1109,13 +1316,6 @@
       }, 3000);
     }
 
-    function updatePlayValueStates() {
-      const posSel = document.getElementById("position").value;
-      const condSel = document.getElementById("condition").value;
-      setLearnValueState("scenario", condSel !== "ALL");
-      setLearnValueState("context", posSel !== "ALL");
-    }
-
     function nextHand(highlightNew = false) {
       if (resolveTimer) {
         clearTimeout(resolveTimer);
@@ -1124,38 +1324,67 @@
       updateDealButton("ready");
       const selected = document.getElementById("position").value;
       const selectedCondition = document.getElementById("condition").value;
+      const selectedSpecial = document.getElementById("specialCondition").value;
       const heroPos = getPosition(selected);
       const scenario = getScenario(selectedCondition);
+      const specialCondition = selectedSpecial;
       const [c1, c2] = dealTwoCards();
       const hand = canonicalHand(c1, c2);
 
       let raiserPos = null;
       if (heroPos === "BLIND" && scenario !== "NO_RAISE") {
-        const possible = ["EP", "CO", "BTN"];
-        raiserPos = possible[Math.floor(Math.random() * possible.length)];
+        if (specialCondition === "EP_STEAL" || specialCondition === "RAISE_GT_3BB") {
+          raiserPos = "EP";
+        } else if (specialCondition === "DEALER_CO_STEAL") {
+          raiserPos = Math.random() < 0.5 ? "CO" : "BTN";
+        } else {
+          const possible = ["EP", "CO", "BTN"];
+          raiserPos = possible[Math.floor(Math.random() * possible.length)];
+        }
       }
 
-      const resolved = resolveCorrectAction(hand, heroPos, scenario, raiserPos);
+      const resolved = resolveCorrectAction(hand, heroPos, scenario, raiserPos, specialCondition);
       current = {
         hand,
         heroPos,
         scenario,
         raiserPos,
+        specialCondition,
         correct: resolved.correct,
         tableLabel: resolved.tableLabel,
         reason: resolved.reason,
         locked: false
       };
 
-      document.getElementById("context").textContent =
-        "Position: " + labelPos(heroPos) +
-        (raiserPos ? " | Raiser-Position: " + labelPos(raiserPos) : "");
-      renderCards(c1, c2, hand, highlightNew);
-      document.getElementById("scenario").textContent = scenarioText(scenario);
-      updatePlayValueStates();
+      const linePos = document.getElementById("playLinePosition");
+      const lineArea = document.getElementById("playLineArea");
+      const lineSpecial = document.getElementById("playLineSpecial");
+      const lineRaiser = document.getElementById("playLineRaiser");
+
+      linePos.textContent = labelPos(heroPos);
+      lineArea.textContent = scenarioText(scenario);
+      if (specialCondition !== "ALL") {
+        lineSpecial.style.display = "block";
+        lineSpecial.textContent = specialConditionText(specialCondition);
+      } else {
+        lineSpecial.style.display = "none";
+        lineSpecial.textContent = "";
+      }
+      if (raiserPos) {
+        lineRaiser.style.display = "block";
+        lineRaiser.textContent = labelPos(raiserPos);
+      } else {
+        lineRaiser.style.display = "none";
+        lineRaiser.textContent = "";
+      }
+
+      renderCards(c1, c2, hand, false);
+      renderPlayFixedChips();
+      if (highlightNew) animateTaskCard("playTaskCard");
       document.getElementById("result").style.display = "none";
       renderActions(scenario);
       setActionButtonsDisabled(false);
+      syncTaskCardHeights();
     }
 
     document.getElementById("dealBtn").addEventListener("click", () => nextHand(true));
@@ -1168,6 +1397,7 @@
     document.getElementById("learnCfgAction").addEventListener("change", nextLearnQuestion);
     document.getElementById("condition").addEventListener("change", () => nextHand(true));
     document.getElementById("position").addEventListener("change", () => nextHand(true));
+    document.getElementById("specialCondition").addEventListener("change", () => nextHand(true));
 
     buildLearnQuestions();
 
