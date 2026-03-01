@@ -151,6 +151,9 @@
       height: auto;
       box-sizing: border-box;
     }
+    #playTaskCard {
+      padding-bottom: 30px;
+    }
     .task-card.task-refresh {
       animation: taskRefresh 190ms ease;
     }
@@ -196,9 +199,36 @@
       font-size: 1rem;
       line-height: 1.45;
       font-weight: 450;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      column-gap: 8px;
+      width: 100%;
+      text-align: left;
+      box-sizing: border-box;
     }
     .context-line:first-child {
       margin-top: 0;
+    }
+    .context-prefix {
+      display: inline-block;
+      grid-column: 1;
+      justify-self: start;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .context-main {
+      display: inline-block;
+      grid-column: 2;
+      justify-self: center;
+      text-align: center;
+    }
+    .context-prefix-only {
+      display: block;
+      grid-column: 1 / -1;
+      justify-self: start;
+      width: 100%;
+      text-align: left;
     }
     .context-chip {
       display: inline-block;
@@ -215,13 +245,47 @@
       width: 100%;
       max-width: 760px;
       box-sizing: border-box;
-      margin: 40px auto 0;
+      margin: 30px auto 0;
       border: 1px solid #d8e0ec;
       border-radius: 14px;
       background: #fcfdff;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
       padding: 24px 16px;
       text-align: center;
+    }
+    .play-middle-card {
+      width: 100%;
+      max-width: 760px;
+      box-sizing: border-box;
+      margin: 0 auto;
+      border: 1px solid #d8e0ec;
+      border-radius: 14px;
+      background: #fcfdff;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+      padding: 14px 16px 10px;
+      text-align: center;
+    }
+    .play-middle-line {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      column-gap: 8px;
+      width: 100%;
+    }
+    .play-middle-prefix {
+      grid-column: 1;
+      justify-self: start;
+      text-align: left;
+      color: #46556b;
+      font-size: 1rem;
+      line-height: 1.45;
+      font-weight: 450;
+      white-space: nowrap;
+    }
+    .play-middle-line #cards {
+      grid-column: 2;
+      justify-self: center;
+      margin: 28px 0 22px;
     }
     .task-zone {
       width: 100%;
@@ -232,6 +296,14 @@
       border-top: 1px solid #e6ebf3;
       background: rgba(255, 255, 255, 0.45);
       border-radius: 10px;
+    }
+    #playTaskZone {
+      border: 1px solid #e6ebf3;
+      padding: 18px 14px 22px;
+    }
+    #learnTaskZone {
+      border: 1px solid #e6ebf3;
+      padding: 18px 14px 22px;
     }
     #learnTaskCard {
       position: relative;
@@ -245,27 +317,39 @@
     #learnTaskLines {
       min-height: 0;
     }
+    .learn-category-line {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      column-gap: 8px;
+      width: 100%;
+      min-height: 120px;
+    }
     #learnTaskCategory {
       position: static;
-      width: 100%;
-      margin: 10px 0 4px;
+      grid-column: 2;
+      justify-self: center;
+      width: auto;
+      margin: 0;
       text-align: center;
       pointer-events: auto;
       font-size: 2.25rem;
       line-height: 1.15;
     }
     #learnCategoryLead {
-      margin-top: 0;
-      margin-bottom: 8px;
-      text-align: center;
-      color: #5a6b82;
-      font-size: 0.95rem;
-      line-height: 1.3;
-      font-weight: 500;
+      grid-column: 1;
+      justify-self: start;
+      margin: 0;
+      text-align: left;
+      color: #46556b;
+      font-size: 1rem;
+      line-height: 1.45;
+      font-weight: 450;
+      white-space: nowrap;
     }
     #learnPrompt {
       margin-top: 30px;
-      margin-bottom: 12px;
+      margin-bottom: 24px;
     }
     #learnLineAction {
       display: none;
@@ -297,7 +381,7 @@
       font-size: 0.96rem;
     }
     #playScenarioLines {
-      margin-bottom: 46px;
+      margin-bottom: 30px;
     }
     #playDecisionPrompt {
       margin-top: 40px;
@@ -613,6 +697,39 @@
       line-height: 1.35;
       box-sizing: border-box;
     }
+    .learn-answer-rows {
+      display: grid;
+      gap: 10px;
+      text-align: left;
+      font-size: 1rem;
+      font-weight: 450;
+      white-space: normal;
+      line-height: 1.45;
+    }
+    .learn-answer-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      column-gap: 8px;
+      width: 100%;
+    }
+    .learn-answer-label {
+      grid-column: 1;
+      justify-self: start;
+      color: #46556b;
+      font-size: 1rem;
+      line-height: 1.45;
+      font-weight: 450;
+      white-space: nowrap;
+    }
+    .learn-answer-value {
+      grid-column: 2;
+      justify-self: center;
+      color: #16345e;
+      font-size: 1.18rem;
+      line-height: 1.2;
+      font-weight: 700;
+    }
     .muted { color: #555; }
     @media (max-width: 1100px) {
       .layout {
@@ -640,17 +757,20 @@
         font-size: 0.96rem;
       }
       .category-card {
-        margin-top: 22px;
+        margin-top: 16px;
         padding: 16px 12px;
       }
       #learnTaskCategory {
-        width: 100%;
+        width: auto;
         margin: 6px 0 2px;
         font-size: 1.9rem;
       }
+      #learnCategoryLead {
+        white-space: normal;
+      }
       #learnPrompt {
         margin-top: 10px;
-        margin-bottom: 10px;
+        margin-bottom: 16px;
       }
       .task-zone {
         margin-top: 16px;
@@ -697,7 +817,12 @@
 
         <section id="playTaskCard" class="task-card" aria-label="Aufgabe">
           <div id="playScenarioLines" class="task-lines task-lines-centered context-block" aria-live="polite"></div>
-          <div id="cards" class="cards"></div>
+          <div class="play-middle-card">
+            <div class="play-middle-line">
+              <div class="play-middle-prefix">Du hast</div>
+              <div id="cards" class="cards"></div>
+            </div>
+          </div>
           <div id="playTaskZone" class="task-zone">
             <div id="playDecisionPrompt" class="task-question">Was machst du?</div>
             <div id="actions" class="actions row"></div>
@@ -761,8 +886,10 @@
             <div id="learnLineAction" class="task-line">-</div>
           </div>
           <div class="category-card">
-            <div id="learnCategoryLead">Du hast Karten aus folgender Kategorie:</div>
-            <div id="learnTaskCategory" class="task-value task-focus" aria-live="polite">-</div>
+            <div class="learn-category-line">
+              <div id="learnCategoryLead">Du hast Karten<br>der Kategorie</div>
+              <div id="learnTaskCategory" class="task-value task-focus" aria-live="polite">-</div>
+            </div>
           </div>
           <div id="learnTaskZone" class="task-zone">
             <div id="learnPrompt" class="task-question">Bei welchen Kombinationen machst du ein -?</div>
@@ -1190,12 +1317,38 @@
         "3 Big Blinds"
       ];
       highlights.sort((a, b) => b.length - a.length);
-      for (const token of highlights) {
+
+      const placeholders = [];
+      for (let i = 0; i < highlights.length; i += 1) {
+        const token = highlights[i];
+        const ph = "__CTX_CHIP_" + i + "__";
+        placeholders.push({ ph, html: '<span class="context-chip">' + token + '</span>' });
         const re = new RegExp(escapeRegex(token), "g");
-        out = out.replace(re, '<span class="context-chip">' + token + '</span>');
+        out = out.replace(re, ph);
       }
+
+      for (const item of placeholders) {
+        const re = new RegExp(escapeRegex(item.ph), "g");
+        out = out.replace(re, item.html);
+      }
+
       return out;
     }
+
+    function formatContextLine(text) {
+      const cleaned = String(text || "").replace(/\.\s*$/, "").trim();
+      const html = formatContextText(cleaned);
+      const marker = '<span class="context-chip">';
+      const firstChip = html.indexOf(marker);
+      if (firstChip < 0) {
+        return '<span class="context-prefix-only">' + html + '</span>';
+      }
+      const prefix = html.slice(0, firstChip).trimEnd();
+      const rest = html.slice(firstChip);
+      return (prefix ? '<span class="context-prefix">' + prefix + '</span>' : '') +
+        '<span class="context-main">' + rest + '</span>';
+    }
+
 
     function generateScenarioLines(state) {
       const lines = [];
@@ -1228,7 +1381,7 @@
       for (const line of lines) {
         const el = document.createElement("div");
         el.className = "task-line context-line" + (fixed && fixed[line.key] ? " task-line--fixed" : "");
-        el.innerHTML = formatContextText(line.text);
+        el.innerHTML = formatContextLine(line.text);
         host.appendChild(el);
       }
     }
@@ -1367,6 +1520,7 @@
             actionSetKey: actionKeys.join("+"),
             actionKeys,
             prompt,
+            answerParts,
             answer: buildLearnAnswerText(answerParts)
           });
         }
@@ -1383,6 +1537,10 @@
             actionSetKey: "3BET+CALL",
             actionKeys: ["3BET", "CALL"],
             prompt: "Welche Haende 3-bettest du, welche callst du?",
+            answerParts: [
+              { label: "3-Bet", value: row[pos].threeBet },
+              { label: "Call", value: row[pos].call }
+            ],
             answer: buildLearnAnswerText([
               { label: "3-Bet", value: row[pos].threeBet },
               { label: "Call", value: row[pos].call }
@@ -1402,6 +1560,10 @@
             actionSetKey: "3BET+CALL",
             actionKeys: ["3BET", "CALL"],
             prompt: "Welche Haende 3-bettest du, welche callst du?",
+            answerParts: [
+              { label: "3-Bet", value: row[pos].threeBet },
+              { label: "Call", value: row[pos].call }
+            ],
             answer: buildLearnAnswerText([
               { label: "3-Bet", value: row[pos].threeBet },
               { label: "Call", value: row[pos].call }
@@ -1558,7 +1720,7 @@
 
     function setTaskLineValue(el, text, fixed) {
       el.className = "task-line context-line" + (fixed ? " task-line--fixed" : "");
-      el.innerHTML = formatContextText(text);
+      el.innerHTML = formatContextLine(text);
     }
 
     function renderLearnFixedChips() {
@@ -1701,12 +1863,36 @@
       return text || "-";
     }
 
+
+    function escapeAttrHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function renderLearnAnswer(res, current) {
+      const parts = Array.isArray(current.answerParts) ? current.answerParts : [];
+      if (parts.length > 1) {
+        const rows = parts.map((part) => {
+          const label = escapeAttrHtml(part.label || "");
+          const value = escapeAttrHtml(displayLearnCellValue(part.value));
+          return '<div class="learn-answer-row"><div class="learn-answer-label">' + label + '</div><div class="learn-answer-value">' + value + '</div></div>';
+        }).join('');
+        res.innerHTML = '<div class="learn-answer-rows">' + rows + '</div>';
+      } else {
+        res.textContent = normalizeLearnAnswer(current.answer);
+      }
+    }
+
     function toggleLearnAnswer() {
       if (!learnCurrent || learnAnswerVisible) return;
       const res = document.getElementById("learnResult");
       res.style.display = "block";
       res.className = "result neutral";
-      res.textContent = normalizeLearnAnswer(learnCurrent.answer);
+      renderLearnAnswer(res, learnCurrent);
       learnAnswerVisible = true;
       setLearnActionState("review");
     }
