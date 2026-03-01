@@ -237,6 +237,16 @@
       font-weight: 700;
       font-size: 0.96rem;
     }
+    #playScenarioLines {
+      margin-bottom: 46px;
+    }
+    #playDecisionPrompt {
+      margin-top: 40px;
+      margin-bottom: 18px;
+    }
+    #actions {
+      margin-bottom: 40px;
+    }
     .action-row {
       display: flex;
       justify-content: center;
@@ -523,6 +533,12 @@
       border-radius: 6px;
       display: block;
       max-width: none;
+    }
+    #result {
+      width: min(980px, 96%);
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
     }
     .ok { background: #d7f5dd; }
     .bad { background: #ffd9d9; }
@@ -1145,13 +1161,8 @@
 
     function updateDealButton(state) {
       const b = document.getElementById("dealBtn");
-      if (state === "waiting") {
-        b.disabled = true;
-        b.textContent = "Warte...";
-      } else {
-        b.disabled = false;
-        b.textContent = "Neues Paar";
-      }
+      b.disabled = false;
+      b.textContent = "Neues Paar";
     }
 
     function renderStats() {
@@ -1583,7 +1594,7 @@
       const ok = choice === current.correct;
       document.getElementById("cards").classList.add("played");
       setActionButtonsDisabled(true);
-      updateDealButton("waiting");
+      updateDealButton("ready");
 
       stats.total += 1;
       stats.byPos[current.heroPos].total += 1;
@@ -1595,16 +1606,14 @@
       }
       renderStats();
 
-      res.style.display = "inline-block";
+      res.style.display = "block";
       res.className = "result " + (ok ? "ok" : "bad");
       res.textContent = ok
         ? "✔ Richtig. " + current.reason
         : "✘ Falsch. Korrekt ist: " + actionLabel(current.correct) + ". " + current.reason;
 
       if (resolveTimer) clearTimeout(resolveTimer);
-      resolveTimer = setTimeout(() => {
-        updateDealButton("ready");
-      }, 3000);
+      updateDealButton("ready");
     }
 
     function nextHand(highlightNew = false) {
