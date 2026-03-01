@@ -277,8 +277,9 @@
       line-height: 1.35;
     }
     .task-line--fixed {
-      display: inline-block;
-      margin-top: 8px;
+      display: block;
+      width: fit-content;
+      margin: 8px auto 0;
       padding: 5px 11px;
       border-radius: 12px;
       border: 1px solid var(--chip-border);
@@ -819,13 +820,13 @@
       <div class="pdf-frame-wrap">
         <iframe
           class="pdf-frame"
-          src="Poker_Preflop_Strategie_FINAL_v14.pdf"
+          src="Poker_Preflop_Strategie_FINAL_v15.pdf"
           title="Poker Strategie PDF"
         ></iframe>
       </div>
       <div class="pdf-actions">
-        <a href="Poker_Preflop_Strategie_FINAL_v14.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
-        <a href="Poker_Preflop_Strategie_FINAL_v14.pdf" download>PDF herunterladen</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v15.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v15.pdf" download>PDF herunterladen</a>
       </div>
     </div>
   </section>
@@ -870,9 +871,9 @@
     const LEARN_OPEN = [
       { category: "Paare", EP: { raise: "Alle", callCheck: "-" }, BLIND: { raise: "99+", callCheck: "Alle" }, BTN: { raise: "Alle", callCheck: "-" }, CO: { raise: "Alle", callCheck: "-" } },
       { category: "Ass (Suited)", EP: { raise: "Alle", callCheck: "-" }, BLIND: { raise: "ATs+", callCheck: "Alle" }, BTN: { raise: "Alle", callCheck: "-" }, CO: { raise: "Alle", callCheck: "-" } },
-      { category: "Ass (Offsuit)", EP: { raise: "AKo, AQo", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "A7o+", callCheck: "-" }, CO: { raise: "ATo+", callCheck: "-" } },
+      { category: "Ass (Offsuit)", EP: { raise: "AKo, AQo", callCheck: "-" }, BLIND: { raise: "AQo+", callCheck: "Alle" }, BTN: { raise: "A7o+", callCheck: "-" }, CO: { raise: "ATo+", callCheck: "-" } },
       { category: "Koenig (Suited)", EP: { raise: "KTs+", callCheck: "-" }, BLIND: { raise: "KJs+", callCheck: "Alle" }, BTN: { raise: "K2s+", callCheck: "-" }, CO: { raise: "K7s+", callCheck: "-" } },
-      { category: "Koenig (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "AQo+", callCheck: "Alle" }, BTN: { raise: "K9o+", callCheck: "-" }, CO: { raise: "KJo+", callCheck: "-" } },
+      { category: "Koenig (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "K9o+", callCheck: "-" }, CO: { raise: "KJo+", callCheck: "-" } },
       { category: "Dame (Suited)", EP: { raise: "QTs+", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "Q5s+", callCheck: "-" }, CO: { raise: "Q9s+", callCheck: "-" } },
       { category: "Dame (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "QTo+", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } },
       { category: "Bube (Suited)", EP: { raise: "JTs", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "J7s+", callCheck: "-" }, CO: { raise: "JTs", callCheck: "-" } },
@@ -1173,6 +1174,7 @@
     function formatContextText(text) {
       let out = escapeHtml(text);
       const highlights = [
+        "gecallt oder gefoldet",
         "Early Position",
         "Cutoff",
         "Button",
@@ -1187,6 +1189,7 @@
         "Dealer",
         "3 Big Blinds"
       ];
+      highlights.sort((a, b) => b.length - a.length);
       for (const token of highlights) {
         const re = new RegExp(escapeRegex(token), "g");
         out = out.replace(re, '<span class="context-chip">' + token + '</span>');
@@ -1306,6 +1309,28 @@
       document.getElementById("tabPdf").classList.toggle("active", tab === "pdf");
     }
 
+    function isMeaningfulLearnCell(value) {
+      const t = String(value == null ? "" : value).trim().toLowerCase();
+      return t !== "" && t !== "-" && t !== "x";
+    }
+
+    function displayLearnCellValue(value) {
+      const raw = String(value == null ? "" : value).trim();
+      const t = raw.toLowerCase();
+      if (t === "" || t === "-" || t === "x") return "Keine";
+      return raw;
+    }
+
+    function buildLearnAnswerText(parts) {
+      if (parts.length === 1) {
+        return displayLearnCellValue(parts[0].value);
+      }
+      return parts
+        .map((part) => part.label + ":\n" + displayLearnCellValue(part.value))
+        .join("\n\n");
+    }
+
+
     function buildLearnQuestions() {
       const posOrder = ["EP", "BLIND", "BTN", "CO"];
       const posName = { EP: "EP", BLIND: "Small Blind bzw. Blinds", BTN: "Dealer", CO: "CO" };
@@ -1313,25 +1338,36 @@
       for (const row of LEARN_OPEN) {
         for (const pos of posOrder) {
           const cfg = row[pos];
+          const raise = cfg.raise;
+          const callCheck = cfg.callCheck;
+
+          let prompt = "";
+          let actionKeys = [];
+          let answerParts = [];
+
+          if (pos === "BLIND") {
+            prompt = "Welche Haende spielst du als Raise, welche als Call/Check?";
+            actionKeys = ["RAISE", "CALLCHECK"];
+            answerParts = [
+              { label: "Raise", value: raise },
+              { label: "Call/Check", value: callCheck }
+            ];
+          } else {
+            prompt = "Welche Haende spielst du als Raise?";
+            actionKeys = ["RAISE"];
+            answerParts = [{ label: "Raise", value: raise }];
+          }
+
           learnQuestions.push({
             areaKey: "INIT",
             area: "Pre-Flop Initiative",
             category: row.category,
             positionKey: pos,
             position: posName[pos],
-            actionKey: "RAISE",
-            action: "Raise",
-            answer: cfg.raise
-          });
-          learnQuestions.push({
-            areaKey: "INIT",
-            area: "Pre-Flop Initiative",
-            category: row.category,
-            positionKey: pos,
-            position: posName[pos],
-            actionKey: "CALLCHECK",
-            action: "Call/Check",
-            answer: cfg.callCheck
+            actionSetKey: actionKeys.join("+"),
+            actionKeys,
+            prompt,
+            answer: buildLearnAnswerText(answerParts)
           });
         }
       }
@@ -1344,19 +1380,13 @@
             category: row.category,
             positionKey: pos,
             position: posName[pos],
-            actionKey: "CALL",
-            action: "Call",
-            answer: row[pos].call
-          });
-          learnQuestions.push({
-            areaKey: "TIGHT",
-            area: "Pre-Flop Verteidigung (Tight)",
-            category: row.category,
-            positionKey: pos,
-            position: posName[pos],
-            actionKey: "3BET",
-            action: "3-bet",
-            answer: row[pos].threeBet
+            actionSetKey: "3BET+CALL",
+            actionKeys: ["3BET", "CALL"],
+            prompt: "Welche Haende 3-bettest du, welche callst du?",
+            answer: buildLearnAnswerText([
+              { label: "3-Bet", value: row[pos].threeBet },
+              { label: "Call", value: row[pos].call }
+            ])
           });
         }
       }
@@ -1369,19 +1399,13 @@
             category: row.category,
             positionKey: pos,
             position: posName[pos],
-            actionKey: "CALL",
-            action: "Call",
-            answer: row[pos].call
-          });
-          learnQuestions.push({
-            areaKey: "LOOSE",
-            area: "Pre-Flop Verteidigung (Loose)",
-            category: row.category,
-            positionKey: pos,
-            position: posName[pos],
-            actionKey: "3BET",
-            action: "3-bet",
-            answer: row[pos].threeBet
+            actionSetKey: "3BET+CALL",
+            actionKeys: ["3BET", "CALL"],
+            prompt: "Welche Haende 3-bettest du, welche callst du?",
+            answer: buildLearnAnswerText([
+              { label: "3-Bet", value: row[pos].threeBet },
+              { label: "Call", value: row[pos].call }
+            ])
           });
         }
       }
@@ -1395,12 +1419,14 @@
 
     function applyLearnAreaModeUI() {
       const areaSelect = document.getElementById("learnCfgArea");
+      const positionSelect = document.getElementById("learnCfgPosition");
       const actionWrap = document.getElementById("learnCfgActionWrap");
       const actionSelect = document.getElementById("learnCfgAction");
       const actionLine = document.getElementById("learnLineAction");
 
       const currentArea = areaSelect.value || "ALL";
       const currentAction = actionSelect.value || "ALL";
+      const currentPosition = positionSelect.value || "ALL";
 
       actionWrap.style.display = "block";
       actionLine.style.display = "block";
@@ -1446,19 +1472,38 @@
       }
 
       setSelectOptions(actionSelect, actionItems, currentAction);
+      const effectiveAction = actionSelect.value;
+
+      let positionItems = [
+        { value: "ALL", label: "alle" },
+        { value: "EP", label: "EP" },
+        { value: "BLIND", label: "Small Blind bzw. Blinds" },
+        { value: "BTN", label: "Dealer" },
+        { value: "CO", label: "CO" }
+      ];
+
+      // In Pre-Flop Initiative existiert Call/Check nur in der Blinds-Spalte.
+      if (effectiveAction === "CALLCHECK") {
+        positionItems = [
+          { value: "ALL", label: "alle" },
+          { value: "BLIND", label: "Small Blind bzw. Blinds" }
+        ];
+      }
+
+      setSelectOptions(positionSelect, positionItems, currentPosition);
     }
+
 
     function filteredLearnQuestions() {
       const area = document.getElementById("learnCfgArea").value;
       const pos = document.getElementById("learnCfgPosition").value;
       const rawAction = document.getElementById("learnCfgAction").value;
       const action = rawAction === "" ? "ALL" : rawAction;
-      const useAction = area !== "INIT";
 
       return learnQuestions.filter((q) =>
         (area === "ALL" || q.areaKey === area) &&
         (pos === "ALL" || q.positionKey === pos) &&
-        (!useAction || action === "ALL" || q.actionKey === action)
+        (action === "ALL" || (Array.isArray(q.actionKeys) && q.actionKeys.includes(action)))
       );
     }
 
@@ -1552,7 +1597,7 @@
     }
 
     function learnComboSignature(q) {
-      return [q.areaKey, q.positionKey, q.actionKey, q.category].join("|");
+      return [q.areaKey, q.positionKey, q.actionSetKey, q.category].join("|");
     }
 
     function setLearnActionState(mode) {
@@ -1604,7 +1649,7 @@
       if (!pool.length) {
         learnCurrent = null;
         document.getElementById("learnTaskCategory").textContent = "-";
-        document.getElementById("learnPrompt").textContent = "Bei welchen Kombinationen machst du ein -?";
+        document.getElementById("learnPrompt").textContent = "Welche Haende spielst du als -?";
         const lineArea = document.getElementById("learnLineArea");
         const linePos = document.getElementById("learnLinePosition");
         const lineAction = document.getElementById("learnLineAction");
@@ -1635,11 +1680,11 @@
 
       setTaskLineValue(linePos, learnPositionScenarioLine(q.positionKey), posCfg !== "ALL");
       setTaskLineValue(lineArea, learnAreaScenarioLine(q.areaKey), areaCfg !== "ALL");
-      setTaskLineValue(lineAction, q.action, false);
+      setTaskLineValue(lineAction, "-", false);
       lineAction.style.display = "none";
 
       document.getElementById("learnTaskCategory").textContent = q.category;
-      document.getElementById("learnPrompt").textContent = "Bei welchen Kombinationen machst du ein " + q.action + "?";
+      document.getElementById("learnPrompt").textContent = q.prompt;
       animateTaskCard("learnTaskCard");
 
       const btn = document.getElementById("learnToggleBtn");
