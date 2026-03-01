@@ -109,7 +109,7 @@
       border-radius: 12px;
       padding: 5px 9px;
       font-size: 0.84rem;
-      font-weight: 500;
+      font-weight: 450;
       user-select: none;
       line-height: 1.1;
     }
@@ -178,6 +178,61 @@
     .task-lines-centered {
       text-align: center;
     }
+    .context-block {
+      width: 100%;
+      max-width: 880px;
+      box-sizing: border-box;
+      margin: 0 auto;
+      padding: 12px 14px;
+      border: 1px solid #e2e7ef;
+      border-radius: 12px;
+      background: #f9fbff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+    }
+    .context-line {
+      margin-top: 8px;
+      margin-bottom: 0;
+      color: #46556b;
+      font-size: 1rem;
+      line-height: 1.45;
+      font-weight: 450;
+    }
+    .context-line:first-child {
+      margin-top: 0;
+    }
+    .context-chip {
+      display: inline-block;
+      padding: 2px 9px;
+      margin: 0 1px;
+      border-radius: 999px;
+      background: #e8eef8;
+      border: 1px solid #d1dbe9;
+      color: #2f4a70;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .category-card {
+      width: 100%;
+      max-width: 760px;
+      box-sizing: border-box;
+      margin: 40px auto 0;
+      border: 1px solid #d8e0ec;
+      border-radius: 14px;
+      background: #fcfdff;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+      padding: 24px 16px;
+      text-align: center;
+    }
+    .task-zone {
+      width: 100%;
+      max-width: 900px;
+      box-sizing: border-box;
+      margin: 30px auto 0;
+      padding-top: 18px;
+      border-top: 1px solid #e6ebf3;
+      background: rgba(255, 255, 255, 0.45);
+      border-radius: 10px;
+    }
     #learnTaskCard {
       position: relative;
       display: flex;
@@ -188,22 +243,25 @@
       margin-top: 12px;
     }
     #learnTaskLines {
-      min-height: 86px;
+      min-height: 0;
     }
     #learnTaskCategory {
       position: static;
       width: 100%;
-      margin: 2px 0 26px;
+      margin: 10px 0 4px;
       text-align: center;
       pointer-events: auto;
+      font-size: 2.25rem;
+      line-height: 1.15;
     }
     #learnCategoryLead {
-      margin-top: 40px;
-      margin-bottom: 6px;
+      margin-top: 0;
+      margin-bottom: 8px;
       text-align: center;
-      color: #3f4e61;
-      font-size: 1rem;
-      line-height: 1.35;
+      color: #5a6b82;
+      font-size: 0.95rem;
+      line-height: 1.3;
+      font-weight: 500;
     }
     #learnPrompt {
       margin-top: 30px;
@@ -574,16 +632,28 @@
       #learnTaskCard .action-row {
         margin-top: 10px;
       }
-      #learnCategoryLead {
-        margin-top: 34px;
+      .context-block {
+        padding: 10px 10px;
+      }
+      .context-line {
+        font-size: 0.96rem;
+      }
+      .category-card {
+        margin-top: 22px;
+        padding: 16px 12px;
       }
       #learnTaskCategory {
         width: 100%;
-        margin: 2px 0 10px;
+        margin: 6px 0 2px;
+        font-size: 1.9rem;
       }
       #learnPrompt {
         margin-top: 10px;
         margin-bottom: 10px;
+      }
+      .task-zone {
+        margin-top: 16px;
+        padding-top: 12px;
       }
       .learn-answer-wrap {
         margin-top: 8px;
@@ -625,13 +695,15 @@
         </section>
 
         <section id="playTaskCard" class="task-card" aria-label="Aufgabe">
-          <div id="playScenarioLines" class="task-lines task-lines-centered" aria-live="polite"></div>
+          <div id="playScenarioLines" class="task-lines task-lines-centered context-block" aria-live="polite"></div>
           <div id="cards" class="cards"></div>
-          <div id="playDecisionPrompt" class="task-question">Was machst du?</div>
-          <div id="actions" class="actions row"></div>
-          <div id="result" class="result" style="display:none;"></div>
-          <div class="action-row">
-            <button id="dealBtn" class="primary-btn">Neues Paar</button>
+          <div id="playTaskZone" class="task-zone">
+            <div id="playDecisionPrompt" class="task-question">Was machst du?</div>
+            <div id="actions" class="actions row"></div>
+            <div id="result" class="result" style="display:none;"></div>
+            <div class="action-row">
+              <button id="dealBtn" class="primary-btn">Neues Paar</button>
+            </div>
           </div>
         </section>
       </main>
@@ -682,23 +754,27 @@
         </section>
 
         <section id="learnTaskCard" class="task-card" aria-label="Aufgabe">
-          <div id="learnTaskLines" class="task-lines task-lines-centered">
+          <div id="learnTaskLines" class="task-lines task-lines-centered context-block">
             <div id="learnLinePosition" class="task-line">-</div>
             <div id="learnLineArea" class="task-line">-</div>
             <div id="learnLineAction" class="task-line">-</div>
           </div>
-          <div id="learnCategoryLead">Du hast Karten aus folgender Kategorie:</div>
-          <div id="learnTaskCategory" class="task-value task-focus" aria-live="polite">-</div>
-          <div id="learnPrompt" class="task-question">Bei welchen Kombinationen machst du ein -?</div>
-          <div class="action-row">
-            <button id="learnToggleBtn" class="primary-btn">Antwort anzeigen</button>
-            <div id="learnReviewActions" class="learn-review-actions" style="display:none;">
-              <button id="learnOkBtn" class="primary-btn">OK</button>
-              <button id="learnNokBtn" class="subtle-btn">NOK</button>
-            </div>
+          <div class="category-card">
+            <div id="learnCategoryLead">Du hast Karten aus folgender Kategorie:</div>
+            <div id="learnTaskCategory" class="task-value task-focus" aria-live="polite">-</div>
           </div>
-          <div class="learn-answer-wrap">
-            <div id="learnResult" class="result neutral" style="display:none;"></div>
+          <div id="learnTaskZone" class="task-zone">
+            <div id="learnPrompt" class="task-question">Bei welchen Kombinationen machst du ein -?</div>
+            <div class="action-row">
+              <button id="learnToggleBtn" class="primary-btn">Antwort anzeigen</button>
+              <div id="learnReviewActions" class="learn-review-actions" style="display:none;">
+                <button id="learnOkBtn" class="primary-btn">OK</button>
+                <button id="learnNokBtn" class="subtle-btn">NOK</button>
+              </div>
+            </div>
+            <div class="learn-answer-wrap">
+              <div id="learnResult" class="result neutral" style="display:none;"></div>
+            </div>
           </div>
         </section>
       </main>
@@ -1081,6 +1157,43 @@
       return t === "" || t === "all" || t === "alle" || t === "x";
     }
 
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function escapeRegex(str) {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    function formatContextText(text) {
+      let out = escapeHtml(text);
+      const highlights = [
+        "Early Position",
+        "Cutoff",
+        "Button",
+        "den Blinds",
+        "Big Blind",
+        "tighter Spieler",
+        "looser Spieler",
+        "geraised",
+        "gecallt",
+        "gefoldet",
+        "Steal",
+        "Dealer",
+        "3 Big Blinds"
+      ];
+      for (const token of highlights) {
+        const re = new RegExp(escapeRegex(token), "g");
+        out = out.replace(re, '<span class="context-chip">' + token + '</span>');
+      }
+      return out;
+    }
+
     function generateScenarioLines(state) {
       const lines = [];
       if (state.heroPos === "EP") lines.push({ key: "position", text: "Du sitzt in Early Position." });
@@ -1111,8 +1224,8 @@
       host.innerHTML = "";
       for (const line of lines) {
         const el = document.createElement("div");
-        el.className = "task-line" + (fixed && fixed[line.key] ? " task-line--fixed" : "");
-        el.textContent = line.text;
+        el.className = "task-line context-line" + (fixed && fixed[line.key] ? " task-line--fixed" : "");
+        el.innerHTML = formatContextText(line.text);
         host.appendChild(el);
       }
     }
@@ -1399,8 +1512,8 @@
     }
 
     function setTaskLineValue(el, text, fixed) {
-      el.textContent = text;
-      el.classList.toggle("task-line--fixed", !!fixed);
+      el.className = "task-line context-line" + (fixed ? " task-line--fixed" : "");
+      el.innerHTML = formatContextText(text);
     }
 
     function renderLearnFixedChips() {
