@@ -185,24 +185,32 @@
       justify-content: flex-start;
     }
     #learnTaskCard .action-row {
-      order: 2;
-      margin-top: auto;
-    }
-    #learnTaskCard .learn-answer-wrap {
-      order: 3;
+      margin-top: 12px;
     }
     #learnTaskLines {
       min-height: 86px;
     }
     #learnTaskCategory {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: calc(100% - 32px);
-      margin: 0;
+      position: static;
+      width: 100%;
+      margin: 2px 0 26px;
       text-align: center;
-      pointer-events: none;
+      pointer-events: auto;
+    }
+    #learnCategoryLead {
+      margin-top: 40px;
+      margin-bottom: 6px;
+      text-align: center;
+      color: #3f4e61;
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+    #learnPrompt {
+      margin-top: 30px;
+      margin-bottom: 12px;
+    }
+    #learnLineAction {
+      display: none;
     }
     .task-line {
       margin-top: 4px;
@@ -415,7 +423,7 @@
       margin-bottom: 2px;
     }
     .learn-answer-wrap {
-      margin-top: 10px;
+      margin-top: 12px;
       min-height: 120px;
       display: flex;
       align-items: flex-start;
@@ -548,16 +556,18 @@
         min-height: auto;
       }
       #learnTaskCard .action-row {
-        margin-top: 12px;
+        margin-top: 10px;
+      }
+      #learnCategoryLead {
+        margin-top: 34px;
       }
       #learnTaskCategory {
-        position: static;
-        top: auto;
-        left: auto;
-        transform: none;
         width: 100%;
-        margin: 16px 0 12px;
-        pointer-events: auto;
+        margin: 2px 0 10px;
+      }
+      #learnPrompt {
+        margin-top: 10px;
+        margin-bottom: 10px;
       }
       .learn-answer-wrap {
         margin-top: 8px;
@@ -661,16 +671,18 @@
             <div id="learnLineArea" class="task-line">-</div>
             <div id="learnLineAction" class="task-line">-</div>
           </div>
+          <div id="learnCategoryLead">Du hast Karten aus folgender Kategorie:</div>
           <div id="learnTaskCategory" class="task-value task-focus" aria-live="polite">-</div>
-          <div class="learn-answer-wrap">
-            <div id="learnResult" class="result neutral" style="display:none;"></div>
-          </div>
+          <div id="learnPrompt" class="task-question">Bei welchen Kombinationen machst du ein -?</div>
           <div class="action-row">
             <button id="learnToggleBtn" class="primary-btn">Antwort anzeigen</button>
             <div id="learnReviewActions" class="learn-review-actions" style="display:none;">
               <button id="learnOkBtn" class="primary-btn">OK</button>
               <button id="learnNokBtn" class="subtle-btn">NOK</button>
             </div>
+          </div>
+          <div class="learn-answer-wrap">
+            <div id="learnResult" class="result neutral" style="display:none;"></div>
           </div>
         </section>
       </main>
@@ -679,15 +691,6 @@
         <h2>Konfiguration</h2>
         <div class="config-controls">
           <div>
-            <label for="learnCfgArea">Initiative/Verteidigung</label>
-            <select id="learnCfgArea">
-              <option value="ALL">alle</option>
-              <option value="INIT">Pre-Flop Initiative</option>
-              <option value="TIGHT">Pre-Flop Verteidigung (Tight)</option>
-              <option value="LOOSE">Pre-Flop Verteidigung (Loose)</option>
-            </select>
-          </div>
-          <div>
             <label for="learnCfgPosition">Position</label>
             <select id="learnCfgPosition">
               <option value="ALL">alle</option>
@@ -695,6 +698,15 @@
               <option value="BLIND">Small Blind bzw. Blinds</option>
               <option value="BTN">Dealer</option>
               <option value="CO">CO</option>
+            </select>
+          </div>
+          <div>
+            <label for="learnCfgArea">Initiative/Verteidigung</label>
+            <select id="learnCfgArea">
+              <option value="ALL">alle</option>
+              <option value="INIT">Pre-Flop Initiative</option>
+              <option value="TIGHT">Pre-Flop Verteidigung (Tight)</option>
+              <option value="LOOSE">Pre-Flop Verteidigung (Loose)</option>
             </select>
           </div>
           <div id="learnCfgActionWrap">
@@ -715,13 +727,13 @@
       <div class="pdf-frame-wrap">
         <iframe
           class="pdf-frame"
-          src="Poker_Preflop_Strategie_FINAL_v13.pdf"
+          src="Poker_Preflop_Strategie_FINAL_v14.pdf"
           title="Poker Strategie PDF"
         ></iframe>
       </div>
       <div class="pdf-actions">
-        <a href="Poker_Preflop_Strategie_FINAL_v13.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
-        <a href="Poker_Preflop_Strategie_FINAL_v13.pdf" download>PDF herunterladen</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v14.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v14.pdf" download>PDF herunterladen</a>
       </div>
     </div>
   </section>
@@ -730,11 +742,11 @@
     const RANKS = ["A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"];
     const SUITS = ["h", "d", "c", "s"];
 
-    const OPEN = {
+    const OPEN_INIT_RAISE = {
       EP: ["22+", "A2s+", "AKo", "AQo", "KTs+", "QTs+", "JTs-76s"],
       CO: ["22+", "A2s+", "ATo+", "K7s+", "KJo+", "Q9s+", "JTs", "JTs-43s", "J9s-53s"],
       BTN: ["22+", "A2s+", "A7o+", "K2s+", "K9o+", "Q5s+", "QTo+", "J7s+", "JTo", "JTs-43s", "T8s-53s", "T7s-96s"],
-      BLIND: ["22+", "A2s+", "A2o+", "K2s+", "K2o+", "Q2s+", "Q2o+", "J2s+", "J2o+", "ALL_0G_S", "ALL_1G_S", "ALL_2G_S"]
+      BLIND: ["99+", "ATs+", "AQo+", "KJs+"]
     };
 
     const FACING_TIGHT = {
@@ -764,18 +776,18 @@
     };
 
     const LEARN_OPEN = [
-      { category: "Paare", EP: "Alle", CO: "Alle", BTN: "Alle", BLIND: "Alle" },
-      { category: "Ass (Suited)", EP: "Alle", CO: "Alle", BTN: "Alle", BLIND: "Alle" },
-      { category: "Ass (Offsuit)", EP: "AKo, AQo", CO: "ATo+", BTN: "A7o+", BLIND: "Alle" },
-      { category: "Koenig (Suited)", EP: "KTs+", CO: "K7s+", BTN: "K2s+", BLIND: "Alle" },
-      { category: "Koenig (Offsuit)", EP: "-", CO: "KJo+", BTN: "K9o+", BLIND: "Alle" },
-      { category: "Dame (Suited)", EP: "QTs+", CO: "Q9s+", BTN: "Q5s+", BLIND: "Alle" },
-      { category: "Dame (Offsuit)", EP: "-", CO: "-", BTN: "QTo+", BLIND: "Alle" },
-      { category: "Bube (Suited)", EP: "JTs", CO: "JTs", BTN: "J7s+", BLIND: "Alle" },
-      { category: "Bube (Offsuit)", EP: "-", CO: "-", BTN: "JTo", BLIND: "Alle" },
-      { category: "Connectors", EP: "JTs-76s", CO: "JTs-43s", BTN: "JTs-43s | JTo", BLIND: "Alle" },
-      { category: "1-Gappers", EP: "-", CO: "J9s-53s", BTN: "T8s-53s", BLIND: "Alle" },
-      { category: "2-Gappers", EP: "-", CO: "-", BTN: "T7s | 96s", BLIND: "Alle" }
+      { category: "Paare", EP: { raise: "Alle", callCheck: "-" }, BLIND: { raise: "99+", callCheck: "Alle" }, BTN: { raise: "Alle", callCheck: "-" }, CO: { raise: "Alle", callCheck: "-" } },
+      { category: "Ass (Suited)", EP: { raise: "Alle", callCheck: "-" }, BLIND: { raise: "ATs+", callCheck: "Alle" }, BTN: { raise: "Alle", callCheck: "-" }, CO: { raise: "Alle", callCheck: "-" } },
+      { category: "Ass (Offsuit)", EP: { raise: "AKo, AQo", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "A7o+", callCheck: "-" }, CO: { raise: "ATo+", callCheck: "-" } },
+      { category: "Koenig (Suited)", EP: { raise: "KTs+", callCheck: "-" }, BLIND: { raise: "KJs+", callCheck: "Alle" }, BTN: { raise: "K2s+", callCheck: "-" }, CO: { raise: "K7s+", callCheck: "-" } },
+      { category: "Koenig (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "AQo+", callCheck: "Alle" }, BTN: { raise: "K9o+", callCheck: "-" }, CO: { raise: "KJo+", callCheck: "-" } },
+      { category: "Dame (Suited)", EP: { raise: "QTs+", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "Q5s+", callCheck: "-" }, CO: { raise: "Q9s+", callCheck: "-" } },
+      { category: "Dame (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "QTo+", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } },
+      { category: "Bube (Suited)", EP: { raise: "JTs", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "J7s+", callCheck: "-" }, CO: { raise: "JTs", callCheck: "-" } },
+      { category: "Bube (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "JTo", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } },
+      { category: "Connectors", EP: { raise: "JTs-76s", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle (s und o)" }, BTN: { raise: "JTs-43s | JTo", callCheck: "-" }, CO: { raise: "JTs-43s", callCheck: "-" } },
+      { category: "1-Gappers", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "-" }, BTN: { raise: "T8s-53s", callCheck: "-" }, CO: { raise: "J9s-53s", callCheck: "-" } },
+      { category: "2-Gappers", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "-" }, BTN: { raise: "T7s | 96s", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } }
     ];
 
     const LEARN_TIGHT = [
@@ -808,6 +820,7 @@
     let learnCurrent = null;
     let learnAnswerVisible = false;
     let learnReviewQueue = [];
+    let learnSinceLastReview = 0;
     const learnQuestions = [];
     const stats = {
       total: 0,
@@ -925,6 +938,14 @@
       return false;
     }
 
+    function isBlindCallCheck(hand) {
+      if (hand.length === 2) return true;
+      const hi = hand[0];
+      if (["A", "K", "Q", "J"].includes(hi)) return true;
+      const gap = idx(hand[1]) - idx(hand[0]) - 1;
+      return gap === 0;
+    }
+
     function getPosition(selected) {
       if (selected !== "ALL") return selected;
       const all = ["EP", "CO", "BTN", "BLIND"];
@@ -938,7 +959,7 @@
     }
 
     function actionLabel(action) {
-      return { OPEN: "Open Raise", CALL: "Call", "3BET": "3-Bet", FOLD: "Fold" }[action];
+      return { RAISE: "Raise", CALLCHECK: "Call/Check", CALL: "Call", "3BET": "3-Bet", FOLD: "Fold" }[action];
     }
 
     function joinRanges(tokens) {
@@ -947,13 +968,29 @@
 
     function resolveCorrectAction(hand, heroPos, scenario, raiserPos, specialCondition) {
       if (scenario === "NO_RAISE") {
-        const open = inRange(OPEN[heroPos], hand);
+        const raise = inRange(OPEN_INIT_RAISE[heroPos], hand);
+        if (raise) {
+          return {
+            correct: "RAISE",
+            tableLabel: "Tabelle 1: Pre-Flop Initiative",
+            reason: hand + " ist in der Raise-Range (" + joinRanges(OPEN_INIT_RAISE[heroPos]) + ")."
+          };
+        }
+
+        if (heroPos === "BLIND" && isBlindCallCheck(hand)) {
+          return {
+            correct: "CALLCHECK",
+            tableLabel: "Tabelle 1: Pre-Flop Initiative",
+            reason: hand + " ist in der Call/Check-Range der Blinds."
+          };
+        }
+
         return {
-          correct: open ? "OPEN" : "FOLD",
-          tableLabel: "Tabelle 1: Open Raising (First In)",
-          reason: open
-            ? hand + " ist in der Open-Range (" + joinRanges(OPEN[heroPos]) + ")."
-            : hand + " ist nicht in der Open-Range (" + joinRanges(OPEN[heroPos]) + ")."
+          correct: "FOLD",
+          tableLabel: "Tabelle 1: Pre-Flop Initiative",
+          reason: heroPos === "BLIND"
+            ? hand + " ist weder in der Raise-Range (" + joinRanges(OPEN_INIT_RAISE[heroPos]) + ") noch in der Call/Check-Range der Blinds."
+            : hand + " ist nicht in der Raise-Range (" + joinRanges(OPEN_INIT_RAISE[heroPos]) + ")."
         };
       }
 
@@ -1005,6 +1042,21 @@
       if (s === "NO_RAISE") return "Pre-Flop Initiative";
       if (s === "TIGHT_RAISE") return "Pre-Flop Verteidigung (Tight)";
       return "Pre-Flop Verteidigung (Loose)";
+    }
+
+    function learnPositionScenarioLine(positionKey) {
+      if (positionKey === "EP") return "Du sitzt in Early Position.";
+      if (positionKey === "CO") return "Du sitzt im Cutoff.";
+      if (positionKey === "BTN") return "Du sitzt am Button.";
+      if (positionKey === "BLIND") return "Du sitzt in den Blinds.";
+      return "-";
+    }
+
+    function learnAreaScenarioLine(areaKey) {
+      if (areaKey === "INIT") return "Vor dir wurde nur der Big Blind gecallt oder gefoldet.";
+      if (areaKey === "TIGHT") return "Vor dir hat ein tighter Spieler geraised.";
+      if (areaKey === "LOOSE") return "Vor dir hat ein looser Spieler geraised.";
+      return "-";
     }
 
     function isPlaceholderValue(v) {
@@ -1136,15 +1188,26 @@
 
       for (const row of LEARN_OPEN) {
         for (const pos of posOrder) {
+          const cfg = row[pos];
           learnQuestions.push({
             areaKey: "INIT",
             area: "Pre-Flop Initiative",
             category: row.category,
             positionKey: pos,
             position: posName[pos],
-            actionKey: "OPEN",
-            action: "open-raise/auffuellen",
-            answer: row[pos]
+            actionKey: "RAISE",
+            action: "Raise",
+            answer: cfg.raise
+          });
+          learnQuestions.push({
+            areaKey: "INIT",
+            area: "Pre-Flop Initiative",
+            category: row.category,
+            positionKey: pos,
+            position: posName[pos],
+            actionKey: "CALLCHECK",
+            action: "Call/Check",
+            answer: cfg.callCheck
           });
         }
       }
@@ -1200,30 +1263,65 @@
       }
     }
 
+    function setSelectOptions(select, items, preferred) {
+      select.innerHTML = items.map((item) => '<option value="' + item.value + '">' + item.label + '</option>').join('');
+      const allowed = new Set(items.map((item) => item.value));
+      select.value = allowed.has(preferred) ? preferred : items[0].value;
+    }
+
     function applyLearnAreaModeUI() {
-      const area = document.getElementById("learnCfgArea").value;
+      const areaSelect = document.getElementById("learnCfgArea");
       const actionWrap = document.getElementById("learnCfgActionWrap");
       const actionSelect = document.getElementById("learnCfgAction");
       const actionLine = document.getElementById("learnLineAction");
 
-      const validActionValues = new Set(["ALL", "CALL", "3BET"]);
-      if (!validActionValues.has(actionSelect.value)) {
-        actionSelect.value = "ALL";
+      const currentArea = areaSelect.value || "ALL";
+      const currentAction = actionSelect.value || "ALL";
+
+      actionWrap.style.display = "block";
+      actionLine.style.display = "block";
+      actionLine.style.visibility = "visible";
+
+      let areaItems = [
+        { value: "ALL", label: "alle" },
+        { value: "INIT", label: "Pre-Flop Initiative" },
+        { value: "TIGHT", label: "Pre-Flop Verteidigung (Tight)" },
+        { value: "LOOSE", label: "Pre-Flop Verteidigung (Loose)" }
+      ];
+
+      if (currentAction === "RAISE" || currentAction === "CALLCHECK") {
+        areaItems = areaItems.filter((item) => item.value === "ALL" || item.value === "INIT");
+      } else if (currentAction === "CALL" || currentAction === "3BET") {
+        areaItems = areaItems.filter((item) => item.value === "ALL" || item.value === "TIGHT" || item.value === "LOOSE");
       }
 
-      if (area === "INIT") {
-        actionWrap.style.display = "none";
-        actionLine.style.display = "block";
-        actionLine.style.visibility = "hidden";
-        actionSelect.value = "ALL";
+      setSelectOptions(areaSelect, areaItems, currentArea);
+      const effectiveArea = areaSelect.value;
+
+      let actionItems;
+      if (effectiveArea === "INIT") {
+        actionItems = [
+          { value: "ALL", label: "alle" },
+          { value: "RAISE", label: "Raise" },
+          { value: "CALLCHECK", label: "Call/Check" }
+        ];
+      } else if (effectiveArea === "TIGHT" || effectiveArea === "LOOSE") {
+        actionItems = [
+          { value: "ALL", label: "alle" },
+          { value: "CALL", label: "Call" },
+          { value: "3BET", label: "3-bet" }
+        ];
       } else {
-        actionWrap.style.display = "block";
-        actionLine.style.display = "block";
-        actionLine.style.visibility = "visible";
-        if (!validActionValues.has(actionSelect.value) || actionSelect.value === "") {
-          actionSelect.value = "ALL";
-        }
+        actionItems = [
+          { value: "ALL", label: "alle" },
+          { value: "RAISE", label: "Raise" },
+          { value: "CALLCHECK", label: "Call/Check" },
+          { value: "CALL", label: "Call" },
+          { value: "3BET", label: "3-bet" }
+        ];
       }
+
+      setSelectOptions(actionSelect, actionItems, currentAction);
     }
 
     function filteredLearnQuestions() {
@@ -1306,7 +1404,7 @@
       if (posCfg !== "ALL") {
         chips.push({ label: "Position", value: getSelectText("learnCfgPosition", posCfg) });
       }
-      if (areaCfg !== "INIT" && actionCfg !== "ALL") {
+      if (actionCfg !== "ALL") {
         chips.push({ label: "Aktion", value: getSelectText("learnCfgAction", actionCfg) });
       }
 
@@ -1347,19 +1445,28 @@
 
     function resetLearnReviewQueue() {
       learnReviewQueue = [];
+      learnSinceLastReview = 0;
     }
 
     function pickLearnQuestion(pool) {
       const bySig = new Map(pool.map((q) => [learnComboSignature(q), q]));
       learnReviewQueue = learnReviewQueue.filter((sig) => bySig.has(sig));
 
-      if (learnReviewQueue.length > 0 && Math.random() < 0.25) {
+      if (learnReviewQueue.length > 0 && learnSinceLastReview >= 2) {
         const sig = learnReviewQueue[0];
         const q = bySig.get(sig);
-        if (q) return { question: q, isReview: true };
+        if (q) {
+          learnSinceLastReview = 0;
+          return { question: q, isReview: true };
+        }
       }
 
       const q = pool[Math.floor(Math.random() * pool.length)];
+      if (learnReviewQueue.length > 0) {
+        learnSinceLastReview += 1;
+      } else {
+        learnSinceLastReview = 0;
+      }
       return { question: q, isReview: false };
     }
 
@@ -1373,13 +1480,14 @@
       if (!pool.length) {
         learnCurrent = null;
         document.getElementById("learnTaskCategory").textContent = "-";
+        document.getElementById("learnPrompt").textContent = "Bei welchen Kombinationen machst du ein -?";
         const lineArea = document.getElementById("learnLineArea");
         const linePos = document.getElementById("learnLinePosition");
         const lineAction = document.getElementById("learnLineAction");
         setTaskLineValue(lineArea, "-", false);
         setTaskLineValue(linePos, "-", false);
         setTaskLineValue(lineAction, "-", false);
-        lineAction.style.visibility = "hidden";
+        lineAction.style.display = "none";
         res.style.display = "block";
         res.className = "result neutral";
         res.textContent = "Keine Frage fuer diese Filter-Kombination vorhanden.";
@@ -1400,19 +1508,14 @@
       const lineAction = document.getElementById("learnLineAction");
       const areaCfg = document.getElementById("learnCfgArea").value;
       const posCfg = document.getElementById("learnCfgPosition").value;
-      const actionCfg = document.getElementById("learnCfgAction").value;
 
-      setTaskLineValue(linePos, q.position, posCfg !== "ALL");
-      setTaskLineValue(lineArea, q.area, areaCfg !== "ALL");
-      if (q.areaKey === "INIT") {
-        setTaskLineValue(lineAction, "-", false);
-        lineAction.style.visibility = "hidden";
-      } else {
-        setTaskLineValue(lineAction, q.action, areaCfg !== "INIT" && actionCfg !== "ALL");
-        lineAction.style.visibility = "visible";
-      }
+      setTaskLineValue(linePos, learnPositionScenarioLine(q.positionKey), posCfg !== "ALL");
+      setTaskLineValue(lineArea, learnAreaScenarioLine(q.areaKey), areaCfg !== "ALL");
+      setTaskLineValue(lineAction, q.action, false);
+      lineAction.style.display = "none";
 
       document.getElementById("learnTaskCategory").textContent = q.category;
+      document.getElementById("learnPrompt").textContent = "Bei welchen Kombinationen machst du ein " + q.action + "?";
       animateTaskCard("learnTaskCard");
 
       const btn = document.getElementById("learnToggleBtn");
@@ -1462,7 +1565,7 @@
       actions.innerHTML = "";
 
       const options = scenario === "NO_RAISE"
-        ? [{ id: "OPEN", text: "Open Raise" }, { id: "FOLD", text: "Fold" }]
+        ? [{ id: "RAISE", text: "Raise" }, { id: "CALLCHECK", text: "Call/Check" }, { id: "FOLD", text: "Fold" }]
         : [{ id: "CALL", text: "Call" }, { id: "3BET", text: "3-Bet" }, { id: "FOLD", text: "Fold" }];
 
       for (const opt of options) {
