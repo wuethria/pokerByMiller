@@ -1,10 +1,10 @@
-const CACHE_NAME = 'poker-preflop-v11';
+const CACHE_NAME = 'poker-preflop-v12';
 const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
   './sw.js',
-  './Poker_Preflop_Strategie_FINAL_v15.pdf',
+  './Poker_Preflop_Strategie_FINAL_v16.pdf',
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];
