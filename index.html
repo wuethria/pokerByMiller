@@ -1155,7 +1155,7 @@
             <label for="learnCfgAction">Aktion</label>
             <select id="learnCfgAction">
               <option value="ALL">alle</option>
-                            <option value="CALL">Call</option>
+                            <option value="CALLCHECK">Call/Check</option>
               <option value="3BET">3-bet</option>
             </select>
           </div>
@@ -1169,13 +1169,13 @@
       <div class="pdf-frame-wrap">
         <iframe
           class="pdf-frame"
-          src="Poker_Preflop_Strategie_FINAL_v16.pdf"
+          src="Poker_Preflop_Strategie_FINAL_v18.pdf"
           title="Poker Strategie PDF"
         ></iframe>
       </div>
       <div class="pdf-actions">
-        <a href="Poker_Preflop_Strategie_FINAL_v16.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
-        <a href="Poker_Preflop_Strategie_FINAL_v16.pdf" download>PDF herunterladen</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v18.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v18.pdf" download>PDF herunterladen</a>
       </div>
     </div>
   </section>
@@ -1232,23 +1232,23 @@
     };
 
         const LEARN_OPEN = [
-      { category: "Paare", EP: { raise: "Alle", callCheck: "-" }, BLIND: { raise: "99+", callCheck: "88-" }, BTN: { raise: "Alle", callCheck: "-" }, CO: { raise: "Alle", callCheck: "-" } },
-      { category: "Ass (Suited)", EP: { raise: "Alle", callCheck: "-" }, BLIND: { raise: "ATs+", callCheck: "A9s-" }, BTN: { raise: "Alle", callCheck: "-" }, CO: { raise: "Alle", callCheck: "-" } },
-      { category: "Ass (Offsuit)", EP: { raise: "AKo, AQo", callCheck: "-" }, BLIND: { raise: "AQo+", callCheck: "AJo-" }, BTN: { raise: "A7o+", callCheck: "-" }, CO: { raise: "ATo+", callCheck: "-" } },
-      { category: "Koenig (Suited)", EP: { raise: "KTs+", callCheck: "-" }, BLIND: { raise: "KJs+", callCheck: "KTs-" }, BTN: { raise: "K2s+", callCheck: "-" }, CO: { raise: "K7s+", callCheck: "-" } },
+      { category: "Paare", EP: { raise: "Alle", callCheck: "-" }, BLIND: { raise: "99+", callCheck: "Restliche" }, BTN: { raise: "Alle", callCheck: "-" }, CO: { raise: "Alle", callCheck: "-" } },
+      { category: "Ass (Suited)", EP: { raise: "Alle", callCheck: "-" }, BLIND: { raise: "ATs+", callCheck: "Restliche" }, BTN: { raise: "Alle", callCheck: "-" }, CO: { raise: "Alle", callCheck: "-" } },
+      { category: "Ass (Offsuit)", EP: { raise: "AKo,AQo", callCheck: "-" }, BLIND: { raise: "AQo+", callCheck: "Restliche" }, BTN: { raise: "A7o+", callCheck: "-" }, CO: { raise: "ATo+", callCheck: "-" } },
+      { category: "Koenig (Suited)", EP: { raise: "KTs+", callCheck: "-" }, BLIND: { raise: "KJs+", callCheck: "Restliche" }, BTN: { raise: "K2s+", callCheck: "-" }, CO: { raise: "K7s+", callCheck: "-" } },
       { category: "Koenig (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "K9o+", callCheck: "-" }, CO: { raise: "KJo+", callCheck: "-" } },
       { category: "Dame (Suited)", EP: { raise: "QTs+", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "Q5s+", callCheck: "-" }, CO: { raise: "Q9s+", callCheck: "-" } },
       { category: "Dame (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "QTo+", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } },
       { category: "Bube (Suited)", EP: { raise: "JTs", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "J7s+", callCheck: "-" }, CO: { raise: "JTs", callCheck: "-" } },
       { category: "Bube (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "JTo", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } },
-      { category: "Connectors (Suited)", EP: { raise: "JTs-76s", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle (s und o)" }, BTN: { raise: "JTs-43s", callCheck: "-" }, CO: { raise: "JTs-43s", callCheck: "-" } },
-      { category: "Connectors (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "-" }, BTN: { raise: "JTo", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } },
+      { category: "Connectors (Suited)", EP: { raise: "JTs-76s", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "JTs-43s", callCheck: "-" }, CO: { raise: "JTs-43s", callCheck: "-" } },
+      { category: "Connectors (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "JTo", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } },
       { category: "1-Gappers", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "-" }, BTN: { raise: "T8s-53s", callCheck: "-" }, CO: { raise: "J9s-53s", callCheck: "-" } },
       { category: "2-Gappers", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "-" }, BTN: { raise: "T7s,96s", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } }
     ];
 
         const LEARN_TIGHT = [
-      { category: "Paare", EP: { call: "QQ-22", threeBet: "AA,KK" }, CO: { call: "QQ-22", threeBet: "AA,KK" }, BTN: { call: "QQ-22", threeBet: "AA,KK" }, BLIND: { call: "QQ-22", threeBet: "AA,KK" } },
+      { category: "Paare", EP: { call: "Restliche", threeBet: "AA,KK" }, CO: { call: "Restliche", threeBet: "AA,KK" }, BTN: { call: "Restliche", threeBet: "AA,KK" }, BLIND: { call: "Restliche", threeBet: "AA,KK" } },
       { category: "Ass (Suited)", EP: { call: "ATs+", threeBet: "A5s" }, CO: { call: "ATs+", threeBet: "A5s" }, BTN: { call: "ATs+", threeBet: "A5s" }, BLIND: { call: "ATs+", threeBet: "A5s" } },
       { category: "Ass (Offsuit)", EP: { call: "AKo", threeBet: "-" }, CO: { call: "AKo", threeBet: "-" }, BTN: { call: "AKo", threeBet: "-" }, BLIND: { call: "AKo", threeBet: "-" } },
       { category: "Koenig (Suited)", EP: { call: "KTs+", threeBet: "-" }, CO: { call: "KTs+", threeBet: "-" }, BTN: { call: "KTs+", threeBet: "-" }, BLIND: { call: "KTs+", threeBet: "-" } },
@@ -1258,14 +1258,14 @@
     ];
 
         const LEARN_LOOSE = [
-      { category: "Paare", EP: { call: "JJ-22", threeBet: "QQ+" }, CO: { call: "TT-22", threeBet: "JJ+" }, BTN: { call: "88-22", threeBet: "99+" }, BLIND: { call: "88-55", threeBet: "99+ | 44-22" } },
-      { category: "Ass (Suited)", EP: { call: "AQs-A6s", threeBet: "AKs | A5s-A2s" }, CO: { call: "AQs-A8s | A6s", threeBet: "A5s-A2s | AKs, A7s" }, BTN: { call: "A9s-A6s", threeBet: "A5s-A2s | AKs-ATs" }, BLIND: { call: "-", threeBet: "A2s+" } },
+      { category: "Paare", EP: { call: "Restliche", threeBet: "QQ+" }, CO: { call: "Restliche", threeBet: "JJ+" }, BTN: { call: "88-22", threeBet: "99+" }, BLIND: { call: "88-55", threeBet: "99+ | 44-22" } },
+      { category: "Ass (Suited)", EP: { call: "AQs-A6s", threeBet: "AKs | A5s-A2s" }, CO: { call: "AQs-A8s | A6s", threeBet: "AKs,A7s | A5s-A2s" }, BTN: { call: "A9s-A6s", threeBet: "AKs-ATs | A5s-A2s" }, BLIND: { call: "-", threeBet: "A2s+" } },
       { category: "Ass (Offsuit)", EP: { call: "AQo", threeBet: "AKo" }, CO: { call: "AQo-AJo", threeBet: "AKo" }, BTN: { call: "AJo-ATo", threeBet: "AKo-AQo" }, BLIND: { call: "ATo-A8o", threeBet: "AJo+" } },
-      { category: "Koenig (Suited)", EP: { call: "KTs+", threeBet: "-" }, CO: { call: "K9s+", threeBet: "-" }, BTN: { call: "KTs-K9s", threeBet: "KQs-KJs" }, BLIND: { call: "KTs-K8s | K4s-K2s", threeBet: "KJs+ | K7s-K5s" } },
+      { category: "Koenig (Suited)", EP: { call: "KTs+", threeBet: "-" }, CO: { call: "K9s+", threeBet: "-" }, BTN: { call: "KTs,K9s", threeBet: "KQs,KJs" }, BLIND: { call: "KTs-K8s | K4s-K2s", threeBet: "KJs+ | K7s-K5s" } },
       { category: "Koenig (Offsuit)", EP: { call: "-", threeBet: "-" }, CO: { call: "KQo", threeBet: "-" }, BTN: { call: "KQo-KJo", threeBet: "-" }, BLIND: { call: "KJo-K9o", threeBet: "KQo" } },
-      { category: "Dame (Suited)", EP: { call: "QTs+", threeBet: "-" }, CO: { call: "Q9s+", threeBet: "-" }, BTN: { call: "QTs-Q9s", threeBet: "QJs" }, BLIND: { call: "QJs-QTs | Q8s-Q5s", threeBet: "Q9s" } },
+      { category: "Dame (Suited)", EP: { call: "QTs+", threeBet: "-" }, CO: { call: "Q9s+", threeBet: "-" }, BTN: { call: "QTs,Q9s", threeBet: "QJs" }, BLIND: { call: "QJs-QTs | Q8s-Q5s", threeBet: "Q9s" } },
       { category: "Dame (Offsuit)", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "-", threeBet: "-" }, BLIND: { call: "Q9o+", threeBet: "-" } },
-      { category: "Bube (Suited)", EP: { call: "JTs", threeBet: "-" }, CO: { call: "JTs,J9s", threeBet: "-" }, BTN: { call: "J9s,J8s", threeBet: "JTs" }, BLIND: { call: "JTs,J8s-J7s", threeBet: "-" } },
+      { category: "Bube (Suited)", EP: { call: "JTs", threeBet: "-" }, CO: { call: "JTs,J9s", threeBet: "-" }, BTN: { call: "J9s,J8s", threeBet: "JTs" }, BLIND: { call: "JTs,J8s,J7s", threeBet: "-" } },
       { category: "Bube (Offsuit)", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "-", threeBet: "-" }, BLIND: { call: "JTo,J9o", threeBet: "-" } },
       { category: "Connectors (Suited)", EP: { call: "JTs,98s,76s", threeBet: "T9s,87s" }, CO: { call: "JTs,98s | 76s-65s", threeBet: "T9s,87s,54s" }, BTN: { call: "T9s-43s", threeBet: "JTs" }, BLIND: { call: "JTs-T9s | 43s", threeBet: "98s-54s" } },
       { category: "Connectors (Offsuit)", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "-", threeBet: "-" }, BLIND: { call: "JTo-98o", threeBet: "-" } },
@@ -1655,7 +1655,7 @@
       cards.classList.remove("played");
 
       for (const c of [c1, c2]) {
-        const rank = c[0];
+        const rank = c[0] === "T" ? "10" : c[0];
         const suit = suitInfo(c[1]);
         const el = document.createElement("div");
         el.className = "card " + suit.cls;
@@ -1783,16 +1783,16 @@
             category: row.category,
             positionKey: pos,
             position: posName[pos],
-            actionSetKey: "3BET+CALL",
-            actionKeys: ["3BET", "CALL"],
-            prompt: "Welche Haende 3-bettest du, welche callst du?",
+            actionSetKey: "3BET+CALLCHECK",
+            actionKeys: ["3BET", "CALLCHECK"],
+            prompt: "Welche Haende 3-bettest du, welche spielst du als Call/Check?",
             answerParts: [
               { label: "3-Bet", value: row[pos].threeBet },
-              { label: "Call", value: row[pos].call }
+              { label: "Call/Check", value: row[pos].call }
             ],
             answer: buildLearnAnswerText([
               { label: "3-Bet", value: row[pos].threeBet },
-              { label: "Call", value: row[pos].call }
+              { label: "Call/Check", value: row[pos].call }
             ])
           });
         }
@@ -1806,16 +1806,16 @@
             category: row.category,
             positionKey: pos,
             position: posName[pos],
-            actionSetKey: "3BET+CALL",
-            actionKeys: ["3BET", "CALL"],
-            prompt: "Welche Haende 3-bettest du, welche callst du?",
+            actionSetKey: "3BET+CALLCHECK",
+            actionKeys: ["3BET", "CALLCHECK"],
+            prompt: "Welche Haende 3-bettest du, welche spielst du als Call/Check?",
             answerParts: [
               { label: "3-Bet", value: row[pos].threeBet },
-              { label: "Call", value: row[pos].call }
+              { label: "Call/Check", value: row[pos].call }
             ],
             answer: buildLearnAnswerText([
               { label: "3-Bet", value: row[pos].threeBet },
-              { label: "Call", value: row[pos].call }
+              { label: "Call/Check", value: row[pos].call }
             ])
           });
         }
@@ -1887,9 +1887,9 @@
         { value: "LOOSE", label: "Pre-Flop Verteidigung (Loose)" }
       ];
 
-      if (currentAction === "RAISE" || currentAction === "CALLCHECK") {
+      if (currentAction === "RAISE") {
         areaItems = areaItems.filter((item) => item.value === "ALL" || item.value === "INIT");
-      } else if (currentAction === "CALL" || currentAction === "3BET") {
+      } else if (currentAction === "3BET") {
         areaItems = areaItems.filter((item) => item.value === "ALL" || item.value === "TIGHT" || item.value === "LOOSE");
       }
 
@@ -1906,7 +1906,7 @@
       } else if (effectiveArea === "TIGHT" || effectiveArea === "LOOSE") {
         actionItems = [
           { value: "ALL", label: "alle" },
-          { value: "CALL", label: "Call" },
+          { value: "CALLCHECK", label: "Call/Check" },
           { value: "3BET", label: "3-bet" }
         ];
       } else {
@@ -1914,7 +1914,6 @@
           { value: "ALL", label: "alle" },
           { value: "RAISE", label: "Raise" },
           { value: "CALLCHECK", label: "Call/Check" },
-          { value: "CALL", label: "Call" },
           { value: "3BET", label: "3-bet" }
         ];
       }
@@ -1931,7 +1930,7 @@
       ];
 
       // In Pre-Flop Initiative existiert Call/Check nur in der Blinds-Spalte.
-      if (effectiveAction === "CALLCHECK") {
+      if (effectiveArea === "INIT" && effectiveAction === "CALLCHECK") {
         positionItems = [
           { value: "ALL", label: "alle" },
           { value: "BLIND", label: "Small Blind bzw. Blinds" }
