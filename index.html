@@ -479,6 +479,20 @@
       top: 12px;
     }
     .config-controls > * + * { margin-top: 10px; }
+
+    .config-toggle {
+      display: none;
+      width: 100%;
+      border: 1px solid #cfcfcf;
+      border-radius: 8px;
+      background: #f7f7f7;
+      color: #2f3741;
+      min-height: 40px;
+      font-size: 0.93rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
     .subtle-btn {
       border: 1px solid #d0d0d0;
       border-radius: 8px;
@@ -818,16 +832,154 @@
         width: 100%;
       }
     }
+    @media (max-width: 768px) {
+      body {
+        margin: 14px auto;
+        padding: 0 10px;
+        padding-bottom: calc(10px + env(safe-area-inset-bottom));
+      }
+      .tabs {
+        gap: 5px;
+        margin-bottom: 10px;
+      }
+      .tab-btn {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 6px 8px;
+        font-size: 0.88rem;
+        min-height: 44px;
+      }
+      .stage,
+      .learn-stage,
+      .pdf-card {
+        padding: 10px;
+        border-radius: 12px;
+      }
+      .task-card {
+        padding: 9px;
+      }
+      #playTaskCard,
+      #learnTaskCard {
+        min-height: auto !important;
+      }
+      .context-block {
+        padding: 7px 8px;
+      }
+      .context-line {
+        font-size: 0.92rem;
+        line-height: 1.35;
+        column-gap: 6px;
+        grid-template-columns: auto 1fr;
+      }
+      .context-prefix {
+        white-space: normal;
+      }
+      .context-main {
+        grid-column: 2;
+        justify-self: start;
+        text-align: left;
+      }
+      .context-chip {
+        font-size: 0.9em;
+        padding: 2px 7px;
+      }
+      .play-middle-card {
+        margin-top: 10px;
+        padding: 9px 9px 7px;
+      }
+      .play-middle-line {
+        grid-template-columns: 1fr;
+        row-gap: 8px;
+      }
+      .play-middle-prefix {
+        grid-column: 1;
+        justify-self: start;
+        font-size: 0.95rem;
+      }
+      .play-middle-line #cards {
+        grid-column: 1;
+        margin: 6px 0 8px;
+      }
+      .cards {
+        margin: 4px 0 6px;
+        gap: 7px;
+      }
+      .card {
+        width: 76px;
+        height: 108px;
+        padding: 5px;
+      }
+      .card-rank {
+        font-size: 1.5rem;
+      }
+      .card-suit {
+        font-size: 1.2rem;
+      }
+      .card-suit-big {
+        font-size: 2.2rem;
+      }
+      .hand-tag {
+        margin-top: 2px;
+      }
+      .category-card {
+        margin-top: 12px;
+        padding: 12px 10px;
+      }
+      .learn-category-line {
+        grid-template-columns: 1fr;
+        row-gap: 8px;
+        min-height: 0;
+      }
+      #learnCategoryLead {
+        grid-column: 1;
+        justify-self: start;
+        text-align: left;
+      }
+      #learnTaskCategory {
+        grid-column: 1;
+        justify-self: center;
+        font-size: 1.35rem;
+        line-height: 1.2;
+      }
+      .task-zone {
+        margin-top: 10px;
+        padding-top: 9px;
+      }
+      #playTaskZone,
+      #learnTaskZone {
+        padding: 10px 9px 12px;
+      }
+      #playDecisionPrompt {
+        margin-top: 14px;
+        margin-bottom: 9px;
+      }
+      #actions {
+        margin-bottom: 12px;
+      }
+      #learnPrompt {
+        margin-top: 7px;
+        margin-bottom: 10px;
+      }
+      .learn-answer-wrap {
+        min-height: 48px;
+      }
+      .config {
+        padding: 9px;
+      }
+      .config-toggle {
+        display: block;
+      }
+      .config.is-collapsed h2,
+      .config.is-collapsed .config-controls {
+        display: none;
+      }
+    }
     @media (max-width: 640px) {
       .actions button {
         width: 100%;
       }
       select, button {
         min-height: 44px;
-      }
-      .card {
-        width: 84px;
-        height: 120px;
       }
     }
   </style>
@@ -868,7 +1020,8 @@
         </section>
       </main>
 
-      <aside class="config">
+      <aside id="playConfig" class="config">
+        <button id="playConfigToggle" type="button" class="config-toggle" aria-expanded="false">Konfiguration anzeigen</button>
         <h2>Konfiguration</h2>
         <div class="config-controls">
           <div>
@@ -954,7 +1107,8 @@
         </section>
       </main>
 
-      <aside class="config">
+      <aside id="learnConfig" class="config">
+        <button id="learnConfigToggle" type="button" class="config-toggle" aria-expanded="false">Konfiguration anzeigen</button>
         <h2>Konfiguration</h2>
         <div class="config-controls">
           <div>
@@ -2252,10 +2406,35 @@
     document.getElementById("playCfgPosMode").addEventListener("change", () => { playPositionSeqIndex = 0; nextHand(true); });
     document.getElementById("specialCondition").addEventListener("change", () => nextHand(true));
 
+    function setConfigCollapsed(configId, btnId, collapsed) {
+      const config = document.getElementById(configId);
+      const btn = document.getElementById(btnId);
+      if (!config || !btn) return;
+      config.classList.toggle("is-collapsed", collapsed);
+      btn.textContent = collapsed ? "Konfiguration anzeigen" : "Konfiguration ausblenden";
+      btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+    }
+
+    function initMobileConfigToggles() {
+      const isMobile = window.matchMedia("(max-width: 768px)").matches;
+      setConfigCollapsed("playConfig", "playConfigToggle", isMobile);
+      setConfigCollapsed("learnConfig", "learnConfigToggle", isMobile);
+    }
+
+    document.getElementById("playConfigToggle").addEventListener("click", () => {
+      const c = document.getElementById("playConfig");
+      setConfigCollapsed("playConfig", "playConfigToggle", !c.classList.contains("is-collapsed"));
+    });
+    document.getElementById("learnConfigToggle").addEventListener("click", () => {
+      const c = document.getElementById("learnConfig");
+      setConfigCollapsed("learnConfig", "learnConfigToggle", !c.classList.contains("is-collapsed"));
+    });
+
     buildLearnQuestions();
 
     applyPlaySpecialModeUI();
     applyPlayCategoryModeUI();
+    initMobileConfigToggles();
     renderStats();
     nextHand();
     nextLearnQuestion();
