@@ -878,6 +878,14 @@
         grid-column: 2;
         justify-self: start;
         text-align: left;
+        display: inline-flex;
+        align-items: center;
+      }
+      .context-chip-group {
+        white-space: normal;
+        line-height: 1.2;
+        display: inline-flex;
+        align-items: center;
       }
       .context-chip {
         font-size: 0.9em;
@@ -1569,6 +1577,13 @@
       return out;
     }
 
+    function mergeContextChips(html) {
+      return String(html).replace(/(?:\s*<span class="context-chip">[\s\S]*?<\/span>\s*)+/g, (group) => {
+        const plain = group.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+        return plain ? '<span class="context-chip context-chip-group">' + plain + '</span>' : group;
+      });
+    }
+
     function formatContextLine(text) {
       const cleaned = String(text || "").replace(/\.\s*$/, "").trim();
       const html = formatContextText(cleaned);
@@ -1578,7 +1593,7 @@
         return '<span class="context-prefix-only">' + html + '</span>';
       }
       const prefix = html.slice(0, firstChip).trimEnd();
-      const rest = html.slice(firstChip);
+      const rest = mergeContextChips(html.slice(firstChip));
       return (prefix ? '<span class="context-prefix">' + prefix + '</span>' : '') +
         '<span class="context-main">' + rest + '</span>';
     }
