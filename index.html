@@ -241,6 +241,22 @@
       font-weight: 600;
       white-space: nowrap;
     }
+    .context-line:not(.task-line--fixed) .context-chip {
+      background: #3f5f8d;
+      border-color: #34547f;
+      color: #ffffff;
+    }
+    .task-line--fixed .context-chip {
+      background: #e8eef8;
+      border-color: #d1dbe9;
+      color: #2f4a70;
+    }
+    .task-card.task-refresh .context-line:not(.task-line--fixed) .context-chip {
+      animation: contextChipPop 1000ms ease-out;
+    }
+    .task-card.task-refresh #learnTaskCategory.learn-category-dynamic {
+      animation: contextChipPop 1000ms ease-out;
+    }
     .category-card {
       width: 100%;
       max-width: 760px;
@@ -333,8 +349,19 @@
       margin: 0;
       text-align: center;
       pointer-events: auto;
-      font-size: 2.25rem;
-      line-height: 1.15;
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 14px;
+      border: 1px solid #d1dbe9;
+      background: #e8eef8;
+      color: #19345c;
+      font-size: 1.95rem;
+      line-height: 1.18;
+    }
+    #learnTaskCategory.learn-category-dynamic {
+      border-color: #34547f;
+      background: #3f5f8d;
+      color: #ffffff;
     }
     #learnCategoryLead {
       grid-column: 1;
@@ -362,9 +389,10 @@
     }
     .task-line--fixed {
       display: block;
-      width: fit-content;
-      margin: 8px auto 0;
+      width: 100%;
+      margin: 8px 0 0;
       padding: 5px 11px;
+      box-sizing: border-box;
       border-radius: 12px;
       border: 1px solid var(--chip-border);
       background: var(--chip-bg);
@@ -424,6 +452,11 @@
     @keyframes taskRefresh {
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes contextChipPop {
+      0% { transform: scale(0.94); }
+      65% { transform: scale(1.06); }
+      100% { transform: scale(1); }
     }
     .row { margin: 14px 0; }
     select, button {
@@ -763,7 +796,8 @@
       #learnTaskCategory {
         width: auto;
         margin: 6px 0 2px;
-        font-size: 1.9rem;
+        padding: 6px 12px;
+        font-size: 1.55rem;
       }
       #learnCategoryLead {
         white-space: normal;
@@ -856,6 +890,19 @@
               <option value="LOOSE_RAISE">Pre-Flop Verteidigung (Loose)</option>
             </select>
           </div>
+          <div>
+            <label for="playCfgCategory">Kategorie</label>
+            <select id="playCfgCategory">
+              <option value="ALL">alle</option>
+            </select>
+          </div>
+          <div id="playCfgPosModeWrap" style="display:none;">
+            <label for="playCfgPosMode">Positionsmodus</label>
+            <select id="playCfgPosMode">
+              <option value="RANDOM">zufaellig</option>
+              <option value="SEQUENTIAL">der Reihe nach (EP -> Blinds -> Dealer -> CO)</option>
+            </select>
+          </div>
           <div id="specialConditionWrap">
             <label for="specialCondition">Spezialbedingungen</label>
             <select id="specialCondition">
@@ -927,6 +974,19 @@
               <option value="INIT">Pre-Flop Initiative</option>
               <option value="TIGHT">Pre-Flop Verteidigung (Tight)</option>
               <option value="LOOSE">Pre-Flop Verteidigung (Loose)</option>
+            </select>
+          </div>
+          <div>
+            <label for="learnCfgCategory">Kategorie</label>
+            <select id="learnCfgCategory">
+              <option value="ALL">alle</option>
+            </select>
+          </div>
+          <div id="learnCfgPosModeWrap" style="display:none;">
+            <label for="learnCfgPosMode">Positionsmodus</label>
+            <select id="learnCfgPosMode">
+              <option value="RANDOM">zufaellig</option>
+              <option value="SEQUENTIAL">der Reihe nach (EP -> Blinds -> Dealer -> CO)</option>
             </select>
           </div>
           <div id="learnCfgActionWrap">
@@ -1059,6 +1119,9 @@
     let learnReviewQueue = [];
     let learnSinceLastReview = 0;
     const learnQuestions = [];
+    const POSITION_ORDER = ["EP", "BLIND", "BTN", "CO"];
+    let playPositionSeqIndex = 0;
+    let learnPositionSeqIndex = 0;
     const stats = {
       total: 0,
       correct: 0,
@@ -1596,16 +1659,53 @@
       select.value = allowed.has(preferred) ? preferred : items[0].value;
     }
 
+
+    function uniqueCategoriesFromRows(rows) {
+      return Array.from(new Set(rows.map((row) => row.category)));
+    }
+
+    function categoriesForArea(areaKey) {
+      if (areaKey === "INIT") return uniqueCategoriesFromRows(LEARN_OPEN);
+      if (areaKey === "TIGHT") return uniqueCategoriesFromRows(LEARN_TIGHT);
+      if (areaKey === "LOOSE") return uniqueCategoriesFromRows(LEARN_LOOSE);
+      return uniqueCategoriesFromRows([].concat(LEARN_OPEN, LEARN_TIGHT, LEARN_LOOSE));
+    }
+
+    function applyPlayCategoryModeUI() {
+      const cond = document.getElementById("condition").value || "ALL";
+      const categorySelect = document.getElementById("playCfgCategory");
+      const posModeWrap = document.getElementById("playCfgPosModeWrap");
+      const currentCategory = categorySelect.value || "ALL";
+      const currentPosMode = document.getElementById("playCfgPosMode").value || "RANDOM";
+
+      const areaKey = cond === "NO_RAISE" ? "INIT" : cond === "TIGHT_RAISE" ? "TIGHT" : cond === "LOOSE_RAISE" ? "LOOSE" : "ALL";
+      const categoryItems = [{ value: "ALL", label: "alle" }]
+        .concat(categoriesForArea(areaKey).map((c) => ({ value: c, label: c })));
+      setSelectOptions(categorySelect, categoryItems, currentCategory);
+
+      posModeWrap.style.display = categorySelect.value !== "ALL" ? "block" : "none";
+      if (categorySelect.value === "ALL") {
+        document.getElementById("playCfgPosMode").value = "RANDOM";
+      } else {
+        document.getElementById("playCfgPosMode").value = currentPosMode;
+      }
+    }
+
     function applyLearnAreaModeUI() {
       const areaSelect = document.getElementById("learnCfgArea");
       const positionSelect = document.getElementById("learnCfgPosition");
       const actionWrap = document.getElementById("learnCfgActionWrap");
       const actionSelect = document.getElementById("learnCfgAction");
+      const categorySelect = document.getElementById("learnCfgCategory");
+      const posModeWrap = document.getElementById("learnCfgPosModeWrap");
+      const posModeSelect = document.getElementById("learnCfgPosMode");
       const actionLine = document.getElementById("learnLineAction");
 
       const currentArea = areaSelect.value || "ALL";
       const currentAction = actionSelect.value || "ALL";
       const currentPosition = positionSelect.value || "ALL";
+      const currentCategory = categorySelect.value || "ALL";
+      const currentPosMode = posModeSelect.value || "RANDOM";
 
       actionWrap.style.display = "block";
       actionLine.style.display = "block";
@@ -1670,20 +1770,58 @@
       }
 
       setSelectOptions(positionSelect, positionItems, currentPosition);
+
+      const categoryItems = [{ value: "ALL", label: "alle" }]
+        .concat(categoriesForArea(effectiveArea).map((c) => ({ value: c, label: c })));
+      setSelectOptions(categorySelect, categoryItems, currentCategory);
+
+      posModeWrap.style.display = categorySelect.value !== "ALL" ? "block" : "none";
+      if (categorySelect.value === "ALL") {
+        posModeSelect.value = "RANDOM";
+      } else {
+        posModeSelect.value = currentPosMode;
+      }
     }
 
 
     function filteredLearnQuestions() {
       const area = document.getElementById("learnCfgArea").value;
       const pos = document.getElementById("learnCfgPosition").value;
+      const category = document.getElementById("learnCfgCategory").value;
       const rawAction = document.getElementById("learnCfgAction").value;
       const action = rawAction === "" ? "ALL" : rawAction;
 
       return learnQuestions.filter((q) =>
         (area === "ALL" || q.areaKey === area) &&
         (pos === "ALL" || q.positionKey === pos) &&
+        (category === "ALL" || q.category === category) &&
         (action === "ALL" || (Array.isArray(q.actionKeys) && q.actionKeys.includes(action)))
       );
+    }
+
+
+    function handMatchesCategory(hand, category) {
+      if (category === "ALL") return true;
+      if (hand.length === 2) return category === "Paare";
+      const high = hand[0];
+      const low = hand[1];
+      const suited = hand[2];
+      const gap = idx(low) - idx(high) - 1;
+
+      if (category === "Ass (Suited)") return high === "A" && suited === "s";
+      if (category === "Ass (Offsuit)") return high === "A" && suited === "o";
+      if (category === "Koenig (Suited)") return high === "K" && suited === "s";
+      if (category === "Koenig (Offsuit)") return high === "K" && suited === "o";
+      if (category === "Dame (Suited)") return high === "Q" && suited === "s";
+      if (category === "Dame (Offsuit)") return high === "Q" && suited === "o";
+      if (category === "Bube (Suited)") return high === "J" && suited === "s";
+      if (category === "Bube (Offsuit)") return high === "J" && suited === "o";
+      if (category === "Connectors (Suited)") return suited === "s" && gap === 0;
+      if (category === "Connectors (Offsuit)") return suited === "o" && gap === 0;
+      if (category === "1-Gappers") return suited === "s" && gap === 1;
+      if (category === "1-Gappers (Offsuit)") return suited === "o" && gap === 1;
+      if (category === "2-Gappers") return suited === "s" && gap === 2;
+      return true;
     }
 
     function renderFixedChips(containerId, emptyId, chips) {
@@ -1705,11 +1843,15 @@
       const chips = [];
       const cond = document.getElementById("condition").value;
       const pos = document.getElementById("position").value;
+      const cat = document.getElementById("playCfgCategory").value;
       if (pos !== "ALL") {
         chips.push({ label: "Position", value: getSelectText("position", pos) });
       }
       if (cond !== "ALL") {
         chips.push({ label: "Initiative/Verteidigung", value: getSelectText("condition", cond) });
+      }
+      if (cat !== "ALL") {
+        chips.push({ label: "Kategorie", value: cat });
       }
       const sp = document.getElementById("specialCondition").value;
       if (cond === "LOOSE_RAISE" && (pos === "ALL" || pos === "BLIND") && sp !== "ALL") {
@@ -1744,6 +1886,7 @@
       const areaCfg = document.getElementById("learnCfgArea").value;
       const posCfg = document.getElementById("learnCfgPosition").value;
       const actionCfg = document.getElementById("learnCfgAction").value;
+      const categoryCfg = document.getElementById("learnCfgCategory").value;
       const chips = [];
 
       if (areaCfg !== "ALL") {
@@ -1754,6 +1897,9 @@
       }
       if (actionCfg !== "ALL") {
         chips.push({ label: "Aktion", value: getSelectText("learnCfgAction", actionCfg) });
+      }
+      if (categoryCfg !== "ALL") {
+        chips.push({ label: "Kategorie", value: categoryCfg });
       }
 
       renderFixedChips("learnFixedChips", "learnNoFixed", chips);
@@ -1794,6 +1940,7 @@
     function resetLearnReviewQueue() {
       learnReviewQueue = [];
       learnSinceLastReview = 0;
+      learnPositionSeqIndex = 0;
     }
 
     function pickLearnQuestion(pool) {
@@ -1809,7 +1956,27 @@
         }
       }
 
-      const q = pool[Math.floor(Math.random() * pool.length)];
+      const categoryCfg = document.getElementById("learnCfgCategory").value || "ALL";
+      const positionCfg = document.getElementById("learnCfgPosition").value || "ALL";
+      const posMode = document.getElementById("learnCfgPosMode").value || "RANDOM";
+      let q = null;
+
+      if (categoryCfg !== "ALL" && positionCfg === "ALL" && posMode === "SEQUENTIAL") {
+        for (let offset = 0; offset < POSITION_ORDER.length; offset += 1) {
+          const pos = POSITION_ORDER[(learnPositionSeqIndex + offset) % POSITION_ORDER.length];
+          const candidates = pool.filter((item) => item.positionKey === pos);
+          if (candidates.length) {
+            q = candidates[Math.floor(Math.random() * candidates.length)];
+            learnPositionSeqIndex = (POSITION_ORDER.indexOf(pos) + 1) % POSITION_ORDER.length;
+            break;
+          }
+        }
+      }
+
+      if (!q) {
+        q = pool[Math.floor(Math.random() * pool.length)];
+      }
+
       if (learnReviewQueue.length > 0) {
         learnSinceLastReview += 1;
       } else {
@@ -1827,7 +1994,10 @@
 
       if (!pool.length) {
         learnCurrent = null;
-        document.getElementById("learnTaskCategory").textContent = "-";
+        const categoryEl = document.getElementById("learnTaskCategory");
+        const categoryCfg = document.getElementById("learnCfgCategory").value || "ALL";
+        categoryEl.textContent = "-";
+        categoryEl.classList.toggle("learn-category-dynamic", categoryCfg === "ALL");
         document.getElementById("learnPrompt").textContent = "Welche Haende spielst du als -?";
         const lineArea = document.getElementById("learnLineArea");
         const linePos = document.getElementById("learnLinePosition");
@@ -1862,7 +2032,10 @@
       setTaskLineValue(lineAction, "-", false);
       lineAction.style.display = "none";
 
-      document.getElementById("learnTaskCategory").textContent = q.category;
+      const categoryCfg = document.getElementById("learnCfgCategory").value || "ALL";
+      const categoryEl = document.getElementById("learnTaskCategory");
+      categoryEl.textContent = q.category;
+      categoryEl.classList.toggle("learn-category-dynamic", categoryCfg === "ALL");
       document.getElementById("learnPrompt").textContent = q.prompt;
       animateTaskCard("learnTaskCard");
 
@@ -1985,15 +2158,29 @@
       updateDealButton("ready");
       const selected = document.getElementById("position").value;
       const selectedCondition = document.getElementById("condition").value;
+      const selectedCategory = document.getElementById("playCfgCategory").value;
+      const playPosMode = document.getElementById("playCfgPosMode").value;
       const selectedSpecial = document.getElementById("specialCondition").value;
       let heroPos = getPosition(selected);
       const scenario = getScenario(selectedCondition);
+      if (selected === "ALL" && selectedCategory !== "ALL" && playPosMode === "SEQUENTIAL") {
+        heroPos = POSITION_ORDER[playPositionSeqIndex % POSITION_ORDER.length];
+        playPositionSeqIndex = (playPositionSeqIndex + 1) % POSITION_ORDER.length;
+      }
       if (selected === "ALL" && selectedCondition === "LOOSE_RAISE" && selectedSpecial !== "ALL") {
         heroPos = "BLIND";
       }
       const specialCondition = (scenario === "LOOSE_RAISE" && heroPos === "BLIND") ? selectedSpecial : "ALL";
-      const [c1, c2] = dealTwoCards();
-      const hand = canonicalHand(c1, c2);
+
+      let c1 = null;
+      let c2 = null;
+      let hand = null;
+      let attempts = 0;
+      do {
+        [c1, c2] = dealTwoCards();
+        hand = canonicalHand(c1, c2);
+        attempts += 1;
+      } while (!handMatchesCategory(hand, selectedCategory) && attempts < 5000);
 
       let raiserPos = null;
       if (heroPos === "BLIND" && scenario !== "NO_RAISE") {
@@ -2057,13 +2244,18 @@
     document.getElementById("learnCfgArea").addEventListener("change", onLearnConfigChange);
     document.getElementById("learnCfgPosition").addEventListener("change", onLearnConfigChange);
     document.getElementById("learnCfgAction").addEventListener("change", onLearnConfigChange);
-    document.getElementById("condition").addEventListener("change", () => { applyPlaySpecialModeUI(); nextHand(true); });
-    document.getElementById("position").addEventListener("change", () => { applyPlaySpecialModeUI(); nextHand(true); });
+    document.getElementById("learnCfgCategory").addEventListener("change", onLearnConfigChange);
+    document.getElementById("learnCfgPosMode").addEventListener("change", onLearnConfigChange);
+    document.getElementById("condition").addEventListener("change", () => { playPositionSeqIndex = 0; applyPlaySpecialModeUI(); applyPlayCategoryModeUI(); nextHand(true); });
+    document.getElementById("position").addEventListener("change", () => { playPositionSeqIndex = 0; applyPlaySpecialModeUI(); applyPlayCategoryModeUI(); nextHand(true); });
+    document.getElementById("playCfgCategory").addEventListener("change", () => { playPositionSeqIndex = 0; applyPlayCategoryModeUI(); nextHand(true); });
+    document.getElementById("playCfgPosMode").addEventListener("change", () => { playPositionSeqIndex = 0; nextHand(true); });
     document.getElementById("specialCondition").addEventListener("change", () => nextHand(true));
 
     buildLearnQuestions();
 
     applyPlaySpecialModeUI();
+    applyPlayCategoryModeUI();
     renderStats();
     nextHand();
     nextLearnQuestion();
