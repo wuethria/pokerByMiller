@@ -1169,13 +1169,13 @@
       <div class="pdf-frame-wrap">
         <iframe
           class="pdf-frame"
-          src="Poker_Preflop_Strategie_FINAL_v18.pdf"
+          src="Poker_Preflop_Strategie_FINAL_v19.pdf"
           title="Poker Strategie PDF"
         ></iframe>
       </div>
       <div class="pdf-actions">
-        <a href="Poker_Preflop_Strategie_FINAL_v18.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
-        <a href="Poker_Preflop_Strategie_FINAL_v18.pdf" download>PDF herunterladen</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v19.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v19.pdf" download>PDF herunterladen</a>
       </div>
     </div>
   </section>
@@ -1218,12 +1218,12 @@
         threeBet: ["AA-QQ", "AKs", "A5s-A2s", "AKo", "T9s", "87s"]
       },
       CO: {
-        call: ["TT-22", "AQs-A8s", "A6s", "AQo-AJo", "K9s+", "KQo", "Q9s+", "JTs", "98s", "76s-65s", "J9s", "86s"],
+        call: ["TT-22", "AQs-A8s", "A6s", "AQo,AJo", "K9s+", "KQo", "Q9s+", "JTs", "98s", "76s-65s", "J9s", "86s"],
         threeBet: ["AA-JJ", "AKs", "A7s", "A5s-A2s", "AKo", "T9s", "87s", "54s"]
       },
       BTN: {
-        call: ["88-22", "A9s-A6s", "AJo-ATo", "KTs-K9s", "KQo-KJo", "QTs-Q9s", "T9s-43s", "J9s", "T8s", "86s", "64s", "53s", "J8s-T7s"],
-        threeBet: ["AA-99", "AKs-ATs", "A5s-A2s", "AKo-AQo", "KQs-KJs", "QJs", "JTs", "97s", "75s"]
+        call: ["88-22", "A9s-A6s", "AJo,ATo", "KTs-K9s", "KQo-KJo", "QTs-Q9s", "T9s-43s", "J9s", "T8s", "86s", "64s", "53s", "J8s-T7s"],
+        threeBet: ["AA-99", "AKs-ATs", "A5s-A2s", "AKo,AQo", "KQs-KJs", "QJs", "JTs", "97s", "75s"]
       },
       BLINDS: {
         call: ["88-55", "ATo-A8o", "KTs-K8s", "K4s-K2s", "KJo-K9o", "QJs-QTs", "Q8s-Q5s", "Q9o+", "JTs-T9s", "43s", "JTo-98o", "75s-53s", "J9o", "J8s-96s", "J7s"],
@@ -1258,12 +1258,12 @@
     ];
 
         const LEARN_LOOSE = [
-      { category: "Paare", EP: { call: "Restliche", threeBet: "QQ+" }, CO: { call: "Restliche", threeBet: "JJ+" }, BTN: { call: "88-22", threeBet: "99+" }, BLIND: { call: "88-55", threeBet: "99+ | 44-22" } },
+      { category: "Paare", EP: { call: "JJ-", threeBet: "QQ+" }, CO: { call: "TT-", threeBet: "JJ+" }, BTN: { call: "88-", threeBet: "99+" }, BLIND: { call: "88-55", threeBet: "99+ | 44-22" } },
       { category: "Ass (Suited)", EP: { call: "AQs-A6s", threeBet: "AKs | A5s-A2s" }, CO: { call: "AQs-A8s | A6s", threeBet: "AKs,A7s | A5s-A2s" }, BTN: { call: "A9s-A6s", threeBet: "AKs-ATs | A5s-A2s" }, BLIND: { call: "-", threeBet: "A2s+" } },
-      { category: "Ass (Offsuit)", EP: { call: "AQo", threeBet: "AKo" }, CO: { call: "AQo-AJo", threeBet: "AKo" }, BTN: { call: "AJo-ATo", threeBet: "AKo-AQo" }, BLIND: { call: "ATo-A8o", threeBet: "AJo+" } },
+      { category: "Ass (Offsuit)", EP: { call: "AQo", threeBet: "AKo" }, CO: { call: "AQo,AJo", threeBet: "AKo" }, BTN: { call: "AJo,ATo", threeBet: "AKo,AQo" }, BLIND: { call: "ATo-A8o", threeBet: "AJo+" } },
       { category: "Koenig (Suited)", EP: { call: "KTs+", threeBet: "-" }, CO: { call: "K9s+", threeBet: "-" }, BTN: { call: "KTs,K9s", threeBet: "KQs,KJs" }, BLIND: { call: "KTs-K8s | K4s-K2s", threeBet: "KJs+ | K7s-K5s" } },
       { category: "Koenig (Offsuit)", EP: { call: "-", threeBet: "-" }, CO: { call: "KQo", threeBet: "-" }, BTN: { call: "KQo-KJo", threeBet: "-" }, BLIND: { call: "KJo-K9o", threeBet: "KQo" } },
-      { category: "Dame (Suited)", EP: { call: "QTs+", threeBet: "-" }, CO: { call: "Q9s+", threeBet: "-" }, BTN: { call: "QTs,Q9s", threeBet: "QJs" }, BLIND: { call: "QJs-QTs | Q8s-Q5s", threeBet: "Q9s" } },
+      { category: "Dame (Suited)", EP: { call: "QTs+", threeBet: "-" }, CO: { call: "Q9s+", threeBet: "-" }, BTN: { call: "QTs,Q9s", threeBet: "QJs" }, BLIND: { call: "QJs,QTs | Q8s-Q5s", threeBet: "Q9s" } },
       { category: "Dame (Offsuit)", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "-", threeBet: "-" }, BLIND: { call: "Q9o+", threeBet: "-" } },
       { category: "Bube (Suited)", EP: { call: "JTs", threeBet: "-" }, CO: { call: "JTs,J9s", threeBet: "-" }, BTN: { call: "J9s,J8s", threeBet: "JTs" }, BLIND: { call: "JTs,J8s,J7s", threeBet: "-" } },
       { category: "Bube (Offsuit)", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "-", threeBet: "-" }, BLIND: { call: "JTo,J9o", threeBet: "-" } },
