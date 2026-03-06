@@ -10,7 +10,12 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <style>
     body {
-      font-family: Arial, sans-serif;
+learnTaskCategory {
+        grid-column: 1;
+        justify-self: center;
+        font-size: 1rem;
+        line-height: 1.35;
+      }font-family: Arial, sans-serif;
       max-width: 1100px;
       margin: 24px auto;
       padding: 0 14px;
@@ -962,6 +967,16 @@
         justify-self: center;
         font-size: 1rem;
         line-height: 1.35;
+      }
+      #learnTaskCategory {
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
+      .context-main,
+      .context-chip-group,
+      .context-chip {
+        max-width: 100%;
       }
       .task-zone {
         margin-top: 10px;
