@@ -16,8 +16,34 @@
       padding: 0 14px;
       line-height: 1.4;
       color: #171717;
+      background:
+        radial-gradient(1200px 520px at 50% -260px, #e8f4ed 0%, #f6f8f6 52%, #fafafa 100%),
+        linear-gradient(#fafafa, #fafafa);
     }
-    h1 { font-size: 1.35rem; margin-bottom: 14px; }
+    h1 { font-size: 1.35rem; margin: 0; }
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 14px;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: -130px;
+      right: -130px;
+      width: 460px;
+      height: 460px;
+      background: url("icons/poker-chip.png") no-repeat center/contain;
+      opacity: 0.09;
+      pointer-events: none;
+      z-index: 0;
+      filter: saturate(0.85);
+    }
+    body > * {
+      position: relative;
+      z-index: 1;
+    }
     h2 { margin: 0 0 12px; font-size: 1rem; }
     label { font-size: 0.92rem; color: #444; margin-bottom: 6px; display: inline-block; }
     .layout {
@@ -151,9 +177,13 @@
       min-height: var(--task-card-fixed-height, auto);
       height: auto;
       box-sizing: border-box;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      padding: 0;
     }
     #playTaskCard {
-      padding-bottom: 30px;
+      padding-bottom: 0;
     }
     .task-card.task-refresh {
       animation: taskRefresh 190ms ease;
@@ -184,7 +214,7 @@
     }
     .context-block {
       width: 100%;
-      max-width: 880px;
+      max-width: 100%;
       box-sizing: border-box;
       margin: 0 auto;
       padding: 12px 14px;
@@ -313,16 +343,16 @@
     }
     .task-zone {
       width: 100%;
-      max-width: 900px;
+      max-width: 100%;
       box-sizing: border-box;
-      margin: 30px auto 0;
+      margin: 18px auto 0;
       padding-top: 18px;
-      border-top: 1px solid #e6ebf3;
-      background: rgba(255, 255, 255, 0.45);
+      border-top: 1px solid #d5d5d5;
+      background: #fcfcfc;
       border-radius: 10px;
     }
     #playTaskZone {
-      border: 1px solid #e6ebf3;
+      border: 1px solid #d5d5d5;
       padding: 18px 14px 22px;
       display: flex;
       flex-direction: column;
@@ -335,7 +365,7 @@
       margin-top: 0;
     }
     #learnTaskZone {
-      border: 1px solid #e6ebf3;
+      border: 1px solid #d5d5d5;
       padding: 18px 14px 22px;
       overflow-x: hidden;
       box-sizing: border-box;
@@ -938,6 +968,17 @@
       }
     }
     @media (max-width: 768px) {
+      #playTaskCard,
+      #learnTaskCard {
+        padding: 0;
+      }
+      .context-block {
+        padding: 9px 10px;
+      }
+      .task-zone {
+        margin-top: 12px;
+        padding-top: 10px;
+      }
       #learnTaskZone {
         overflow-x: hidden;
       }
@@ -970,6 +1011,16 @@
         margin: 14px auto;
         padding: 0 10px;
         padding-bottom: calc(10px + env(safe-area-inset-bottom));
+      }
+      .title-row {
+        margin-bottom: 10px;
+      }
+      body::before {
+        top: -95px;
+        right: -110px;
+        width: 320px;
+        height: 320px;
+        opacity: 0.08;
       }
       .tabs {
         gap: 5px;
@@ -1148,7 +1199,9 @@
   </style>
 </head>
 <body>
-  <h1>Poker Trainer (by Ed Miller)</h1>
+  <div class="title-row">
+    <h1>Poker Trainer (by Ed Miller)</h1>
+  </div>
   <div class="tabs">
     <button id="tabPdf" class="tab-btn">Charts</button>
     <button id="tabLearn" class="tab-btn active">Ranges</button>
