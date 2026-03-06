@@ -40,9 +40,10 @@
       cursor: pointer;
     }
     .tab-btn.active {
-      background: #1f1f1f;
-      color: #fff;
-      border-color: #1f1f1f;
+      background: #e8edf4;
+      color: #22364f;
+      border-color: #b8c5d6;
+      font-weight: 700;
     }
     .panel { display: none; }
     .panel.active { display: block; }
@@ -268,12 +269,12 @@
       width: 100%;
       max-width: 760px;
       box-sizing: border-box;
-      margin: 30px auto 0;
+      margin: 38px auto 0;
       border: 1px solid #d8e0ec;
       border-radius: 14px;
       background: #fcfdff;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
-      padding: 12px 16px;
+      padding: 14px 16px;
       text-align: center;
     }
     .play-middle-card {
@@ -281,10 +282,10 @@
       max-width: 760px;
       box-sizing: border-box;
       margin: 0 auto;
-      border: 1px solid #d8e0ec;
-      border-radius: 14px;
-      background: #fcfdff;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
       padding: 14px 16px 10px;
       text-align: center;
     }
@@ -346,7 +347,8 @@
       align-items: center;
       column-gap: 8px;
       width: 100%;
-      min-height: 60px;
+      min-height: 0;
+      margin-top: 18px;
     }
     #learnTaskCategory {
       position: static;
@@ -411,12 +413,13 @@
       text-align: center;
       margin-top: 2px;
       margin-bottom: 8px;
-      color: #2b3542;
-      font-weight: 700;
-      font-size: 0.96rem;
+      color: #4f6278;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      font-size: 0.95rem;
     }
     #playScenarioLines {
-      margin-bottom: 30px;
+      margin-bottom: 14px;
     }
     #playDecisionPrompt {
       margin-top: 40px;
@@ -436,6 +439,7 @@
       justify-content: center;
       flex-wrap: wrap;
     }
+    
     .learn-review-actions button {
       min-width: 110px;
       min-height: 42px;
@@ -696,24 +700,21 @@
       background: #fcfcfc;
       padding: 16px;
     }
-    .pdf-frame-wrap {
+    .pdf-frame {
+      width: 100%;
+      height: 74vh;
+      min-height: 520px;
       border: 1px solid #dadada;
       border-radius: 10px;
       background: #fff;
-      overflow: hidden;
-      height: 74vh;
-      min-height: 520px;
-    }
-    .pdf-frame {
-      width: 100%;
-      height: 100%;
-      border: 0;
+      box-sizing: border-box;
     }
     .pdf-actions {
-      margin-top: 10px;
+      margin-top: 12px;
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
+      justify-content: center;
     }
     .pdf-actions a {
       border: 1px solid #cfcfcf;
@@ -722,6 +723,21 @@
       color: #222;
       text-decoration: none;
       padding: 8px 12px;
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pdf-actions a:hover {
+      background: #f3f3f3;
+    }
+    .pdf-actions a.primary-link {
+      border-color: var(--primary-bg);
+      background: var(--primary-bg);
+      color: var(--primary-text);
+    }
+    .pdf-actions a.primary-link:hover {
+      background: var(--primary-bg-hover);
     }
     .actions button {
       min-width: 110px;
@@ -791,6 +807,43 @@
       line-height: 1.2;
       font-weight: 700;
     }
+    .learn-answer-table {
+      width: 100%;
+      border: 1px solid #d3d9e0;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #f8fafc;
+    }
+    .learn-answer-head,
+    .learn-answer-values {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .learn-answer-head-cell,
+    .learn-answer-value-cell {
+      padding: 10px 8px;
+      text-align: center;
+      box-sizing: border-box;
+    }
+    .learn-answer-head-cell {
+      background: #e9eef4;
+      color: #46556b;
+      font-size: 0.98rem;
+      font-weight: 600;
+      border-bottom: 1px solid #d3d9e0;
+    }
+    .learn-answer-value-cell {
+      background: #ffffff;
+      color: #16345e;
+      font-size: 1.08rem;
+      font-weight: 700;
+      white-space: pre-wrap;
+      line-height: 1.35;
+    }
+    .learn-answer-head-cell + .learn-answer-head-cell,
+    .learn-answer-value-cell + .learn-answer-value-cell {
+      border-left: 1px solid #d3d9e0;
+    }
     .muted { color: #555; }
     @media (max-width: 1100px) {
       .layout {
@@ -818,8 +871,8 @@
         font-size: 0.96rem;
       }
       .category-card {
-        margin-top: 16px;
-        padding: 8px 12px;
+        margin-top: 20px;
+        padding: 10px 12px;
       }
       #learnTaskCategory {
         width: auto;
@@ -847,6 +900,9 @@
       }
     }
     @media (max-width: 768px) {
+      .tab-btn {
+        border-radius: 12px;
+      }
       body {
         margin: 14px auto;
         padding: 0 10px;
@@ -910,7 +966,7 @@
       }
       .play-middle-card {
         margin-top: 0;
-        padding: 9px 9px 7px;
+        padding: 9px 0 7px;
       }
       .play-middle-line {
         grid-template-columns: 1fr;
@@ -947,13 +1003,14 @@
         margin-top: 2px;
       }
       .category-card {
-        margin-top: 12px;
-        padding: 6px 10px;
+        margin-top: 16px;
+        padding: 8px 10px;
       }
       .learn-category-line {
         grid-template-columns: 1fr;
-        row-gap: 8px;
+        row-gap: 12px;
         min-height: 0;
+        margin-top: 12px;
       }
       #learnCategoryLead {
         grid-column: 1;
@@ -981,7 +1038,7 @@
         padding-top: 9px;
       }
       #playScenarioLines {
-        margin-bottom: 10px;
+        margin-bottom: 8px;
       }
       #playTaskZone,
       #learnTaskZone {
@@ -1040,12 +1097,13 @@
         </section>
 
         <section id="playTaskCard" class="task-card" aria-label="Aufgabe">
-          <div id="playScenarioLines" class="task-lines task-lines-centered context-block" aria-live="polite"></div>
-          <div class="play-middle-card">
+          <div class="context-block play-context-wrap">
+            <div id="playScenarioLines" class="task-lines task-lines-centered" aria-live="polite"></div>
+            <div class="play-middle-card">
             <div class="play-middle-line">
-              <div class="play-middle-prefix">Du hast</div>
               <div id="cards" class="cards"></div>
             </div>
+          </div>
           </div>
           <div id="playTaskZone" class="task-zone">
             <div id="playDecisionPrompt" class="task-question">Was machst du?</div>
@@ -1122,20 +1180,18 @@
             <div id="learnLinePosition" class="task-line">-</div>
             <div id="learnLineArea" class="task-line">-</div>
             <div id="learnLineAction" class="task-line">-</div>
-          </div>
-          <div class="category-card">
             <div class="learn-category-line">
-              <div id="learnCategoryLead">Du hast Karten<br>der Kategorie</div>
+              <div id="learnCategoryLead">Du hast</div>
               <div id="learnTaskCategory" class="task-value task-focus" aria-live="polite">-</div>
             </div>
           </div>
           <div id="learnTaskZone" class="task-zone">
-            <div id="learnPrompt" class="task-question">Bei welchen Kombinationen machst du ein -?</div>
+            <div id="learnPrompt" class="task-question">Welche Haende spielst du?</div>
             <div class="action-row">
               <button id="learnToggleBtn" class="primary-btn">Antwort anzeigen</button>
               <div id="learnReviewActions" class="learn-review-actions" style="display:none;">
-                <button id="learnOkBtn" class="primary-btn">OK</button>
                 <button id="learnNokBtn" class="subtle-btn">NOK</button>
+                <button id="learnOkBtn" class="primary-btn">OK</button>
                 <button id="learnSkipBtn" class="subtle-btn">Nicht mehr fragen</button>
               </div>
             </div>
@@ -1189,15 +1245,13 @@
 
   <section id="panelPdf" class="panel">
     <div class="pdf-card">
-      <div class="pdf-frame-wrap">
-        <iframe
+      <iframe
           class="pdf-frame"
           src="Poker_Preflop_Strategie_FINAL_v21.pdf"
           title="Poker Strategie PDF"
         ></iframe>
-      </div>
       <div class="pdf-actions">
-        <a href="Poker_Preflop_Strategie_FINAL_v21.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
+        <a class="primary-link" href="Poker_Preflop_Strategie_FINAL_v21.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
         <a href="Poker_Preflop_Strategie_FINAL_v21.pdf" download>PDF herunterladen</a>
       </div>
     </div>
@@ -1689,11 +1743,6 @@
           "<div class='card-suit-big'>" + suit.symbol + "</div>";
         cards.appendChild(el);
       }
-
-      const tag = document.createElement("div");
-      tag.className = "hand-tag";
-      tag.textContent = "(" + hand + ")";
-      cards.appendChild(tag);
     }
 
     function setActionButtonsDisabled(disabled) {
@@ -1772,14 +1821,14 @@
           let answerParts = [];
 
           if (pos === "BLIND") {
-            prompt = "Welche Haende spielst du als Raise, welche als Call/Check?";
+            prompt = "Welche Haende spielst du?";
             actionKeys = ["RAISE", "CALLCHECK"];
             answerParts = [
               { label: "Raise", value: raise },
               { label: "Call/Check", value: callCheck }
             ];
           } else {
-            prompt = "Welche Haende spielst du als Raise?";
+            prompt = "Welche Haende spielst du?";
             actionKeys = ["RAISE"];
             answerParts = [{ label: "Raise", value: raise }];
           }
@@ -1809,7 +1858,7 @@
             position: posName[pos],
             actionSetKey: "3BET+CALLCHECK",
             actionKeys: ["3BET", "CALLCHECK"],
-            prompt: "Welche Haende 3-bettest du, welche spielst du als Call/Check?",
+            prompt: "Welche Haende spielst du?",
             answerParts: [
               { label: "3-Bet", value: row[pos].threeBet },
               { label: "Call/Check", value: row[pos].call }
@@ -1832,7 +1881,7 @@
             position: posName[pos],
             actionSetKey: "3BET+CALLCHECK",
             actionKeys: ["3BET", "CALLCHECK"],
-            prompt: "Welche Haende 3-bettest du, welche spielst du als Call/Check?",
+            prompt: "Welche Haende spielst du?",
             answerParts: [
               { label: "3-Bet", value: row[pos].threeBet },
               { label: "Call/Check", value: row[pos].call }
@@ -2139,7 +2188,7 @@
         const categoryCfg = document.getElementById("learnCfgCategory").value || "ALL";
         categoryEl.textContent = "-";
         categoryEl.classList.toggle("learn-category-dynamic", categoryCfg === "ALL");
-        document.getElementById("learnPrompt").textContent = "Welche Haende spielst du als -?";
+        document.getElementById("learnPrompt").textContent = "Welche Haende spielst du?";
         const lineArea = document.getElementById("learnLineArea");
         const linePos = document.getElementById("learnLinePosition");
         const lineAction = document.getElementById("learnLineAction");
@@ -2206,13 +2255,22 @@
 
     function renderLearnAnswer(res, current) {
       const parts = Array.isArray(current.answerParts) ? current.answerParts : [];
-      if (parts.length > 1) {
-        const rows = parts.map((part) => {
+      if (parts.length > 0) {
+        const cols = parts.length;
+        const head = parts.map((part) => {
           const label = escapeAttrHtml(part.label || "");
+          return "<div class=\"learn-answer-head-cell\">" + label + "</div>";
+        }).join("");
+        const values = parts.map((part) => {
           const value = escapeAttrHtml(displayLearnCellValue(part.value));
-          return '<div class="learn-answer-row"><div class="learn-answer-label">' + label + '</div><div class="learn-answer-value">' + value + '</div></div>';
-        }).join('');
-        res.innerHTML = '<div class="learn-answer-rows">' + rows + '</div>';
+          return "<div class=\"learn-answer-value-cell\">" + value + "</div>";
+        }).join("");
+
+        res.innerHTML =
+          "<div class=\"learn-answer-table\">" +
+            "<div class=\"learn-answer-head\" style=\"grid-template-columns: repeat(" + cols + ", minmax(0, 1fr));\">" + head + "</div>" +
+            "<div class=\"learn-answer-values\" style=\"grid-template-columns: repeat(" + cols + ", minmax(0, 1fr));\">" + values + "</div>" +
+          "</div>";
       } else {
         res.textContent = normalizeLearnAnswer(current.answer);
       }
