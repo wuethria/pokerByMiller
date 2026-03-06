@@ -1078,6 +1078,10 @@
       .context-chip {
         font-size: 0.9em;
         padding: 2px 7px;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        max-width: 100%;
       }
       .play-middle-card {
         margin-top: 0;
@@ -1151,6 +1155,7 @@
       .context-chip-group,
       .context-chip {
         max-width: 100%;
+        min-width: 0;
       }
       .task-zone {
         margin-top: 10px;
@@ -2281,7 +2286,7 @@
       const review = document.getElementById("learnReviewActions");
       if (mode === "review") {
         showBtn.style.display = "none";
-        review.style.display = "flex";
+        review.style.display = "grid";
       } else {
         showBtn.style.display = "inline-block";
         review.style.display = "none";
