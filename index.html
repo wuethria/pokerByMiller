@@ -946,7 +946,7 @@
       }
       .context-main {
         grid-column: 2;
-        justify-self: end;
+        justify-self: stretch;
         text-align: right;
         display: inline-flex;
         align-items: center;
@@ -959,6 +959,7 @@
         display: inline-flex;
         align-items: center;
         justify-content: flex-end;
+        margin-left: auto;
       }
       .context-chip {
         font-size: 0.9em;
@@ -1019,9 +1020,10 @@
       }
       #learnTaskCategory {
         grid-column: 1;
-        justify-self: center;
-        font-size: 1rem;
-        line-height: 1.35;
+        justify-self: end;
+        font-size: 0.9em;
+        line-height: 1.2;
+        padding: 2px 7px;
       }
       #learnTaskCategory {
         max-width: 100%;
@@ -1685,7 +1687,7 @@
       else if (state.heroPos === "BLIND") lines.push({ key: "position", text: "Du sitzt in den Blinds." });
 
       if (state.scenario === "NO_RAISE") {
-        lines.push({ key: "scenario", text: "Vor dir wurde nur der Big Blind gecallt oder gefoldet." });
+        lines.push({ key: "scenario", text: "Vor dir gabs kein Raise." });
       } else if (state.scenario === "TIGHT_RAISE") {
         lines.push({ key: "scenario", text: "Vor dir hat ein tighter Spieler geraised." });
       } else if (state.scenario === "LOOSE_RAISE") {
