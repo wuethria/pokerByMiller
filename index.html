@@ -890,23 +890,26 @@
       }
       .context-main {
         grid-column: 2;
-        justify-self: start;
-        text-align: left;
+        justify-self: end;
+        text-align: right;
         display: inline-flex;
         align-items: center;
+        justify-content: flex-end;
+        width: 100%;
       }
       .context-chip-group {
         white-space: normal;
         line-height: 1.2;
         display: inline-flex;
         align-items: center;
+        justify-content: flex-end;
       }
       .context-chip {
         font-size: 0.9em;
         padding: 2px 7px;
       }
       .play-middle-card {
-        margin-top: 10px;
+        margin-top: 0;
         padding: 9px 9px 7px;
       }
       .play-middle-line {
@@ -976,6 +979,9 @@
       .task-zone {
         margin-top: 10px;
         padding-top: 9px;
+      }
+      #playScenarioLines {
+        margin-bottom: 10px;
       }
       #playTaskZone,
       #learnTaskZone {
@@ -1186,13 +1192,13 @@
       <div class="pdf-frame-wrap">
         <iframe
           class="pdf-frame"
-          src="Poker_Preflop_Strategie_FINAL_v19.pdf"
+          src="Poker_Preflop_Strategie_FINAL_v21.pdf"
           title="Poker Strategie PDF"
         ></iframe>
       </div>
       <div class="pdf-actions">
-        <a href="Poker_Preflop_Strategie_FINAL_v19.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
-        <a href="Poker_Preflop_Strategie_FINAL_v19.pdf" download>PDF herunterladen</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v21.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v21.pdf" download>PDF herunterladen</a>
       </div>
     </div>
   </section>
@@ -1260,8 +1266,8 @@
       { category: "Bube (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "JTo", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } },
       { category: "Connectors (Suited)", EP: { raise: "JTs-76s", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "JTs-43s", callCheck: "-" }, CO: { raise: "JTs-43s", callCheck: "-" } },
       { category: "Connectors (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "JTo", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } },
-      { category: "1-Gappers", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "-" }, BTN: { raise: "T8s-53s", callCheck: "-" }, CO: { raise: "J9s-53s", callCheck: "-" } },
-      { category: "2-Gappers", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "-" }, BTN: { raise: "T7s,96s", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } }
+      { category: "1-Gappers (Suited)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "-" }, BTN: { raise: "T8s-53s", callCheck: "-" }, CO: { raise: "J9s-53s", callCheck: "-" } },
+      { category: "2-Gappers (Suited)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "-" }, BTN: { raise: "T7s,96s", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } }
     ];
 
         const LEARN_TIGHT = [
@@ -1286,9 +1292,9 @@
       { category: "Bube (Offsuit)", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "-", threeBet: "-" }, BLIND: { call: "JTo,J9o", threeBet: "-" } },
       { category: "Connectors (Suited)", EP: { call: "JTs,98s,76s", threeBet: "T9s,87s" }, CO: { call: "JTs,98s | 76s-65s", threeBet: "T9s,87s,54s" }, BTN: { call: "T9s-43s", threeBet: "JTs" }, BLIND: { call: "JTs-T9s | 43s", threeBet: "98s-54s" } },
       { category: "Connectors (Offsuit)", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "-", threeBet: "-" }, BLIND: { call: "JTo-98o", threeBet: "-" } },
-      { category: "1-Gappers", EP: { call: "-", threeBet: "-" }, CO: { call: "J9s,86s", threeBet: "-" }, BTN: { call: "J9s,T8s | 86s,64s,53s", threeBet: "97s,75s" }, BLIND: { call: "75s-53s", threeBet: "J9s,86s" } },
+      { category: "1-Gappers (Suited)", EP: { call: "-", threeBet: "-" }, CO: { call: "J9s,86s", threeBet: "-" }, BTN: { call: "J9s,T8s | 86s,64s,53s", threeBet: "97s,75s" }, BLIND: { call: "75s-53s", threeBet: "J9s,86s" } },
       { category: "1-Gappers (Offsuit)", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "-", threeBet: "-" }, BLIND: { call: "J9o", threeBet: "-" } },
-      { category: "2-Gappers", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "J8s-T7s", threeBet: "-" }, BLIND: { call: "J8s-96s", threeBet: "-" } }
+      { category: "2-Gappers (Suited)", EP: { call: "-", threeBet: "-" }, CO: { call: "-", threeBet: "-" }, BTN: { call: "J8s-T7s", threeBet: "-" }, BLIND: { call: "J8s-96s", threeBet: "-" } }
     ];
 
     let current = null;
@@ -1957,9 +1963,9 @@
       if (category === "Bube (Offsuit)") return high === "J" && suited === "o";
       if (category === "Connectors (Suited)") return suited === "s" && gap === 0;
       if (category === "Connectors (Offsuit)") return suited === "o" && gap === 0;
-      if (category === "1-Gappers") return suited === "s" && gap === 1;
+      if (category === "1-Gappers (Suited)" || category === "1-Gappers") return suited === "s" && gap === 1;
       if (category === "1-Gappers (Offsuit)") return suited === "o" && gap === 1;
-      if (category === "2-Gappers") return suited === "s" && gap === 2;
+      if (category === "2-Gappers (Suited)" || category === "2-Gappers") return suited === "s" && gap === 2;
       return true;
     }
 
