@@ -337,6 +337,8 @@
     #learnTaskZone {
       border: 1px solid #e6ebf3;
       padding: 18px 14px 22px;
+      overflow-x: hidden;
+      box-sizing: border-box;
     }
     #learnTaskCard {
       position: relative;
@@ -668,6 +670,10 @@
       align-items: flex-start;
       justify-content: center;
       width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-x: hidden;
     }
     .learn-value {
       display: inline-block;
@@ -794,9 +800,12 @@
       border: 1px solid #d3d9e0;
       width: min(560px, 100%);
       max-width: 100%;
+      min-width: 0;
       white-space: pre-wrap;
       line-height: 1.35;
       box-sizing: border-box;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
     .learn-answer-rows {
       display: grid;
@@ -844,6 +853,9 @@
     .learn-answer-values {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
     }
     .learn-answer-head-cell,
     .learn-answer-value-cell {
@@ -926,6 +938,31 @@
       }
     }
     @media (max-width: 768px) {
+      #learnTaskZone {
+        overflow-x: hidden;
+      }
+      #learnResult {
+        width: 100%;
+        min-width: 0;
+        font-size: 1.08rem;
+      }
+      .learn-answer-table {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+      }
+      .learn-answer-head-cell,
+      .learn-answer-value-cell {
+        padding: 8px 6px;
+      }
+      .learn-answer-head-cell {
+        font-size: 0.92rem;
+        overflow-wrap: anywhere;
+      }
+      .learn-answer-value-cell {
+        font-size: 0.98rem;
+        overflow-wrap: anywhere;
+      }
       .tab-btn {
         border-radius: 12px;
       }
