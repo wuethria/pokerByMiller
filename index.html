@@ -324,6 +324,15 @@
     #playTaskZone {
       border: 1px solid #e6ebf3;
       padding: 18px 14px 22px;
+      display: flex;
+      flex-direction: column;
+    }
+    #playTaskZone.play-answered #playDecisionPrompt,
+    #playTaskZone.play-answered #actions {
+      display: none;
+    }
+    #playTaskZone.play-answered #result {
+      margin-top: 0;
     }
     #learnTaskZone {
       border: 1px solid #e6ebf3;
@@ -2355,10 +2364,12 @@
       if (!current || current.locked) return;
       current.locked = true;
       const res = document.getElementById("result");
+      const playZone = document.getElementById("playTaskZone");
       const ok = choice === current.correct;
       document.getElementById("cards").classList.add("played");
       setActionButtonsDisabled(true);
       updateDealButton("ready");
+      playZone.classList.add("play-answered");
 
       stats.total += 1;
       stats.byPos[current.heroPos].total += 1;
@@ -2373,8 +2384,8 @@
       res.style.display = "block";
       res.className = "result " + (ok ? "ok" : "bad");
       res.textContent = ok
-        ? "✔ Richtig. " + current.reason
-        : "✘ Falsch. Korrekt ist: " + actionLabel(current.correct) + ". " + current.reason;
+        ? "✔ " + actionLabel(choice) + " ist richtig. " + current.reason
+        : "✘ " + actionLabel(choice) + " ist falsch. Korrekt ist: " + actionLabel(current.correct) + ". " + current.reason;
 
       if (resolveTimer) clearTimeout(resolveTimer);
       updateDealButton("ready");
@@ -2455,6 +2466,7 @@
       renderPlayFixedChips();
       if (highlightNew) animateTaskCard("playTaskCard");
       document.getElementById("result").style.display = "none";
+      document.getElementById("playTaskZone").classList.remove("play-answered");
       renderActions(scenario);
       setActionButtonsDisabled(false);
       syncTaskCardHeights();
