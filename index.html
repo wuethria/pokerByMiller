@@ -4,18 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#1f1f1f" />
-  <title>Poker Preflop Trainer</title>
+  <title>Poker Trainer (by Ed Miller)</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icons/icon-192.png" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <style>
     body {
-learnTaskCategory {
-        grid-column: 1;
-        justify-self: center;
-        font-size: 1rem;
-        line-height: 1.35;
-      }font-family: Arial, sans-serif;
+      font-family: Arial, sans-serif;
       max-width: 1100px;
       margin: 24px auto;
       padding: 0 14px;
@@ -1022,14 +1017,14 @@ learnTaskCategory {
   </style>
 </head>
 <body>
-  <h1>Poker Preflop Trainer (nach PDF)</h1>
+  <h1>Poker Trainer (by Ed Miller)</h1>
   <div class="tabs">
-    <button id="tabPlay" class="tab-btn active">Hand-Entscheidung</button>
-    <button id="tabLearn" class="tab-btn">Tabellen-Lernen</button>
-    <button id="tabPdf" class="tab-btn">Strategie-PDF</button>
+    <button id="tabPdf" class="tab-btn">Charts</button>
+    <button id="tabLearn" class="tab-btn active">Ranges</button>
+    <button id="tabPlay" class="tab-btn">Hands</button>
   </div>
 
-  <section id="panelPlay" class="panel active">
+  <section id="panelPlay" class="panel">
     <div class="layout">
       <main class="stage">
         <section class="given-section" aria-label="Gegeben">
@@ -1107,7 +1102,7 @@ learnTaskCategory {
     </div>
   </section>
 
-  <section id="panelLearn" class="panel">
+  <section id="panelLearn" class="panel active">
     <div class="layout">
       <main class="learn-stage">
         <section class="given-section" aria-label="Gegeben">
