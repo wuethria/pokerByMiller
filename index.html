@@ -45,7 +45,7 @@
       border-color: #b8c5d6;
       font-weight: 700;
     }
-    .panel { display: none; }
+    .panel { display: none; overflow-x: hidden; }
     .panel.active { display: block; }
     .stage {
       border: 1px solid #d5d5d5;
@@ -764,10 +764,13 @@
       padding: 10px;
       border-radius: 6px;
       display: block;
-      max-width: none;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
     #result {
-      width: min(980px, 96%);
+      width: min(980px, 100%);
       margin-left: auto;
       margin-right: auto;
       text-align: left;
@@ -780,7 +783,7 @@
       font-size: 1.4rem;
       font-weight: 700;
       border: 1px solid #d3d9e0;
-      width: min(560px, 90%);
+      width: min(560px, 100%);
       max-width: 100%;
       white-space: pre-wrap;
       line-height: 1.35;
@@ -821,6 +824,8 @@
     }
     .learn-answer-table {
       width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
       border: 1px solid #d3d9e0;
       border-radius: 10px;
       overflow: hidden;
@@ -1516,7 +1521,7 @@
     }
 
     function actionLabel(action) {
-      return { RAISE: "Raise", CALLCHECK: "Call/Check", CALL: "Call", "3BET": "3-Bet", FOLD: "Fold" }[action];
+      return { RAISE: "Raise", CALLCHECK: "Call", CALL: "Call", "3BET": "3-Bet", FOLD: "Fold" }[action];
     }
 
     function joinRanges(tokens) {
@@ -1538,7 +1543,7 @@
           return {
             correct: "CALLCHECK",
             tableLabel: "Tabelle 1: Pre-Flop Initiative",
-            reason: hand + " ist in der Call/Check-Range der Blinds."
+            reason: hand + " ist in der Call-Range der Blinds."
           };
         }
 
@@ -1546,7 +1551,7 @@
           correct: "FOLD",
           tableLabel: "Tabelle 1: Pre-Flop Initiative",
           reason: heroPos === "BLIND"
-            ? hand + " ist weder in der Raise-Range (" + joinRanges(OPEN_INIT_RAISE[heroPos]) + ") noch in der Call/Check-Range der Blinds."
+            ? hand + " ist weder in der Raise-Range (" + joinRanges(OPEN_INIT_RAISE[heroPos]) + ") noch in der Call-Range der Blinds."
             : hand + " ist nicht in der Raise-Range (" + joinRanges(OPEN_INIT_RAISE[heroPos]) + ")."
         };
       }
@@ -2334,7 +2339,7 @@
       actions.innerHTML = "";
 
       const options = scenario === "NO_RAISE"
-        ? [{ id: "RAISE", text: "Raise" }, { id: "CALLCHECK", text: "Call/Check" }, { id: "FOLD", text: "Fold" }]
+        ? [{ id: "RAISE", text: "Raise" }, { id: "CALLCHECK", text: "Call" }, { id: "FOLD", text: "Fold" }]
         : [{ id: "CALL", text: "Call" }, { id: "3BET", text: "3-Bet" }, { id: "FOLD", text: "Fold" }];
 
       for (const opt of options) {
