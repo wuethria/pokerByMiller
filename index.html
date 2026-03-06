@@ -247,9 +247,16 @@
       color: #ffffff;
     }
     .task-line--fixed .context-chip {
-      background: #e8eef8;
-      border-color: #d1dbe9;
-      color: #2f4a70;
+      background: var(--chip-bg);
+      border-color: var(--chip-border);
+      color: var(--chip-text);
+    }
+    .task-line--fixed .context-chip::after {
+      content: " \1F512";
+      font-size: 0.82em;
+      opacity: 0.85;
+      margin-left: 2px;
+      vertical-align: baseline;
     }
     .task-card.task-refresh .context-line:not(.task-line--fixed) .context-chip {
       animation: contextChipPop 1000ms ease-out;
@@ -388,17 +395,8 @@
       line-height: 1.35;
     }
     .task-line--fixed {
-      display: block;
-      width: 100%;
-      margin: 8px 0 0;
-      padding: 5px 11px;
-      box-sizing: border-box;
-      border-radius: 12px;
-      border: 1px solid var(--chip-border);
-      background: var(--chip-bg);
-      color: var(--chip-text);
-      filter: saturate(0.75);
-      font-weight: 600;
+      filter: none;
+      font-weight: inherit;
     }
     .task-question {
       text-align: center;
@@ -1159,14 +1157,6 @@
               <option value="SEQUENTIAL">der Reihe nach (EP -> Blinds -> Dealer -> CO)</option>
             </select>
           </div>
-          <div id="learnCfgActionWrap">
-            <label for="learnCfgAction">Aktion</label>
-            <select id="learnCfgAction">
-              <option value="ALL">alle</option>
-                            <option value="CALLCHECK">Call/Check</option>
-              <option value="3BET">3-bet</option>
-            </select>
-          </div>
         </div>
       </aside>
     </div>
@@ -1872,80 +1862,35 @@
     function applyLearnAreaModeUI() {
       const areaSelect = document.getElementById("learnCfgArea");
       const positionSelect = document.getElementById("learnCfgPosition");
-      const actionWrap = document.getElementById("learnCfgActionWrap");
-      const actionSelect = document.getElementById("learnCfgAction");
       const categorySelect = document.getElementById("learnCfgCategory");
       const posModeWrap = document.getElementById("learnCfgPosModeWrap");
       const posModeSelect = document.getElementById("learnCfgPosMode");
       const actionLine = document.getElementById("learnLineAction");
 
       const currentArea = areaSelect.value || "ALL";
-      const currentAction = actionSelect.value || "ALL";
       const currentPosition = positionSelect.value || "ALL";
       const currentCategory = categorySelect.value || "ALL";
       const currentPosMode = posModeSelect.value || "RANDOM";
 
-      actionWrap.style.display = "block";
       actionLine.style.display = "block";
       actionLine.style.visibility = "visible";
 
-      let areaItems = [
+      const areaItems = [
         { value: "ALL", label: "alle" },
         { value: "INIT", label: "Pre-Flop Initiative" },
         { value: "TIGHT", label: "Pre-Flop Verteidigung (Tight)" },
         { value: "LOOSE", label: "Pre-Flop Verteidigung (Loose)" }
       ];
-
-      if (currentAction === "RAISE") {
-        areaItems = areaItems.filter((item) => item.value === "ALL" || item.value === "INIT");
-      } else if (currentAction === "3BET") {
-        areaItems = areaItems.filter((item) => item.value === "ALL" || item.value === "TIGHT" || item.value === "LOOSE");
-      }
-
       setSelectOptions(areaSelect, areaItems, currentArea);
       const effectiveArea = areaSelect.value;
 
-      let actionItems;
-      if (effectiveArea === "INIT") {
-        actionItems = [
-          { value: "ALL", label: "alle" },
-          { value: "RAISE", label: "Raise" },
-          { value: "CALLCHECK", label: "Call/Check" }
-        ];
-      } else if (effectiveArea === "TIGHT" || effectiveArea === "LOOSE") {
-        actionItems = [
-          { value: "ALL", label: "alle" },
-          { value: "CALLCHECK", label: "Call/Check" },
-          { value: "3BET", label: "3-bet" }
-        ];
-      } else {
-        actionItems = [
-          { value: "ALL", label: "alle" },
-          { value: "RAISE", label: "Raise" },
-          { value: "CALLCHECK", label: "Call/Check" },
-          { value: "3BET", label: "3-bet" }
-        ];
-      }
-
-      setSelectOptions(actionSelect, actionItems, currentAction);
-      const effectiveAction = actionSelect.value;
-
-      let positionItems = [
+      const positionItems = [
         { value: "ALL", label: "alle" },
         { value: "EP", label: "EP" },
         { value: "BLIND", label: "Small Blind bzw. Blinds" },
         { value: "BTN", label: "Dealer" },
         { value: "CO", label: "CO" }
       ];
-
-      // In Pre-Flop Initiative existiert Call/Check nur in der Blinds-Spalte.
-      if (effectiveArea === "INIT" && effectiveAction === "CALLCHECK") {
-        positionItems = [
-          { value: "ALL", label: "alle" },
-          { value: "BLIND", label: "Small Blind bzw. Blinds" }
-        ];
-      }
-
       setSelectOptions(positionSelect, positionItems, currentPosition);
 
       const categoryItems = [{ value: "ALL", label: "alle" }]
@@ -1965,15 +1910,12 @@
       const area = document.getElementById("learnCfgArea").value;
       const pos = document.getElementById("learnCfgPosition").value;
       const category = document.getElementById("learnCfgCategory").value;
-      const rawAction = document.getElementById("learnCfgAction").value;
-      const action = rawAction === "" ? "ALL" : rawAction;
 
       return learnQuestions.filter((q) =>
         !learnExcludedSignatures.has(learnComboSignature(q)) &&
         (area === "ALL" || q.areaKey === area) &&
         (pos === "ALL" || q.positionKey === pos) &&
-        (category === "ALL" || q.category === category) &&
-        (action === "ALL" || (Array.isArray(q.actionKeys) && q.actionKeys.includes(action)))
+        (category === "ALL" || q.category === category)
       );
     }
 
@@ -2063,7 +2005,6 @@
     function renderLearnFixedChips() {
       const areaCfg = document.getElementById("learnCfgArea").value;
       const posCfg = document.getElementById("learnCfgPosition").value;
-      const actionCfg = document.getElementById("learnCfgAction").value;
       const categoryCfg = document.getElementById("learnCfgCategory").value;
       const chips = [];
 
@@ -2072,9 +2013,6 @@
       }
       if (posCfg !== "ALL") {
         chips.push({ label: "Position", value: getSelectText("learnCfgPosition", posCfg) });
-      }
-      if (actionCfg !== "ALL") {
-        chips.push({ label: "Aktion", value: getSelectText("learnCfgAction", actionCfg) });
       }
       if (categoryCfg !== "ALL") {
         chips.push({ label: "Kategorie", value: categoryCfg });
@@ -2430,7 +2368,6 @@
     };
     document.getElementById("learnCfgArea").addEventListener("change", onLearnConfigChange);
     document.getElementById("learnCfgPosition").addEventListener("change", onLearnConfigChange);
-    document.getElementById("learnCfgAction").addEventListener("change", onLearnConfigChange);
     document.getElementById("learnCfgCategory").addEventListener("change", onLearnConfigChange);
     document.getElementById("learnCfgPosMode").addEventListener("change", onLearnConfigChange);
     document.getElementById("condition").addEventListener("change", () => { playPositionSeqIndex = 0; applyPlaySpecialModeUI(); applyPlayCategoryModeUI(); nextHand(true); });
