@@ -426,9 +426,16 @@
     .learn-review-actions {
       display: flex;
       gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
     .learn-review-actions button {
       min-width: 110px;
+      min-height: 42px;
+    }
+    #learnSkipBtn {
+      font-size: 0.82rem;
+      line-height: 1.15;
     }
     .primary-btn {
       border: 1px solid var(--primary-bg);
@@ -1106,6 +1113,7 @@
               <div id="learnReviewActions" class="learn-review-actions" style="display:none;">
                 <button id="learnOkBtn" class="primary-btn">OK</button>
                 <button id="learnNokBtn" class="subtle-btn">NOK</button>
+                <button id="learnSkipBtn" class="subtle-btn">Nicht mehr fragen</button>
               </div>
             </div>
             <div class="learn-answer-wrap">
@@ -1279,6 +1287,7 @@
     let learnCurrent = null;
     let learnAnswerVisible = false;
     let learnReviewQueue = [];
+    let learnExcludedSignatures = new Set();
     let learnSinceLastReview = 0;
     const learnQuestions = [];
     const POSITION_ORDER = ["EP", "BLIND", "BTN", "CO"];
@@ -1960,6 +1969,7 @@
       const action = rawAction === "" ? "ALL" : rawAction;
 
       return learnQuestions.filter((q) =>
+        !learnExcludedSignatures.has(learnComboSignature(q)) &&
         (area === "ALL" || q.areaKey === area) &&
         (pos === "ALL" || q.positionKey === pos) &&
         (category === "ALL" || q.category === category) &&
@@ -2273,6 +2283,14 @@
       nextLearnQuestion();
     }
 
+    function learnSkipCombination() {
+      if (!learnCurrent || !learnAnswerVisible) return;
+      const sig = learnComboSignature(learnCurrent);
+      learnExcludedSignatures.add(sig);
+      learnReviewQueue = learnReviewQueue.filter((x) => x !== sig);
+      nextLearnQuestion();
+    }
+
     function renderActions(scenario) {
       const actions = document.getElementById("actions");
       actions.innerHTML = "";
@@ -2405,6 +2423,7 @@
     document.getElementById("learnToggleBtn").addEventListener("click", toggleLearnAnswer);
     document.getElementById("learnOkBtn").addEventListener("click", () => learnReviewAnswer(true));
     document.getElementById("learnNokBtn").addEventListener("click", () => learnReviewAnswer(false));
+    document.getElementById("learnSkipBtn").addEventListener("click", learnSkipCombination);
     const onLearnConfigChange = () => {
       resetLearnReviewQueue();
       nextLearnQuestion();
