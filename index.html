@@ -1156,7 +1156,8 @@
             <select id="position">
               <option value="ALL">alle</option>
               <option value="EP">EP</option>
-              <option value="BLIND">Small Blind bzw. Blinds</option>
+              <option value="SB">Small Blind</option>
+              <option value="BB">Big Blind</option>
               <option value="BTN">Dealer</option>
               <option value="CO">CO</option>
             </select>
@@ -1180,7 +1181,7 @@
             <label for="playCfgPosMode">Positionsmodus</label>
             <select id="playCfgPosMode">
               <option value="RANDOM">zufaellig</option>
-              <option value="SEQUENTIAL">der Reihe nach (EP -> Blinds -> Dealer -> CO)</option>
+              <option value="SEQUENTIAL">der Reihe nach (EP -> Small Blind -> Big Blind -> Dealer -> CO)</option>
             </select>
           </div>
           <div id="specialConditionWrap">
@@ -1391,6 +1392,7 @@
     let learnSinceLastReview = 0;
     const learnQuestions = [];
     const POSITION_ORDER = ["EP", "BLIND", "BTN", "CO"];
+    const PLAY_POSITION_ORDER = ["EP", "SB", "BB", "BTN", "CO"];
     let playPositionSeqIndex = 0;
     let learnPositionSeqIndex = 0;
     const stats = {
@@ -1401,6 +1403,8 @@
         EP: { total: 0, correct: 0 },
         CO: { total: 0, correct: 0 },
         BTN: { total: 0, correct: 0 },
+        SB: { total: 0, correct: 0 },
+        BB: { total: 0, correct: 0 },
         BLIND: { total: 0, correct: 0 }
       }
     };
@@ -1519,7 +1523,7 @@
 
     function getPosition(selected) {
       if (selected !== "ALL") return selected;
-      const all = ["EP", "CO", "BTN", "BLIND"];
+      const all = ["EP", "CO", "BTN", "SB", "BB"];
       return all[Math.floor(Math.random() * all.length)];
     }
 
@@ -1529,8 +1533,12 @@
       return s[Math.floor(Math.random() * s.length)];
     }
 
+    function isBlindPosition(pos) {
+      return pos === "SB" || pos === "BB" || pos === "BLIND";
+    }
+
     function actionLabel(action) {
-      return { RAISE: "Raise", CALLCHECK: "Call", CALL: "Call", "3BET": "3-Bet", FOLD: "Fold" }[action];
+      return { RAISE: "Raise", CHECK: "Check", CALLCHECK: "Call", CALL: "Call", "3BET": "3-Bet", FOLD: "Fold" }[action];
     }
 
     function joinRanges(tokens) {
@@ -1539,34 +1547,56 @@
 
     function resolveCorrectAction(hand, heroPos, scenario, raiserPos, specialCondition) {
       if (scenario === "NO_RAISE") {
-        const raise = inRange(OPEN_INIT_RAISE[heroPos], hand);
+        const isBlind = isBlindPosition(heroPos);
+        const raiseRefPos = isBlind ? "BLIND" : heroPos;
+        const raise = inRange(OPEN_INIT_RAISE[raiseRefPos], hand);
         if (raise) {
           return {
             correct: "RAISE",
             tableLabel: "Tabelle 1: Pre-Flop Initiative",
-            reason: hand + " ist in der Raise-Range (" + joinRanges(OPEN_INIT_RAISE[heroPos]) + ")."
+            reason: hand + " ist in der Raise-Range (" + joinRanges(OPEN_INIT_RAISE[raiseRefPos]) + ")."
           };
         }
 
-        if (heroPos === "BLIND" && isBlindCallCheck(hand)) {
+        // Dokumentation: Die Tabellen bleiben mit einer gemeinsamen Blinds-Spalte gepflegt.
+        // Im Hands-Tab wird SB/BB zusaetzlich logisch abgeleitet:
+        // Aenderungen an dieser Ableitungsregel nur nach expliziter Ruecksprache/Freigabe vornehmen:
+        // - In Blinds-Call-Spalte: SB=Call, BB=Check
+        // - In keiner Blinds-Spalte: SB=Fold, BB=Check
+        if (isBlind) {
+          const inBlindCall = isBlindCallCheck(hand);
+          if (inBlindCall) {
+            return {
+              correct: heroPos === "BB" ? "CHECK" : "CALL",
+              tableLabel: "Tabelle 1: Pre-Flop Initiative",
+              reason: hand + " ist in der Call-Range der Blinds."
+            };
+          }
+
+          if (heroPos === "BB") {
+            return {
+              correct: "CHECK",
+              tableLabel: "Tabelle 1: Pre-Flop Initiative",
+              reason: hand + " ist weder in der Raise-Range (" + joinRanges(OPEN_INIT_RAISE.BLIND) + ") noch in der Call-Range der Blinds, daher Check im Big Blind."
+            };
+          }
+
           return {
-            correct: "CALLCHECK",
+            correct: "FOLD",
             tableLabel: "Tabelle 1: Pre-Flop Initiative",
-            reason: hand + " ist in der Call-Range der Blinds."
+            reason: hand + " ist weder in der Raise-Range (" + joinRanges(OPEN_INIT_RAISE.BLIND) + ") noch in der Call-Range der Blinds."
           };
         }
 
         return {
           correct: "FOLD",
           tableLabel: "Tabelle 1: Pre-Flop Initiative",
-          reason: heroPos === "BLIND"
-            ? hand + " ist weder in der Raise-Range (" + joinRanges(OPEN_INIT_RAISE[heroPos]) + ") noch in der Call-Range der Blinds."
-            : hand + " ist nicht in der Raise-Range (" + joinRanges(OPEN_INIT_RAISE[heroPos]) + ")."
+          reason: hand + " ist nicht in der Raise-Range (" + joinRanges(OPEN_INIT_RAISE[raiseRefPos]) + ")."
         };
       }
 
       let col;
-      if (heroPos === "BLIND") {
+      if (isBlindPosition(heroPos)) {
         if (specialCondition === "EP_STEAL" || specialCondition === "RAISE_GT_3BB") {
           col = "EP";
         } else if (specialCondition === "DEALER_CO_STEAL") {
@@ -1606,7 +1636,12 @@
     }
 
     function labelPos(p) {
-      return p === "EP" ? "EP" : p === "BLIND" ? "Small Blind bzw. Blinds" : p === "BTN" ? "Dealer" : p;
+      if (p === "EP") return "EP";
+      if (p === "SB") return "Small Blind";
+      if (p === "BB") return "Big Blind";
+      if (p === "BLIND") return "Small Blind bzw. Blinds";
+      if (p === "BTN") return "Dealer";
+      return p;
     }
 
     function scenarioText(s) {
@@ -1657,6 +1692,7 @@
         "Early Position",
         "Cutoff",
         "Button",
+        "Small Blind",
         "den Blinds",
         "Big Blind",
         "tighter Spieler",
@@ -1714,6 +1750,8 @@
       if (state.heroPos === "EP") lines.push({ key: "position", text: "Du sitzt in Early Position." });
       else if (state.heroPos === "CO") lines.push({ key: "position", text: "Du sitzt im Cutoff." });
       else if (state.heroPos === "BTN") lines.push({ key: "position", text: "Du sitzt am Button." });
+      else if (state.heroPos === "SB") lines.push({ key: "position", text: "Du sitzt im Small Blind." });
+      else if (state.heroPos === "BB") lines.push({ key: "position", text: "Du sitzt im Big Blind." });
       else if (state.heroPos === "BLIND") lines.push({ key: "position", text: "Du sitzt in den Blinds." });
 
       if (state.scenario === "NO_RAISE") {
@@ -1724,7 +1762,7 @@
         lines.push({ key: "scenario", text: "Vor dir hat ein looser Spieler geraised." });
       }
 
-      if (!isPlaceholderValue(state.specialCondition) && state.scenario === "LOOSE_RAISE" && state.heroPos === "BLIND") {
+      if (!isPlaceholderValue(state.specialCondition) && state.scenario === "LOOSE_RAISE" && isBlindPosition(state.heroPos)) {
         if (state.specialCondition === "EP_STEAL") lines.push({ key: "special", text: "Der Steal kommt aus Early Position." });
         if (state.specialCondition === "RAISE_GT_3BB") lines.push({ key: "special", text: "Die Erhoehung ist groesser als 3 Big Blinds." });
         if (state.specialCondition === "DEALER_CO_STEAL") lines.push({ key: "special", text: "Der Steal kommt vom Dealer oder Cutoff." });
@@ -1804,7 +1842,8 @@
         line("EP", "early:") + " | " +
         line("CO", "CO:") + " | " +
         line("BTN", "Dealer:") + " | " +
-        line("BLIND", "Blind:");
+        line("SB", "SB:") + " | " +
+        line("BB", "BB:");
     }
 
     function setTab(tab) {
@@ -2080,7 +2119,7 @@
         chips.push({ label: "Kategorie", value: cat });
       }
       const sp = document.getElementById("specialCondition").value;
-      if (cond === "LOOSE_RAISE" && (pos === "ALL" || pos === "BLIND") && sp !== "ALL") {
+      if (cond === "LOOSE_RAISE" && (pos === "ALL" || isBlindPosition(pos)) && sp !== "ALL") {
         chips.push({ label: "Spezialbedingungen", value: getSelectText("specialCondition", sp) });
       }
       renderFixedChips("playFixedChips", "playNoFixed", chips);
@@ -2091,7 +2130,7 @@
       const pos = document.getElementById("position").value;
       const wrap = document.getElementById("specialConditionWrap");
       const select = document.getElementById("specialCondition");
-      const enabled = cond === "LOOSE_RAISE" && (pos === "ALL" || pos === "BLIND");
+      const enabled = cond === "LOOSE_RAISE" && (pos === "ALL" || isBlindPosition(pos));
       wrap.style.display = enabled ? "block" : "none";
       select.disabled = !enabled;
       if (!enabled) select.value = "ALL";
@@ -2344,13 +2383,22 @@
       nextLearnQuestion();
     }
 
-    function renderActions(scenario) {
+    function renderActions(scenario, heroPos) {
       const actions = document.getElementById("actions");
       actions.innerHTML = "";
 
-      const options = scenario === "NO_RAISE"
-        ? [{ id: "RAISE", text: "Raise" }, { id: "CALLCHECK", text: "Call" }, { id: "FOLD", text: "Fold" }]
-        : [{ id: "CALL", text: "Call" }, { id: "3BET", text: "3-Bet" }, { id: "FOLD", text: "Fold" }];
+      let options;
+      if (scenario === "NO_RAISE") {
+        if (heroPos === "BB") {
+          options = [{ id: "RAISE", text: "Raise" }, { id: "CHECK", text: "Check" }, { id: "FOLD", text: "Fold" }];
+        } else if (heroPos === "SB") {
+          options = [{ id: "RAISE", text: "Raise" }, { id: "CALL", text: "Call" }, { id: "FOLD", text: "Fold" }];
+        } else {
+          options = [{ id: "RAISE", text: "Raise" }, { id: "FOLD", text: "Fold" }];
+        }
+      } else {
+        options = [{ id: "CALL", text: "Call" }, { id: "3BET", text: "3-Bet" }, { id: "FOLD", text: "Fold" }];
+      }
 
       for (const opt of options) {
         const b = document.createElement("button");
@@ -2405,13 +2453,13 @@
       let heroPos = getPosition(selected);
       const scenario = getScenario(selectedCondition);
       if (selected === "ALL" && selectedCategory !== "ALL" && playPosMode === "SEQUENTIAL") {
-        heroPos = POSITION_ORDER[playPositionSeqIndex % POSITION_ORDER.length];
-        playPositionSeqIndex = (playPositionSeqIndex + 1) % POSITION_ORDER.length;
+        heroPos = PLAY_POSITION_ORDER[playPositionSeqIndex % PLAY_POSITION_ORDER.length];
+        playPositionSeqIndex = (playPositionSeqIndex + 1) % PLAY_POSITION_ORDER.length;
       }
       if (selected === "ALL" && selectedCondition === "LOOSE_RAISE" && selectedSpecial !== "ALL") {
-        heroPos = "BLIND";
+        heroPos = Math.random() < 0.5 ? "SB" : "BB";
       }
-      const specialCondition = (scenario === "LOOSE_RAISE" && heroPos === "BLIND") ? selectedSpecial : "ALL";
+      const specialCondition = (scenario === "LOOSE_RAISE" && isBlindPosition(heroPos)) ? selectedSpecial : "ALL";
 
       let c1 = null;
       let c2 = null;
@@ -2424,7 +2472,7 @@
       } while (!handMatchesCategory(hand, selectedCategory) && attempts < 5000);
 
       let raiserPos = null;
-      if (heroPos === "BLIND" && scenario !== "NO_RAISE") {
+      if (isBlindPosition(heroPos) && scenario !== "NO_RAISE") {
         if (specialCondition === "EP_STEAL" || specialCondition === "RAISE_GT_3BB") {
           raiserPos = "EP";
         } else if (specialCondition === "DEALER_CO_STEAL") {
@@ -2467,7 +2515,7 @@
       if (highlightNew) animateTaskCard("playTaskCard");
       document.getElementById("result").style.display = "none";
       document.getElementById("playTaskZone").classList.remove("play-answered");
-      renderActions(scenario);
+      renderActions(scenario, heroPos);
       setActionButtonsDisabled(false);
       syncTaskCardHeights();
     }
