@@ -186,7 +186,7 @@
       padding-bottom: 0;
     }
     .task-card.task-refresh {
-      animation: taskRefresh 190ms ease;
+      animation: none;
     }
     .task-value {
       margin-top: 6px;
@@ -290,10 +290,10 @@
       vertical-align: baseline;
     }
     .task-card.task-refresh .context-line:not(.task-line--fixed) .context-chip {
-      animation: contextChipPop 1000ms ease-out;
+      animation: none;
     }
     .task-card.task-refresh #learnTaskCategory.learn-category-dynamic {
-      animation: contextChipPop 1000ms ease-out;
+      animation: none;
     }
     .category-card {
       width: 100%;
@@ -339,7 +339,7 @@
     .play-middle-line #cards {
       grid-column: 2;
       justify-self: center;
-      margin: 28px 0 22px;
+      margin: 0;
     }
     .task-zone {
       width: 100%;
@@ -381,20 +381,18 @@
     }
     #learnTaskLines {
       min-height: 0;
+      padding-top: 18px;
     }
     .learn-category-line {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
+      display: flex;
       align-items: center;
-      column-gap: 6px;
+      justify-content: center;
       width: 100%;
       min-height: 0;
-      margin-top: 18px;
+      margin-top: 13px;
     }
     #learnTaskCategory {
       position: static;
-      grid-column: 2;
-      justify-self: center;
       width: auto;
       margin: 0;
       text-align: center;
@@ -433,6 +431,7 @@
       border-radius: 0;
       color: #16345e;
       white-space: normal;
+      line-height: 0;
     }
     #learnTaskCategory.learn-category-visual::after {
       content: none;
@@ -441,15 +440,18 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 12px;
+    }
+    .learn-category-line .learn-cat-cards {
+      margin: 28px 0 22px;
     }
     .learn-cat-card {
-      width: 42px;
-      height: 58px;
-      border: 1.5px solid #2a2a2a;
-      border-radius: 8px;
+      width: 96px;
+      height: 136px;
+      border: 2px solid #2a2a2a;
+      border-radius: 10px;
       background: #fff;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.14);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.14);
       box-sizing: border-box;
       user-select: none;
       position: relative;
@@ -459,8 +461,8 @@
     .learn-cat-card.black { color: #111; }
     .learn-cat-corner {
       position: absolute;
-      left: 0px;
-      top: 2px;
+      left: 4px;
+      top: 3px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -472,14 +474,14 @@
     .learn-cat-corner-bottom {
       left: auto !important;
       top: auto !important;
-      right: 0px !important;
+      right: 4px !important;
       bottom: 2px !important;
       transform: rotate(180deg);
       transform-origin: center;
     }
-    .learn-cat-rank { font-size: 0.76rem; font-weight: 400; line-height: 1; font-family: Arial, sans-serif; display: block; text-align: center; }
-    .learn-cat-suit { font-size: 0.46rem; line-height: 1; margin-top: -2px; display: block; text-align: center; }
-    .learn-cat-suit-big { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 1.12rem; line-height: 1; z-index: 1; }
+    .learn-cat-rank { font-size: 1.58rem; font-weight: 400; line-height: 1; font-family: Arial, sans-serif; display: block; text-align: center; }
+    .learn-cat-suit { font-size: 1.05rem; line-height: 1; margin-top: -2px; display: block; text-align: center; }
+    .learn-cat-suit-big { position: absolute; left: 50%; top: calc(50% - 2px); transform: translate(-50%, -50%); font-size: 2.6rem; line-height: 1; z-index: 1; }
     .learn-cat-label {
       display: block;
       text-align: center;
@@ -488,16 +490,27 @@
       font-weight: 600;
       line-height: 1.2;
     }
+    .learn-cat-gap {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid #c4cfdf;
+      background: #eef3fb;
+      color: #3f4e61;
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .learn-cat-hint {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.74rem;
+      color: #5a677a;
+      line-height: 1.2;
+    }
     #learnCategoryLead {
-      grid-column: 1;
-      justify-self: start;
-      margin: 0;
-      text-align: left;
-      color: #46556b;
-      font-size: 1rem;
-      line-height: 1.45;
-      font-weight: 450;
-      white-space: nowrap;
+      display: none;
     }
     #learnPrompt {
       margin-top: 30px;
@@ -649,7 +662,7 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      margin: 28px 0 22px;
+      margin: 0;
     }
     .cards.played .card {
       opacity: 0.55;
@@ -1028,6 +1041,9 @@
       #learnTaskCard .action-row {
         margin-top: 10px;
       }
+      #learnTaskLines {
+        padding-top: 16px;
+      }
       .context-block {
         padding: 10px 10px;
       }
@@ -1142,6 +1158,9 @@
       #learnTaskCard {
         min-height: auto !important;
       }
+      #learnTaskLines {
+        padding-top: 13px;
+      }
       .context-block {
         padding: 7px 8px;
       }
@@ -1201,7 +1220,7 @@
       }
       .play-middle-line #cards {
         grid-column: 1;
-        margin: 6px 0 8px;
+        margin: 0;
       }
       .cards {
         margin: 4px 0 6px;
@@ -1235,6 +1254,33 @@
       .card-suit {
         font-size: 0.92rem;
       }
+      .learn-cat-cards {
+        gap: 7px;
+      }
+      .learn-category-line .learn-cat-cards {
+        margin: 6px 0 8px;
+      }
+      .learn-cat-card {
+        width: 76px;
+        height: 108px;
+      }
+      .learn-cat-rank {
+        font-size: 1.28rem;
+      }
+      .learn-cat-suit {
+        font-size: 0.92rem;
+      }
+      .learn-cat-suit-big {
+        font-size: 2.2rem;
+      }
+      .learn-cat-corner {
+        left: 3px;
+        top: 2px;
+      }
+      .learn-cat-corner-bottom {
+        right: 3px !important;
+        bottom: 1px !important;
+      }
       .hand-tag {
         margin-top: 2px;
       }
@@ -1243,26 +1289,23 @@
         padding: 8px 10px;
       }
       .learn-category-line {
-        grid-template-columns: auto 1fr;
-        row-gap: 0;
-        column-gap: 6px;
-        min-height: 0;
-        margin-top: 10px;
+        display: flex;
         align-items: center;
+        justify-content: center;
+        min-height: 0;
+        margin-top: 11px;
       }
       #learnCategoryLead {
-        grid-column: 1;
-        justify-self: start;
-        text-align: left;
+        display: none;
       }
       #learnTaskCategory {
-        grid-column: 2;
-        justify-self: end;
+        justify-self: center;
         font-size: 0.86rem;
         line-height: 1.2;
         padding: 2px 7px;
         white-space: nowrap;
-        text-align: right;
+        text-align: center;
+        margin: 0;
       }
       #learnTaskCategory {
         max-width: 100%;
@@ -2056,29 +2099,53 @@
 
     function categoryPreviewCards(category) {
       if (category === "Paare") {
-        return [
-          { rank: "X", suit: randomSuit() },
-          { rank: "X", suit: randomSuit() }
-        ];
+        return {
+          cards: [
+            { rank: "X", suit: randomSuit() },
+            { rank: "X", suit: randomSuit() }
+          ],
+          gap: null
+        };
       }
 
-      const match = String(category).match(/^(Ass|Koenig|Dame|Bube) \((Suited|Offsuit)\)$/);
-      if (!match) return null;
+      const broadway = String(category).match(/^(Ass|Koenig|Dame|Bube) \((Suited|Offsuit)\)$/);
+      if (broadway) {
+        const rankMap = { Ass: "A", Koenig: "K", Dame: "Q", Bube: "J" };
+        const firstRank = rankMap[broadway[1]] || "X";
+        const suited = broadway[2] === "Suited";
+        const suit1 = randomSuit();
+        const suit2 = suited ? suit1 : randomDifferentSuit(suit1);
+        return {
+          cards: [
+            { rank: firstRank, suit: suit1 },
+            { rank: "?", suit: suit2 }
+          ],
+          gap: null
+        };
+      }
 
-      const rankMap = { Ass: "A", Koenig: "K", Dame: "Q", Bube: "J" };
-      const firstRank = rankMap[match[1]] || "X";
-      const suited = match[2] === "Suited";
-      const suit1 = randomSuit();
-      const suit2 = suited ? suit1 : randomDifferentSuit(suit1);
+      const gapped = String(category).match(/^(Connectors|1-Gappers|2-Gappers) \((Suited|Offsuit)\)$/);
+      if (gapped) {
+        const suited = gapped[2] === "Suited";
+        const suit1 = randomSuit();
+        const suit2 = suited ? suit1 : randomDifferentSuit(suit1);
+        const gapMap = { "Connectors": 0, "1-Gappers": 1, "2-Gappers": 2 };
+        return {
+          cards: [
+            { rank: "?", suit: suit1 },
+            { rank: "?", suit: suit2 }
+          ],
+          gap: gapMap[gapped[1]],
+          rangeHint: "Werte: J bis 2"
+        };
+      }
 
-      return [
-        { rank: firstRank, suit: suit1 },
-        { rank: "?", suit: suit2 }
-      ];
+      return null;
     }
 
     function renderLearnCategory(categoryEl, category, isDynamic) {
-      const cards = categoryPreviewCards(category);
+      const preview = categoryPreviewCards(category);
+      const cards = preview && preview.cards ? preview.cards : null;
       categoryEl.classList.toggle("learn-category-dynamic", isDynamic);
       categoryEl.classList.toggle("learn-category-visual", Boolean(cards));
 
@@ -2089,15 +2156,20 @@
 
       const cardsHtml = cards.map((card) => {
         const suit = suitInfo(card.suit);
-        return "<span class='learn-cat-card " + suit.cls + "'>" +
-          "<span class='learn-cat-corner'><span class='learn-cat-rank'>" + card.rank + "</span><span class='learn-cat-suit'>" + suit.symbol + "</span></span>" +
-          "<span class='learn-cat-suit-big'>" + suit.symbol + "</span>" +
-          "<span class='learn-cat-corner learn-cat-corner-bottom'><span class='learn-cat-rank'>" + card.rank + "</span><span class='learn-cat-suit'>" + suit.symbol + "</span></span>" +
+        const rankClass = card.rank === "10" ? "card-rank card-rank-ten" : "card-rank";
+        return "<span class='card " + suit.cls + "'>" +
+          "<span class='card-corner'><span class='" + rankClass + "'>" + card.rank + "</span><span class='card-suit'>" + suit.symbol + "</span></span>" +
+          "<span class='card-suit-big'>" + suit.symbol + "</span>" +
+          "<span class='card-corner card-corner-bottom'><span class='" + rankClass + "'>" + card.rank + "</span><span class='card-suit'>" + suit.symbol + "</span></span>" +
           "</span>";
       }).join("");
 
+      const gapHtml = (preview && typeof preview.gap === "number")
+        ? "<span class='learn-cat-gap'>Gap " + preview.gap + " (J > ? > 2)</span>"
+        : "";
+
       categoryEl.innerHTML =
-        "<span class='learn-cat-cards'>" + cardsHtml + "</span>";
+        "<span class='cards learn-cat-cards'>" + cardsHtml + "</span>" + gapHtml;
     }
 
     function renderCards(c1, c2, hand, highlightNew) {
@@ -2473,9 +2545,8 @@
 
     function animateTaskCard(cardId) {
       const card = document.getElementById(cardId);
+      if (!card) return;
       card.classList.remove("task-refresh");
-      void card.offsetWidth;
-      card.classList.add("task-refresh");
     }
 
     function syncTaskCardHeights() {
