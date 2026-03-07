@@ -350,7 +350,7 @@
     .play-gap-reserve {
       display: flex;
       justify-content: center;
-      margin-top: 6px;
+      margin-top: 7px;
     }
     .task-zone {
       width: 100%;
@@ -364,7 +364,7 @@
     }
     #playTaskZone {
       border: 1px solid #d5d5d5;
-      padding: var(--play-zone-gap) 14px;
+      padding: calc(var(--play-zone-gap) - 1px) 14px var(--play-zone-gap);
       display: flex;
       flex-direction: column;
     }
@@ -374,6 +374,7 @@
     }
     #playTaskZone.play-answered #result {
       margin-top: 0;
+      margin-bottom: 10px;
     }
     #learnTaskZone {
       border: 1px solid #d5d5d5;
@@ -390,6 +391,7 @@
       padding: 2px 0;
       box-sizing: border-box;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
     }
@@ -518,15 +520,15 @@
       line-height: 1.2;
     }
     .learn-cat-gap {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       margin-top: 4px;
-      padding: 2px 8px;
-      border-radius: 999px;
-      border: 1px solid #c4cfdf;
-      background: #eef3fb;
+      padding: 0;
+      min-height: 21px;
       color: #3f4e61;
       font-size: 0.78rem;
-      font-weight: 700;
+      font-weight: 400;
       line-height: 1.2;
     }
     .learn-cat-gap.is-placeholder {
@@ -543,8 +545,9 @@
       display: none;
     }
     #learnPrompt {
-      display: none;
+      display: block;
       margin: 0;
+      width: 100%;
     }
     #learnLineAction {
       display: none;
@@ -572,7 +575,7 @@
       margin-bottom: 14px;
     }
     #playDecisionPrompt {
-      margin-top: calc(var(--play-zone-gap) - 4px);
+      margin-top: calc(var(--play-zone-gap) - 10px);
       margin-bottom: var(--play-zone-gap);
     }
     #playTaskZone #actions {
@@ -580,6 +583,9 @@
       margin-bottom: var(--play-zone-gap);
     }
     #playTaskZone .action-row {
+      margin-top: 0;
+    }
+    #playTaskZone.play-answered .action-row {
       margin-top: 0;
     }
     .action-row {
@@ -1130,8 +1136,7 @@
         white-space: normal;
       }
       #learnPrompt {
-        margin-top: 10px;
-        margin-bottom: 16px;
+        margin: 0;
       }
       .task-zone {
         margin-top: 16px;
@@ -1275,6 +1280,9 @@
         margin-top: 0;
         padding: 9px 0 7px;
       }
+      .play-gap-reserve {
+        margin-top: 7px;
+      }
       .play-context-wrap {
         min-height: auto;
       }
@@ -1398,16 +1406,21 @@
       #learnTaskZone {
         padding: 10px 9px 10px;
       }
+      #playTaskZone {
+        padding-top: 9px;
+      }
       #playDecisionPrompt {
-        margin-top: 12px;
+        margin-top: 8px;
         margin-bottom: 9px;
       }
       #playTaskZone #actions {
         margin-bottom: 12px;
       }
-      #learnPrompt {
-        margin-top: 7px;
+      #playTaskZone.play-answered #result {
         margin-bottom: 10px;
+      }
+      #learnPrompt {
+        margin: 0;
       }
       .learn-answer-wrap {
         padding: 2px 0;
@@ -1444,8 +1457,7 @@
         padding: 2px 6px;
       }
       #learnPrompt {
-        margin-top: 8px;
-        margin-bottom: 12px;
+        margin: 0;
       }
       .action-row {
         gap: 8px;
@@ -1577,7 +1589,6 @@
             </div>
           </div>
           <div id="learnTaskZone" class="task-zone">
-            <div id="learnPrompt" class="task-question">Welche Haende spielst du?</div>
             <div class="action-row">
               <button id="learnToggleBtn" class="primary-btn">Antwort anzeigen</button>
               <div id="learnReviewActions" class="learn-review-actions" style="display:none;">
@@ -1587,6 +1598,7 @@
               </div>
             </div>
             <div class="learn-answer-wrap">
+              <div id="learnPrompt" class="task-question">Welche Haende spielst du?</div>
               <div id="learnResult" class="result neutral" style="display:none;"></div>
             </div>
           </div>
@@ -2636,13 +2648,16 @@
       const showBtn = document.getElementById("learnToggleBtn");
       const review = document.getElementById("learnReviewActions");
       const zone = document.getElementById("learnTaskZone");
+      const prompt = document.getElementById("learnPrompt");
       if (mode === "review") {
         showBtn.style.display = "none";
         review.style.display = "grid";
+        prompt.style.display = "none";
         zone.classList.add("learn-answered");
       } else {
         showBtn.style.display = "inline-block";
         review.style.display = "none";
+        prompt.style.display = "block";
         zone.classList.remove("learn-answered");
       }
     }
@@ -2771,6 +2786,7 @@
         btn.textContent = "Antwort anzeigen";
         btn.disabled = true;
         setLearnActionState("show");
+        document.getElementById("learnPrompt").style.display = "none";
         syncLearnAnswerSlotHeight();
         return;
       }
@@ -2912,6 +2928,7 @@
       const actions = document.getElementById("actions");
       const result = document.getElementById("result");
       if (!prompt || !actions || !result) return;
+      const resultButtonGap = 10;
 
       const blockHeightWithMargins = (el) => {
         const style = window.getComputedStyle(el);
@@ -2921,8 +2938,9 @@
       };
 
       const reserved = Math.ceil(blockHeightWithMargins(prompt) + blockHeightWithMargins(actions));
-      result.style.minHeight = reserved + "px";
-      result.style.height = reserved + "px";
+      const target = Math.max(0, reserved - resultButtonGap);
+      result.style.minHeight = target + "px";
+      result.style.height = target + "px";
     }
 
     function answer(choice) {
