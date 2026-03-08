@@ -352,11 +352,6 @@
       justify-self: center;
       margin: 6px 0 0;
     }
-    .play-gap-reserve {
-      display: flex;
-      justify-content: center;
-      margin-top: 7px;
-    }
     .task-zone {
       width: 100%;
       max-width: 100%;
@@ -523,21 +518,6 @@
       color: #46556b;
       font-weight: 600;
       line-height: 1.2;
-    }
-    .learn-cat-gap {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 4px;
-      padding: 0;
-      min-height: 21px;
-      color: #3f4e61;
-      font-size: 0.78rem;
-      font-weight: 400;
-      line-height: 1.2;
-    }
-    .learn-cat-gap.is-placeholder {
-      visibility: hidden;
     }
     .learn-cat-hint {
       display: block;
@@ -781,6 +761,18 @@
     }
     .card-rank-ten {
       letter-spacing: -0.08em;
+    }
+    .card-rank-placeholder {
+      font-size: 1.52rem;
+      letter-spacing: 0;
+      display: inline-block;
+      transform: scaleX(0.8);
+      transform-origin: center;
+      position: relative;
+      left: -2px;
+      font-weight: 200;
+      opacity: 0.82;
+      line-height: 1;
     }
     .card-suit {
       font-size: 1.05rem;
@@ -1285,9 +1277,6 @@
         margin-top: 8px;
         padding: 9px 0 7px;
       }
-      .play-gap-reserve {
-        margin-top: 7px;
-      }
       .play-context-wrap {
         min-height: auto;
       }
@@ -1308,60 +1297,11 @@
         margin: 4px 0 6px;
         gap: 7px;
       }
-      .card {
-        width: 76px;
-        height: 108px;
-        padding: 5px;
-      }
-      .card-rank {
-        font-size: 1.5rem;
-      }
-      .card-suit {
-        font-size: 1.2rem;
-      }
-      .card-suit-big {
-        font-size: 2.2rem;
-      }
-      .card-corner {
-        left: 3px;
-        top: 2px;
-      }
-      .card-corner-bottom {
-        right: 3px;
-        bottom: 1px;
-      }
-      .card-rank {
-        font-size: 1.28rem;
-      }
-      .card-suit {
-        font-size: 0.92rem;
-      }
       .learn-cat-cards {
         gap: 7px;
       }
       .learn-category-line .learn-cat-cards {
         margin: 6px 0 8px;
-      }
-      .learn-cat-card {
-        width: 76px;
-        height: 108px;
-      }
-      .learn-cat-rank {
-        font-size: 1.28rem;
-      }
-      .learn-cat-suit {
-        font-size: 0.92rem;
-      }
-      .learn-cat-suit-big {
-        font-size: 2.2rem;
-      }
-      .learn-cat-corner {
-        left: 3px;
-        top: 2px;
-      }
-      .learn-cat-corner-bottom {
-        right: 3px !important;
-        bottom: 1px !important;
       }
       .hand-tag {
         margin-top: 2px;
@@ -1540,9 +1480,6 @@
             <div class="play-middle-line">
               <div id="cards" class="cards"></div>
             </div>
-            <div class="play-gap-reserve" aria-hidden="true">
-              <span class="learn-cat-gap is-placeholder">Gap 0 (J &gt; ? &gt; 2)</span>
-            </div>
           </div>
           </div>
           <div id="playTaskZone" class="task-zone">
@@ -1688,12 +1625,12 @@
     <div class="pdf-card">
       <iframe
           class="pdf-frame"
-          src="Poker_Preflop_Strategie_FINAL_v21.pdf"
+          src="Poker_Preflop_Strategie_FINAL_v22.pdf"
           title="Poker Strategie PDF"
         ></iframe>
       <div class="pdf-actions">
-        <a class="primary-link" href="Poker_Preflop_Strategie_FINAL_v21.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
-        <a href="Poker_Preflop_Strategie_FINAL_v21.pdf" download>PDF herunterladen</a>
+        <a class="primary-link" href="Poker_Preflop_Strategie_FINAL_v22.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v22.pdf" download>PDF herunterladen</a>
       </div>
     </div>
   </section>
@@ -1703,9 +1640,9 @@
     const SUITS = ["h", "d", "c", "s"];
 
     const OPEN_INIT_RAISE = {
-      EP: ["22+", "A2s+", "AKo", "AQo", "KTs+", "QTs+", "JTs-76s"],
-      CO: ["22+", "A2s+", "ATo+", "K7s+", "KJo+", "Q9s+", "JTs", "JTs-43s", "J9s-53s"],
-      BTN: ["22+", "A2s+", "A7o+", "K2s+", "K9o+", "Q5s+", "QTo+", "J7s+", "JTo", "JTs-43s", "T8s-53s", "T7s-96s"],
+      EP: ["22+", "A2s+", "AKo", "AQo", "KTs+", "QTs+", "T9s-76s"],
+      CO: ["22+", "A2s+", "ATo+", "K7s+", "KJo+", "Q9s+", "JTs,J9s", "T9s-43s", "T8s-53s"],
+      BTN: ["22+", "A2s+", "A7o+", "K2s+", "K9o+", "Q5s+", "QTo+", "J7s+", "JTo", "T9s-43s", "T8s-53s", "T7s-96s"],
       BLIND: ["99+", "ATs+", "AQo+", "KJs+"]
     };
 
@@ -1718,7 +1655,7 @@
       "Q2s+",
       "Q2o+",
       "J2s+",
-      "J2o+",
+      "JTo",
       "ALL_0G_S",
       "ALL_0G_O"
     ];
@@ -1757,11 +1694,11 @@
       { category: "Koenig (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "K9o+", callCheck: "-" }, CO: { raise: "KJo+", callCheck: "-" } },
       { category: "Dame (Suited)", EP: { raise: "QTs+", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "Q5s+", callCheck: "-" }, CO: { raise: "Q9s+", callCheck: "-" } },
       { category: "Dame (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "QTo+", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } },
-      { category: "Bube (Suited)", EP: { raise: "JTs", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "J7s+", callCheck: "-" }, CO: { raise: "JTs", callCheck: "-" } },
-      { category: "Bube (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "JTo", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } },
-      { category: "Connectors (Suited)", EP: { raise: "JTs-76s", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "JTs-43s", callCheck: "-" }, CO: { raise: "JTs-43s", callCheck: "-" } },
+      { category: "Bube (Suited)", EP: { raise: "JTs", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "J7s+", callCheck: "-" }, CO: { raise: "JTs,J9s", callCheck: "-" } },
+      { category: "Bube (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "JTo" }, BTN: { raise: "JTo", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } },
+      { category: "Connectors (Suited)", EP: { raise: "T9s-76s", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "T9s-43s", callCheck: "-" }, CO: { raise: "T9s-43s", callCheck: "-" } },
       { category: "Connectors (Offsuit)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "Alle" }, BTN: { raise: "JTo", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } },
-      { category: "1-Gappers (Suited)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "-" }, BTN: { raise: "T8s-53s", callCheck: "-" }, CO: { raise: "J9s-53s", callCheck: "-" } },
+      { category: "1-Gappers (Suited)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "-" }, BTN: { raise: "T8s-53s", callCheck: "-" }, CO: { raise: "T8s-53s", callCheck: "-" } },
       { category: "2-Gappers (Suited)", EP: { raise: "-", callCheck: "-" }, BLIND: { raise: "-", callCheck: "-" }, BTN: { raise: "T7s,96s", callCheck: "-" }, CO: { raise: "-", callCheck: "-" } }
     ];
 
@@ -2252,13 +2189,14 @@
         const suit1 = randomSuit();
         const suit2 = suited ? suit1 : randomDifferentSuit(suit1);
         const gapMap = { "Connectors": 0, "1-Gappers": 1, "2-Gappers": 2 };
+        const secondCardMap = { 0: "?-1", 1: "?-2", 2: "?-3" };
+        const gap = gapMap[gapped[1]];
         return {
           cards: [
-            { rank: "?", suit: suit1 },
-            { rank: "?", suit: suit2 }
+            { rank: "T≥?", suit: suit1 },
+            { rank: secondCardMap[gap] || "?-1", suit: suit2 }
           ],
-          gap: gapMap[gapped[1]],
-          rangeHint: "Werte: J bis 2"
+          gap
         };
       }
 
@@ -2278,7 +2216,10 @@
 
       const cardsHtml = cards.map((card) => {
         const suit = suitInfo(card.suit);
-        const rankClass = card.rank === "10" ? "card-rank card-rank-ten" : "card-rank";
+        const isPlaceholderRank = typeof card.rank === "string" && /[≥-]/.test(card.rank);
+        const rankClass = card.rank === "10"
+          ? "card-rank card-rank-ten"
+          : (isPlaceholderRank ? "card-rank card-rank-placeholder" : "card-rank");
         return "<span class='card " + suit.cls + "'>" +
           "<span class='card-corner'><span class='" + rankClass + "'>" + card.rank + "</span><span class='card-suit'>" + suit.symbol + "</span></span>" +
           "<span class='card-suit-big'>" + suit.symbol + "</span>" +
@@ -2286,13 +2227,7 @@
           "</span>";
       }).join("");
 
-      const hasGap = preview && typeof preview.gap === "number";
-      const gapHtml = hasGap
-        ? "<span class='learn-cat-gap'>Gap " + preview.gap + " (J > ? > 2)</span>"
-        : "<span class='learn-cat-gap is-placeholder'>Gap 0 (J > ? > 2)</span>";
-
-      categoryEl.innerHTML =
-        "<span class='cards learn-cat-cards'>" + cardsHtml + "</span>" + gapHtml;
+      categoryEl.innerHTML = "<span class='cards learn-cat-cards'>" + cardsHtml + "</span>";
     }
 
     function renderCards(c1, c2, hand, highlightNew) {
