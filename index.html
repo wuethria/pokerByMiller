@@ -20,6 +20,9 @@
         radial-gradient(1200px 520px at 50% -260px, #e8f4ed 0%, #f6f8f6 52%, #fafafa 100%),
         linear-gradient(#fafafa, #fafafa);
     }
+    html, body {
+      overflow-x: hidden;
+    }
     h1 { font-size: 1.35rem; margin: 0; }
     .title-row {
       display: flex;
@@ -58,6 +61,8 @@
       margin-bottom: 12px;
     }
     .tab-btn {
+      flex: 1 1 0;
+      min-width: 0;
       border: 1px solid #cfcfcf;
       border-radius: 999px;
       background: #f3f3f3;
@@ -314,7 +319,7 @@
       width: 100%;
       max-width: 760px;
       box-sizing: border-box;
-      margin: 0 auto;
+      margin: 21px auto 0;
       border: 0;
       border-radius: 0;
       background: transparent;
@@ -323,7 +328,7 @@
       text-align: center;
     }
     .play-context-wrap {
-      min-height: var(--play-top-min-height);
+      min-height: 0;
     }
     .play-middle-line {
       display: grid;
@@ -345,7 +350,7 @@
     .play-middle-line #cards {
       grid-column: 2;
       justify-self: center;
-      margin: 0;
+      margin: 6px 0 0;
     }
     .play-gap-reserve {
       display: flex;
@@ -1277,7 +1282,7 @@
         max-width: 100%;
       }
       .play-middle-card {
-        margin-top: 0;
+        margin-top: 8px;
         padding: 9px 0 7px;
       }
       .play-gap-reserve {
@@ -1473,6 +1478,39 @@
       select, button {
         min-height: 44px;
       }
+      .actions {
+        flex-wrap: nowrap;
+        gap: 6px;
+      }
+      #actions button {
+        flex: 1 1 0;
+        min-width: 0;
+        padding-left: 6px;
+        padding-right: 6px;
+        font-size: 0.9rem;
+      }
+      .learn-review-actions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-areas: "nok ok skip";
+        justify-items: stretch;
+        align-items: center;
+        max-width: 100%;
+        gap: 8px;
+      }
+      #learnOkBtn {
+        grid-area: ok;
+        width: 100% !important;
+        justify-self: stretch;
+      }
+      #learnNokBtn,
+      #learnSkipBtn {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+      }
+      #learnNokBtn { grid-area: nok; }
+      #learnSkipBtn { grid-area: skip; }
     }
   </style>
 </head>
@@ -1757,6 +1795,9 @@
     let current = null;
     let resolveTimer = null;
     let learnCurrent = null;
+    let syncedTaskCardHeight = 0;
+    let syncedTopContextHeight = 0;
+    let syncedBottomZoneHeight = 0;
     let learnAnswerVisible = false;
     let learnReviewQueue = [];
     let learnExcludedSignatures = new Set();
@@ -2312,6 +2353,13 @@
       document.getElementById("tabPlay").classList.toggle("active", tab === "play");
       document.getElementById("tabLearn").classList.toggle("active", tab === "learn");
       document.getElementById("tabPdf").classList.toggle("active", tab === "pdf");
+      requestAnimationFrame(() => {
+        syncTopContextHeights();
+        syncBottomZoneHeights();
+        syncTaskCardHeights();
+        syncPlayResultReservedHeight();
+        syncLearnAnswerSlotHeight();
+      });
     }
 
     function isMeaningfulLearnCell(value) {
@@ -2634,10 +2682,69 @@
     function syncTaskCardHeights() {
       const root = document.documentElement;
       const play = document.getElementById("playTaskCard");
-      if (!play) return;
+      const learn = document.getElementById("learnTaskCard");
+      if (!play || !learn) return;
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        root.style.removeProperty("--task-card-fixed-height");
+        syncedTaskCardHeight = 0;
+        return;
+      }
       root.style.removeProperty("--task-card-fixed-height");
-      const h = Math.round(play.getBoundingClientRect().height);
+      const measured = Math.max(
+        Math.ceil(play.getBoundingClientRect().height),
+        Math.ceil(learn.getBoundingClientRect().height)
+      );
+      const h = Math.max(measured, syncedTaskCardHeight);
+      syncedTaskCardHeight = h;
       if (h > 0) root.style.setProperty("--task-card-fixed-height", h + "px");
+    }
+
+    function syncTopContextHeights() {
+      const playTop = document.querySelector("#playTaskCard .play-context-wrap");
+      const learnTop = document.getElementById("learnTaskLines");
+      if (!playTop || !learnTop) return;
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        playTop.style.minHeight = "";
+        learnTop.style.minHeight = "";
+        syncedTopContextHeight = 0;
+        return;
+      }
+
+      playTop.style.minHeight = "";
+      learnTop.style.minHeight = "";
+
+      const playH = Math.ceil(playTop.getBoundingClientRect().height);
+      const learnH = Math.ceil(learnTop.getBoundingClientRect().height);
+      const target = Math.max(playH, learnH, syncedTopContextHeight);
+      syncedTopContextHeight = target;
+      if (target > 0) {
+        playTop.style.minHeight = target + "px";
+        learnTop.style.minHeight = target + "px";
+      }
+    }
+
+    function syncBottomZoneHeights() {
+      const playZone = document.getElementById("playTaskZone");
+      const learnZone = document.getElementById("learnTaskZone");
+      if (!playZone || !learnZone) return;
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        playZone.style.minHeight = "";
+        learnZone.style.minHeight = "";
+        syncedBottomZoneHeight = 0;
+        return;
+      }
+
+      playZone.style.minHeight = "";
+      learnZone.style.minHeight = "";
+
+      const playH = Math.ceil(playZone.getBoundingClientRect().height);
+      const learnH = Math.ceil(learnZone.getBoundingClientRect().height);
+      const target = Math.max(playH, learnH, syncedBottomZoneHeight);
+      syncedBottomZoneHeight = target;
+      if (target > 0) {
+        playZone.style.minHeight = target + "px";
+        learnZone.style.minHeight = target + "px";
+      }
     }
 
     function learnComboSignature(q) {
@@ -2788,6 +2895,9 @@
         setLearnActionState("show");
         document.getElementById("learnPrompt").style.display = "none";
         syncLearnAnswerSlotHeight();
+        syncTopContextHeights();
+        syncBottomZoneHeights();
+        syncTaskCardHeights();
         return;
       }
 
@@ -2819,6 +2929,9 @@
       setLearnActionState("show");
       res.style.display = "none";
       syncLearnAnswerSlotHeight();
+      syncTopContextHeights();
+      syncBottomZoneHeights();
+      syncTaskCardHeights();
     }
     function normalizeLearnAnswer(answer) {
       let text = String(answer || "-").replace(/\r\n/g, "\n");
@@ -2870,6 +2983,8 @@
       learnAnswerVisible = true;
       setLearnActionState("review");
       syncLearnAnswerSlotHeight();
+      syncBottomZoneHeights();
+      syncTaskCardHeights();
     }
 
     function learnReviewAnswer(ok) {
@@ -2972,6 +3087,8 @@
         : "✘ " + actionLabel(choice) + " ist falsch. Korrekt: " + actionLabel(current.correct);
       if (resolveTimer) clearTimeout(resolveTimer);
       updateDealButton("ready");
+      syncBottomZoneHeights();
+      syncTaskCardHeights();
     }
 
     function nextHand(highlightNew = false) {
@@ -3053,6 +3170,8 @@
       renderActions(scenario, heroPos);
       syncPlayResultReservedHeight();
       setActionButtonsDisabled(false);
+      syncTopContextHeights();
+      syncBottomZoneHeights();
       syncTaskCardHeights();
     }
 
@@ -3112,6 +3231,8 @@
     nextLearnQuestion();
     window.addEventListener("resize", syncPlayResultReservedHeight);
     window.addEventListener("resize", syncLearnAnswerSlotHeight);
+    window.addEventListener("resize", syncTopContextHeights);
+    window.addEventListener("resize", syncBottomZoneHeights);
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
