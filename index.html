@@ -1513,17 +1513,6 @@
         <h2>Konfiguration</h2>
         <div class="config-controls">
           <div>
-            <label for="position">Position</label>
-            <select id="position">
-              <option value="ALL">alle</option>
-              <option value="EP">EP</option>
-              <option value="SB">Small Blind</option>
-              <option value="BB">Big Blind</option>
-              <option value="BTN">Dealer</option>
-              <option value="CO">CO</option>
-            </select>
-          </div>
-          <div>
             <label for="condition">Initiative/Verteidigung</label>
             <select id="condition">
               <option value="ALL">alle</option>
@@ -1538,6 +1527,17 @@
               <option value="ALL">alle</option>
             </select>
           </div>
+          <div>
+            <label for="position">Position</label>
+            <select id="position">
+              <option value="ALL">alle</option>
+              <option value="EP">EP</option>
+              <option value="SB">Small Blind</option>
+              <option value="BB">Big Blind</option>
+              <option value="BTN">Dealer</option>
+              <option value="CO">CO</option>
+            </select>
+          </div>
           <div id="playCfgPosModeWrap" style="display:none;">
             <label for="playCfgPosMode">Positionsmodus</label>
             <select id="playCfgPosMode">
@@ -1548,6 +1548,7 @@
           <div id="specialConditionWrap">
             <label for="specialCondition">Spezialbedingungen</label>
             <select id="specialCondition">
+              <option value="NONE" selected>keine</option>
               <option value="ALL">alle</option>
               <option value="EP_STEAL">Early Position stealed</option>
               <option value="RAISE_GT_3BB">Erhoehung ist groesser als 3 Big Blinds</option>
@@ -1600,16 +1601,6 @@
         <h2>Konfiguration</h2>
         <div class="config-controls">
           <div>
-            <label for="learnCfgPosition">Position</label>
-            <select id="learnCfgPosition">
-              <option value="ALL">alle</option>
-              <option value="EP">EP</option>
-              <option value="BLIND">Small Blind bzw. Blinds</option>
-              <option value="BTN">Dealer</option>
-              <option value="CO">CO</option>
-            </select>
-          </div>
-          <div>
             <label for="learnCfgArea">Initiative/Verteidigung</label>
             <select id="learnCfgArea">
               <option value="ALL">alle</option>
@@ -1622,6 +1613,16 @@
             <label for="learnCfgCategory">Kategorie</label>
             <select id="learnCfgCategory">
               <option value="ALL">alle</option>
+            </select>
+          </div>
+          <div>
+            <label for="learnCfgPosition">Position</label>
+            <select id="learnCfgPosition">
+              <option value="ALL">alle</option>
+              <option value="EP">EP</option>
+              <option value="BLIND">Small Blind bzw. Blinds</option>
+              <option value="BTN">Dealer</option>
+              <option value="CO">CO</option>
             </select>
           </div>
           <div id="learnCfgPosModeWrap" style="display:none;">
@@ -1832,9 +1833,9 @@
     }
 
     function resolveRangeColumn(heroPos, raiserPos, specialCondition) {
-      if (!isBlindPosition(heroPos)) return heroPos;
       if (specialCondition === "EP_STEAL" || specialCondition === "RAISE_GT_3BB") return "EP";
       if (specialCondition === "DEALER_CO_STEAL") return "BLINDS";
+      if (!isBlindPosition(heroPos)) return heroPos;
       return raiserPos === "EP" ? "EP" : "BLINDS";
     }
 
@@ -2016,18 +2017,7 @@
         };
       }
 
-      let col;
-      if (isBlindPosition(heroPos)) {
-        if (specialCondition === "EP_STEAL" || specialCondition === "RAISE_GT_3BB") {
-          col = "EP";
-        } else if (specialCondition === "DEALER_CO_STEAL") {
-          col = "BLINDS";
-        } else {
-          col = raiserPos === "EP" ? "EP" : "BLINDS";
-        }
-      } else {
-        col = heroPos;
-      }
+      const col = resolveRangeColumn(heroPos, raiserPos, specialCondition);
 
       const table = scenario === "TIGHT_RAISE" ? FACING_TIGHT : FACING_LOOSE;
       const cfg = table[col];
@@ -2183,7 +2173,7 @@
         lines.push({ key: "scenario", text: "Vor dir hat ein looser Spieler geraised." });
       }
 
-      if (!isPlaceholderValue(state.specialCondition) && state.scenario === "LOOSE_RAISE" && isBlindPosition(state.heroPos)) {
+      if (!isPlaceholderValue(state.specialCondition) && state.scenario === "LOOSE_RAISE") {
         if (state.specialCondition === "EP_STEAL") lines.push({ key: "special", text: "Der Steal kommt aus Early Position." });
         if (state.specialCondition === "RAISE_GT_3BB") lines.push({ key: "special", text: "Die Erhoehung ist groesser als 3 Big Blinds." });
         if (state.specialCondition === "DEALER_CO_STEAL") lines.push({ key: "special", text: "Der Steal kommt vom Dealer oder Cutoff." });
@@ -2205,10 +2195,16 @@
     }
 
     function specialConditionText(v) {
+      if (v === "NONE") return "keine";
       if (v === "EP_STEAL") return "Early Position stealed";
       if (v === "RAISE_GT_3BB") return "Erhoehung ist groesser als 3 Big Blinds";
       if (v === "DEALER_CO_STEAL") return "Dealer/CO stealed";
       return "";
+    }
+
+    function randomSpecialCondition() {
+      const options = ["NONE", "EP_STEAL", "RAISE_GT_3BB", "DEALER_CO_STEAL"];
+      return options[Math.floor(Math.random() * options.length)];
     }
 
     function suitInfo(s) {
@@ -2634,7 +2630,7 @@
         chips.push({ label: "Kategorie", value: cat });
       }
       const sp = document.getElementById("specialCondition").value;
-      if (cond === "LOOSE_RAISE" && (pos === "ALL" || isBlindPosition(pos)) && sp !== "ALL") {
+      if (cond === "LOOSE_RAISE" && sp !== "ALL" && sp !== "NONE") {
         chips.push({ label: "Spezialbedingungen", value: getSelectText("specialCondition", sp) });
       }
       renderFixedChips("playFixedChips", "playNoFixed", chips);
@@ -2642,13 +2638,12 @@
 
     function applyPlaySpecialModeUI() {
       const cond = document.getElementById("condition").value;
-      const pos = document.getElementById("position").value;
       const wrap = document.getElementById("specialConditionWrap");
       const select = document.getElementById("specialCondition");
-      const enabled = cond === "LOOSE_RAISE" && (pos === "ALL" || isBlindPosition(pos));
+      const enabled = cond === "LOOSE_RAISE";
       wrap.style.display = enabled ? "block" : "none";
       select.disabled = !enabled;
-      if (!enabled) select.value = "ALL";
+      if (!enabled) select.value = "NONE";
     }
 
     function getSelectText(selectId, value) {
@@ -3123,13 +3118,14 @@
         heroPos = PLAY_POSITION_ORDER[playPositionSeqIndex % PLAY_POSITION_ORDER.length];
         playPositionSeqIndex = (playPositionSeqIndex + 1) % PLAY_POSITION_ORDER.length;
       }
-      if (selected === "ALL" && selectedCondition === "LOOSE_RAISE" && selectedSpecial !== "ALL") {
-        heroPos = Math.random() < 0.5 ? "SB" : "BB";
-      }
-      const specialCondition = (scenario === "LOOSE_RAISE" && isBlindPosition(heroPos)) ? selectedSpecial : "ALL";
+      const specialCondition = scenario === "LOOSE_RAISE"
+        ? (selectedSpecial === "ALL"
+            ? randomSpecialCondition()
+            : (selectedSpecial === "NONE" ? "ALL" : selectedSpecial))
+        : "ALL";
 
       let raiserPos = null;
-      if (isBlindPosition(heroPos) && scenario !== "NO_RAISE") {
+      if (scenario !== "NO_RAISE") {
         if (specialCondition === "EP_STEAL" || specialCondition === "RAISE_GT_3BB") {
           raiserPos = "EP";
         } else if (specialCondition === "DEALER_CO_STEAL") {
