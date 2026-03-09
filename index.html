@@ -1786,6 +1786,63 @@
       return [c1, c2];
     }
 
+    const ALL_CANONICAL_HANDS = (() => {
+      const out = [];
+      for (let i = 0; i < RANKS.length; i += 1) {
+        for (let j = i; j < RANKS.length; j += 1) {
+          const hi = RANKS[i];
+          const lo = RANKS[j];
+          if (i === j) out.push(hi + hi);
+          else {
+            out.push(hi + lo + "s");
+            out.push(hi + lo + "o");
+          }
+        }
+      }
+      return out;
+    })();
+
+    function materializeCanonicalHand(hand) {
+      if (hand.length === 2) {
+        const rank = hand[0];
+        const s1 = randomSuit();
+        const s2 = randomDifferentSuit(s1);
+        return [rank + s1, rank + s2];
+      }
+      const r1 = hand[0];
+      const r2 = hand[1];
+      if (hand[2] === "s") {
+        const s = randomSuit();
+        return [r1 + s, r2 + s];
+      }
+      const s1 = randomSuit();
+      const s2 = randomDifferentSuit(s1);
+      return [r1 + s1, r2 + s2];
+    }
+
+    function resolveRangeColumn(heroPos, raiserPos, specialCondition) {
+      if (!isBlindPosition(heroPos)) return heroPos;
+      if (specialCondition === "EP_STEAL" || specialCondition === "RAISE_GT_3BB") return "EP";
+      if (specialCondition === "DEALER_CO_STEAL") return "BLINDS";
+      return raiserPos === "EP" ? "EP" : "BLINDS";
+    }
+
+    function isHandInConfiguredValueRange(hand, heroPos, scenario, raiserPos, specialCondition) {
+      if (scenario === "NO_RAISE") {
+        const isBlind = isBlindPosition(heroPos);
+        const raiseRefPos = isBlind ? "BLIND" : heroPos;
+        if (inRange(OPEN_INIT_RAISE[raiseRefPos], hand)) return true;
+        if (isBlind && isBlindCallCheck(hand)) return true;
+        return false;
+      }
+
+      const col = resolveRangeColumn(heroPos, raiserPos, specialCondition);
+      const table = scenario === "TIGHT_RAISE" ? FACING_TIGHT : FACING_LOOSE;
+      const cfg = table[col];
+      if (!cfg) return false;
+      return inRange(cfg.threeBet, hand) || inRange(cfg.call, hand);
+    }
+
     function matchToken(token, hand) {
       token = token.replace(/\([^)]*\)/g, "").trim();
       if (!token || token === "-") return false;
@@ -2503,7 +2560,7 @@
       const category = document.getElementById("learnCfgCategory").value;
 
       return learnQuestions.filter((q) =>
-        !learnExcludedSignatures.has(learnComboSignature(q)) &&
+        !learnExcludedSignatures.has(learnSkipSignature(q)) &&
         (area === "ALL" || q.areaKey === area) &&
         (pos === "ALL" || q.positionKey === pos) &&
         (category === "ALL" || q.category === category)
@@ -2513,7 +2570,8 @@
 
     function handMatchesCategory(hand, category) {
       if (category === "ALL") return true;
-      if (hand.length === 2) return category === "Paare";
+      if (category === "Paare") return hand.length === 2;
+      if (hand.length === 2) return false;
       const high = hand[0];
       const low = hand[1];
       const suited = hand[2];
@@ -2532,7 +2590,7 @@
       if (category === "1-Gappers (Suited)" || category === "1-Gappers") return suited === "s" && gap === 1;
       if (category === "1-Gappers (Offsuit)") return suited === "o" && gap === 1;
       if (category === "2-Gappers (Suited)" || category === "2-Gappers") return suited === "s" && gap === 2;
-      return true;
+      return false;
     }
 
     function renderFixedChips(containerId, emptyId, chips) {
@@ -2688,6 +2746,10 @@
 
     function learnComboSignature(q) {
       return [q.areaKey, q.positionKey, q.actionSetKey, q.category].join("|");
+    }
+
+    function learnSkipSignature(q) {
+      return [q.areaKey, q.category].join("|");
     }
 
     function setLearnActionState(mode) {
@@ -2946,9 +3008,12 @@
 
     function learnSkipCombination() {
       if (!learnCurrent || !learnAnswerVisible) return;
-      const sig = learnComboSignature(learnCurrent);
-      learnExcludedSignatures.add(sig);
-      learnReviewQueue = learnReviewQueue.filter((x) => x !== sig);
+      const skipSig = learnSkipSignature(learnCurrent);
+      learnExcludedSignatures.add(skipSig);
+      learnReviewQueue = learnReviewQueue.filter((sig) => {
+        const q = learnQuestions.find((item) => learnComboSignature(item) === sig);
+        return !q || learnSkipSignature(q) !== skipSig;
+      });
       nextLearnQuestion();
     }
 
@@ -3052,16 +3117,6 @@
       }
       const specialCondition = (scenario === "LOOSE_RAISE" && isBlindPosition(heroPos)) ? selectedSpecial : "ALL";
 
-      let c1 = null;
-      let c2 = null;
-      let hand = null;
-      let attempts = 0;
-      do {
-        [c1, c2] = dealTwoCards();
-        hand = canonicalHand(c1, c2);
-        attempts += 1;
-      } while (!handMatchesCategory(hand, selectedCategory) && attempts < 5000);
-
       let raiserPos = null;
       if (isBlindPosition(heroPos) && scenario !== "NO_RAISE") {
         if (specialCondition === "EP_STEAL" || specialCondition === "RAISE_GT_3BB") {
@@ -3073,6 +3128,27 @@
           raiserPos = possible[Math.floor(Math.random() * possible.length)];
         }
       }
+
+      const candidates = ALL_CANONICAL_HANDS.filter((h) => handMatchesCategory(h, selectedCategory));
+      const inRangeCandidates = [];
+      const outRangeCandidates = [];
+      for (const h of candidates) {
+        if (isHandInConfiguredValueRange(h, heroPos, scenario, raiserPos, specialCondition)) {
+          inRangeCandidates.push(h);
+        } else {
+          outRangeCandidates.push(h);
+        }
+      }
+
+      let targetInRange = Math.random() < 0.5;
+      if (targetInRange && inRangeCandidates.length === 0) targetInRange = false;
+      if (!targetInRange && outRangeCandidates.length === 0) targetInRange = true;
+
+      const pool = targetInRange ? inRangeCandidates : outRangeCandidates;
+      const fallbackPool = candidates.length ? candidates : ALL_CANONICAL_HANDS;
+      const picked = (pool.length ? pool : fallbackPool)[Math.floor(Math.random() * (pool.length ? pool : fallbackPool).length)];
+      const [c1, c2] = materializeCanonicalHand(picked);
+      const hand = canonicalHand(c1, c2);
 
       const resolved = resolveCorrectAction(hand, heroPos, scenario, raiserPos, specialCondition);
       current = {
