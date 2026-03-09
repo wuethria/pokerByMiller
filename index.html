@@ -23,7 +23,18 @@
     html, body {
       overflow-x: hidden;
     }
-    h1 { font-size: 1.35rem; margin: 0; }
+    h1 {
+      font-size: 1.35rem;
+      margin: 0;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .app-version {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #51627a;
+    }
     .title-row {
       display: flex;
       align-items: center;
@@ -1460,7 +1471,7 @@
 </head>
 <body>
   <div class="title-row">
-    <h1>Poker Trainer (by Ed Miller)</h1>
+    <h1>Poker Trainer (by Ed Miller) <span class="app-version">v0.23</span></h1>
   </div>
   <div class="tabs">
     <button id="tabPdf" class="tab-btn">Charts</button>
@@ -1629,12 +1640,12 @@
     <div class="pdf-card">
       <iframe
           class="pdf-frame"
-          src="Poker_Preflop_Strategie_FINAL_v22.pdf"
+          src="Poker_Preflop_Strategie_FINAL_v0.23.pdf"
           title="Poker Strategie PDF"
         ></iframe>
       <div class="pdf-actions">
-        <a class="primary-link" href="Poker_Preflop_Strategie_FINAL_v22.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
-        <a href="Poker_Preflop_Strategie_FINAL_v22.pdf" download>PDF herunterladen</a>
+        <a class="primary-link" href="Poker_Preflop_Strategie_FINAL_v0.23.pdf" target="_blank" rel="noopener noreferrer">PDF in neuem Tab</a>
+        <a href="Poker_Preflop_Strategie_FINAL_v0.23.pdf" download>PDF herunterladen</a>
       </div>
     </div>
   </section>
@@ -1665,10 +1676,10 @@
     ];
 
     const FACING_TIGHT = {
-      EP: { call: ["QQ-22", "ATs+", "AKo", "KTs+", "QTs+", "JTs-76s"], threeBet: ["AA", "KK", "A5s"] },
-      CO: { call: ["QQ-22", "ATs+", "AKo", "KTs+", "QTs+", "JTs-76s"], threeBet: ["AA", "KK", "A5s"] },
-      BTN: { call: ["QQ-22", "ATs+", "AKo", "KTs+", "QTs+", "JTs-76s"], threeBet: ["AA", "KK", "A5s"] },
-      BLINDS: { call: ["QQ-22", "ATs+", "AKo", "KTs+", "QTs+", "JTs-76s"], threeBet: ["AA", "KK", "A5s"] }
+      EP: { call: ["QQ-22", "ATs+", "AKo", "KTs+", "QTs+", "T9s-76s"], threeBet: ["AA", "KK", "A5s"] },
+      CO: { call: ["QQ-22", "ATs+", "AKo", "KTs+", "QTs+", "T9s-76s"], threeBet: ["AA", "KK", "A5s"] },
+      BTN: { call: ["QQ-22", "ATs+", "AKo", "KTs+", "QTs+", "T9s-76s"], threeBet: ["AA", "KK", "A5s"] },
+      BLINDS: { call: ["QQ-22", "ATs+", "AKo", "KTs+", "QTs+", "T9s-76s"], threeBet: ["AA", "KK", "A5s"] }
     };
 
     const FACING_LOOSE = {
@@ -1713,7 +1724,7 @@
       { category: "Koenig (Suited)", EP: { call: "KTs+", threeBet: "-" }, CO: { call: "KTs+", threeBet: "-" }, BTN: { call: "KTs+", threeBet: "-" }, BLIND: { call: "KTs+", threeBet: "-" } },
       { category: "Dame (Suited)", EP: { call: "QTs+", threeBet: "-" }, CO: { call: "QTs+", threeBet: "-" }, BTN: { call: "QTs+", threeBet: "-" }, BLIND: { call: "QTs+", threeBet: "-" } },
       { category: "Bube (Suited)", EP: { call: "JTs", threeBet: "-" }, CO: { call: "JTs", threeBet: "-" }, BTN: { call: "JTs", threeBet: "-" }, BLIND: { call: "JTs", threeBet: "-" } },
-      { category: "Connectors (Suited)", EP: { call: "JTs-76s", threeBet: "-" }, CO: { call: "JTs-76s", threeBet: "-" }, BTN: { call: "JTs-76s", threeBet: "-" }, BLIND: { call: "JTs-76s", threeBet: "-" } }
+      { category: "Connectors (Suited)", EP: { call: "T9s-76s", threeBet: "-" }, CO: { call: "T9s-76s", threeBet: "-" }, BTN: { call: "T9s-76s", threeBet: "-" }, BLIND: { call: "T9s-76s", threeBet: "-" } }
     ];
 
         const LEARN_LOOSE = [
