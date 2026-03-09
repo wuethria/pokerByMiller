@@ -15,7 +15,7 @@
       margin: 24px auto;
       padding: 0 14px;
       line-height: 1.4;
-      color: #171717;
+      color: var(--text-main);
       background:
         radial-gradient(1200px 520px at 50% -260px, #e8f4ed 0%, #f6f8f6 52%, #fafafa 100%),
         linear-gradient(#fafafa, #fafafa);
@@ -29,11 +29,12 @@
       display: flex;
       align-items: baseline;
       gap: 10px;
+      color: var(--text-strong);
     }
     .app-version {
       font-size: 0.9rem;
       font-weight: 600;
-      color: #51627a;
+      color: var(--text-muted);
     }
     .title-row {
       display: flex;
@@ -58,8 +59,8 @@
       position: relative;
       z-index: 1;
     }
-    h2 { margin: 0 0 12px; font-size: 1rem; }
-    label { font-size: 0.92rem; color: #444; margin-bottom: 6px; display: inline-block; }
+    h2 { margin: 0 0 12px; font-size: 1rem; color: var(--text-strong); }
+    label { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 6px; display: inline-block; }
     .layout {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 270px;
@@ -74,17 +75,17 @@
     .tab-btn {
       flex: 1 1 0;
       min-width: 0;
-      border: 1px solid #cfcfcf;
+      border: 1px solid var(--tab-border);
       border-radius: 999px;
-      background: #f3f3f3;
-      color: #333;
+      background: var(--tab-bg);
+      color: var(--tab-text);
       padding: 7px 12px;
       cursor: pointer;
     }
     .tab-btn.active {
-      background: #e8edf4;
-      color: #22364f;
-      border-color: #b8c5d6;
+      background: var(--tab-active-bg);
+      color: var(--tab-active-text);
+      border-color: var(--tab-active-border);
       font-weight: 700;
     }
     .panel { display: none; overflow-x: hidden; }
@@ -113,10 +114,20 @@
       font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      color: #6a6a6a;
+      color: var(--text-soft);
       margin-bottom: 2px;
     }
     :root {
+      --text-main: #263646;
+      --text-strong: #203042;
+      --text-muted: #5a6d80;
+      --text-soft: #73859a;
+      --tab-bg: #f1f5f9;
+      --tab-border: #c8d4e1;
+      --tab-text: #2e4257;
+      --tab-active-bg: #dfe9f4;
+      --tab-active-border: #a9bfd6;
+      --tab-active-text: #22364f;
       --surface-muted: #f7f8fa;
       --border-muted: #dfe3e8;
       --chip-bg: #eceff3;
@@ -124,18 +135,37 @@
       --chip-text: #3e4650;
       --task-border: #cfd9e7;
       --task-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-      --primary-bg: #1f1f1f;
-      --primary-bg-hover: #111111;
+      --primary-bg: #4d6580;
+      --primary-bg-hover: #425770;
       --primary-text: #ffffff;
       --learn-action-width: 560px;
       --play-zone-gap: 22px;
       --play-top-min-height: 430px;
+      --tone-raise-bg: #e7caa4;
+      --tone-raise-border: #c8a173;
+      --tone-raise-text: #4a3318;
+      --tone-3bet-bg: #5b3e22;
+      --tone-3bet-border: #452d16;
+      --tone-3bet-text: #ffffff;
+      --tone-call-bg: #dce9d7;
+      --tone-call-border: #bfd2b7;
+      --tone-call-text: #2a4a2f;
+      --tone-fold-bg: #f2dfe0;
+      --tone-fold-border: #dbbec0;
+      --tone-fold-text: #6a2f33;
+      --action-surface: #e9edf2;
+      --action-border: #cfd6df;
+      --action-text: #3a4f66;
+      --action-raise-accent: #6ea877;
+      --action-3bet-accent: #3e7b4b;
+      --action-call-accent: #b59645;
+      --action-fold-accent: #c57a80;
     }
     .given-title {
       font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      color: #6a6a6a;
+      color: var(--text-soft);
       margin-bottom: 6px;
     }
     .given-section {
@@ -167,20 +197,20 @@
       filter: saturate(0.75);
     }
     .chip-label {
-      color: #65707b;
+      color: var(--text-soft);
       font-size: 0.67rem;
       letter-spacing: 0.02em;
       text-transform: uppercase;
       font-weight: 600;
     }
     .chip-value {
-      color: #2f3741;
+      color: var(--text-main);
       font-size: 0.86rem;
       font-weight: 600;
     }
     .given-empty {
       margin-top: 4px;
-      color: #8a94a1;
+      color: var(--text-soft);
       font-size: 1rem;
       line-height: 1;
     }
@@ -209,14 +239,14 @@
     }
     .task-value {
       margin-top: 6px;
-      color: #0f2747;
+      color: var(--text-strong);
       font-size: 1.45rem;
       line-height: 1.2;
       font-weight: 800;
     }
     .task-context {
       margin-top: 8px;
-      color: #3f4e61;
+      color: var(--text-muted);
       font-size: 0.9rem;
       line-height: 1.35;
     }
@@ -245,7 +275,7 @@
     .context-line {
       margin-top: 8px;
       margin-bottom: 0;
-      color: #46556b;
+      color: var(--text-muted);
       font-size: 1rem;
       line-height: 1.45;
       font-weight: 450;
@@ -352,7 +382,7 @@
       grid-column: 1;
       justify-self: start;
       text-align: left;
-      color: #46556b;
+      color: var(--text-muted);
       font-size: 1rem;
       line-height: 1.45;
       font-weight: 450;
@@ -417,7 +447,7 @@
       justify-content: flex-start;
     }
     #learnTaskCard .action-row {
-      margin-top: 2px;
+      margin-top: 10px;
     }
     #learnTaskLines {
       min-height: 0;
@@ -526,7 +556,7 @@
       display: block;
       text-align: center;
       font-size: 0.84rem;
-      color: #46556b;
+      color: var(--text-muted);
       font-weight: 600;
       line-height: 1.2;
     }
@@ -534,7 +564,7 @@
       display: block;
       margin-top: 4px;
       font-size: 0.74rem;
-      color: #5a677a;
+      color: var(--text-soft);
       line-height: 1.2;
     }
     #learnCategoryLead {
@@ -550,7 +580,7 @@
     }
     .task-line {
       margin-top: 4px;
-      color: #3f4e61;
+      color: var(--text-muted);
       font-size: 0.95rem;
       line-height: 1.35;
     }
@@ -562,7 +592,7 @@
       text-align: center;
       margin-top: 2px;
       margin-bottom: 8px;
-      color: #4f6278;
+      color: var(--text-muted);
       font-weight: 600;
       letter-spacing: 0.01em;
       font-size: 0.95rem;
@@ -694,7 +724,7 @@
       border: 1px solid #cfcfcf;
       border-radius: 8px;
       background: #f7f7f7;
-      color: #2f3741;
+      color: var(--text-main);
       min-height: 40px;
       font-size: 0.93rem;
       font-weight: 600;
@@ -705,7 +735,7 @@
       border: 1px solid #d0d0d0;
       border-radius: 8px;
       background: #f4f4f4;
-      color: #444;
+      color: var(--action-text);
       min-height: 42px;
       cursor: pointer;
     }
@@ -986,6 +1016,33 @@
       background: #fff;
       cursor: pointer;
     }
+    .actions button.action-with-symbol {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+    .action-symbol {
+      display: inline-block;
+      min-width: 1.4em;
+      line-height: 1;
+      font-weight: 700;
+      text-align: center;
+      font-size: 1.22em;
+    }
+    .actions button.action-tone-raise {
+      box-shadow: none;
+    }
+    .actions button.action-tone-3bet {
+      box-shadow: none;
+    }
+    .actions button.action-tone-call {
+      box-shadow: none;
+    }
+    .actions button.action-tone-fold {
+      box-shadow: none;
+    }
     .result {
       margin-top: 14px;
       padding: 10px;
@@ -1045,7 +1102,7 @@
     .learn-answer-label {
       grid-column: 1;
       justify-self: start;
-      color: #46556b;
+      color: var(--text-muted);
       font-size: 1rem;
       line-height: 1.45;
       font-weight: 450;
@@ -1054,7 +1111,7 @@
     .learn-answer-value {
       grid-column: 2;
       justify-self: center;
-      color: #16345e;
+      color: var(--text-strong);
       font-size: 1.18rem;
       line-height: 1.2;
       font-weight: 700;
@@ -1084,14 +1141,44 @@
     }
     .learn-answer-head-cell {
       background: #e9eef4;
-      color: #46556b;
+      color: var(--text-muted);
       font-size: 0.98rem;
       font-weight: 600;
       border-bottom: 1px solid #d3d9e0;
     }
+    .learn-answer-head-cell.action-tone-raise {
+      box-shadow: none;
+    }
+    .learn-answer-head-cell.action-tone-3bet {
+      box-shadow: none;
+    }
+    .learn-answer-head-cell.action-tone-call {
+      box-shadow: none;
+    }
+    .learn-answer-head-cell.action-tone-fold {
+      box-shadow: none;
+    }
+    .action-tone-raise .action-symbol {
+      color: var(--action-raise-accent);
+    }
+    .action-tone-3bet .action-symbol {
+      color: var(--action-3bet-accent);
+    }
+    .action-tone-call .action-symbol {
+      color: var(--action-call-accent);
+    }
+    .action-tone-fold .action-symbol {
+      color: var(--action-fold-accent);
+    }
+    .action-head {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
     .learn-answer-value-cell {
       background: #ffffff;
-      color: #16345e;
+      color: var(--text-strong);
       font-size: 1.08rem;
       font-weight: 400;
       white-space: pre-wrap;
@@ -1101,7 +1188,7 @@
     .learn-answer-value-cell + .learn-answer-value-cell {
       border-left: 1px solid #d3d9e0;
     }
-    .muted { color: #555; }
+    .muted { color: var(--text-muted); }
     @media (max-width: 1100px) {
       .layout {
         grid-template-columns: 1fr;
@@ -1963,6 +2050,24 @@
       return { RAISE: "Raise", CHECK: "Check", CALLCHECK: "Call", CALL: "Call", "3BET": "3-Bet", FOLD: "Fold" }[action];
     }
 
+    function actionToneClass(actionOrLabel) {
+      const key = String(actionOrLabel || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+      if (key === "RAISE") return "action-tone-raise";
+      if (key === "3BET") return "action-tone-3bet";
+      if (key === "CALL" || key === "CALLCHECK" || key === "CHECK") return "action-tone-call";
+      if (key === "FOLD") return "action-tone-fold";
+      return "";
+    }
+
+    function actionSymbol(actionOrLabel) {
+      const key = String(actionOrLabel || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+      if (key === "RAISE") return "▲";
+      if (key === "3BET") return "▲▲";
+      if (key === "CALL" || key === "CALLCHECK" || key === "CHECK") return "●";
+      if (key === "FOLD") return "✕";
+      return "";
+    }
+
     function joinRanges(tokens) {
       return tokens.join(", ");
     }
@@ -2798,7 +2903,9 @@
         const cols = parts.length;
         const head = parts.map((part) => {
           const label = escapeAttrHtml(part.label || "");
-          return "<div class=\"learn-answer-head-cell\">" + label + "</div>";
+          const toneClass = actionToneClass(part.label || "");
+          const symbol = actionSymbol(part.label || "");
+          return "<div class=\"learn-answer-head-cell " + toneClass + "\"><span class=\"action-head\"><span class=\"action-symbol\">" + symbol + "</span><span>" + label + "</span></span></div>";
         }).join("");
         const values = parts.map((part) => {
           const value = escapeAttrHtml(displayLearnCellValue(part.value));
@@ -2964,7 +3071,9 @@
         const cols = parts.length;
         const head = parts.map((part) => {
           const label = escapeAttrHtml(part.label || "");
-          return "<div class=\"learn-answer-head-cell\">" + label + "</div>";
+          const toneClass = actionToneClass(part.label || "");
+          const symbol = actionSymbol(part.label || "");
+          return "<div class=\"learn-answer-head-cell " + toneClass + "\"><span class=\"action-head\"><span class=\"action-symbol\">" + symbol + "</span><span>" + label + "</span></span></div>";
         }).join("");
         const values = parts.map((part) => {
           const value = escapeAttrHtml(displayLearnCellValue(part.value));
@@ -3042,7 +3151,11 @@
 
       for (const opt of options) {
         const b = document.createElement("button");
-        b.textContent = opt.text;
+        const toneClass = actionToneClass(opt.id);
+        const symbol = actionSymbol(opt.id);
+        b.classList.add("action-with-symbol");
+        b.innerHTML = "<span class=\"action-symbol\">" + symbol + "</span><span>" + opt.text + "</span>";
+        if (toneClass) b.classList.add(toneClass);
         b.onclick = () => answer(opt.id);
         actions.appendChild(b);
       }
